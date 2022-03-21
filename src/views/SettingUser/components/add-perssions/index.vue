@@ -57,13 +57,46 @@
                     @click="handleBeforeOk">确定</a-button>
         </div>
       </div>
-      <div v-show="titles=='详情'"
-           class="detail">
-        <div>
-          <div class="labels"></div>
-          <div></div>
+      <div>
+        <div v-show="titles=='详情'"
+             class="outerBox">
+          <div class="centerBox">
+            <div class="labels"><span class="bz">*</span>用户名</div>
+            <div class="detail">{{form.username}}</div>
+          </div>
+          <div class="centerBox">
+            <div class="labels"><span class="bz">*</span>密码</div>
+            <div class="detail">{{form.password}}</div>
+          </div>
+          <div class="centerBox">
+            <div class="labels">过期时间</div>
+            <div class="detail">{{form.registerTime}}</div>
+          </div>
+          <div class="centerBox">
+            <div class="labels"><span class="bz">*</span>角色</div>
+            <div class="detail">{{form.timeZone}}</div>
+          </div>
+          <div class="centerBox">
+            <div class="labels"><span class="bz">*</span>会话超时时间</div>
+            <div class="detail">{{form.sessionTimeout}}</div>
+          </div>
+          <div class="centerBox">
+            <div class="labels"><span class="bz">*</span>电话号码</div>
+            <div class="detail">{{form.timeZone}}</div>
+          </div>
+          <div class="centerBox">
+            <div class="labels"><span class="bz">*</span>电子邮箱</div>
+            <div class="detail1">{{form.email}}</div>
+          </div>
+
+          <div class="centerBox">
+            <div class="labels">描述</div>
+            <div class="detail1">{{form.description}}</div>
+          </div>
+
         </div>
         <a-button html-type="submit"
+                  v-show="titles=='详情'"
                   @click="handleCancel">取消</a-button>
       </div>
     </template>
@@ -94,6 +127,7 @@ export default {
     // let form = reactive(props.formData)
     const roleList = ref([])
     const form = computed(() => reactive(props.formData))
+    console.log(form)
     const RoleList = async () => {
       const dataInfo = await setUser.getRoleList()
       roleList.value = dataInfo
@@ -145,7 +179,7 @@ export default {
     width: 30%;
   }
   .box6 {
-    width: 65%;
+    width: 100%;
   }
 }
 .submits {
@@ -160,14 +194,32 @@ export default {
   padding: 20px 0 20px 20px;
   font-weight: 600;
 }
-.detail {
+.outerBox {
   width: 100%;
   padding: 20px 0;
-  height: 100%;
-  .labels {
-    background: red;
-    width: 140px;
-    height: 40px;
+  display: flex;
+  flex-wrap: wrap;
+
+  .centerBox {
+    display: flex;
+    text-align: center;
+    line-height: 40px;
+    .labels {
+      background: #f7f8fa;
+      width: 160px;
+      height: 40px;
+      border: 1px solid #e5e6eb;
+    }
+    .detail {
+      width: 320px;
+      height: 40px;
+      border: 1px solid #e5e6eb;
+    }
+    .detail1 {
+      width: 1280px;
+      height: 40px;
+      border: 1px solid #e5e6eb;
+    }
   }
 }
 </style>

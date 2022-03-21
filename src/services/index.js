@@ -72,8 +72,8 @@ let httpErrorStatusHandle = (error) => {
   }
 }
 
-// let baseUrl = '/nms-platform-management-biz' //连接明恺本地服务，端口为9000时候需加上这段，具体上线时需重新配置
-let baseUrl = ''
+let baseUrl = '/nms/nms-platform-management-biz' //连接明恺本地服务，端口为9000时候需加上这段，具体上线时需重新配置
+// let baseUrl = ''
 
 function httpRequest(axiosConfig, customOptions) {
   const service = axios.create({

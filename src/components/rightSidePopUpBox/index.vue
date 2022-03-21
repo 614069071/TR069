@@ -2,11 +2,10 @@
   <transition name="slide-fade">
     <div class="wrapper-right" v-show="showRightBox">
       <div class="headers">
-        <div class="icon-close"
-            @click="closePop">
-          <icon-close :style="{fontSize:'12px'}" />
+        <div class="icon-close" @click="closePop">
+          <icon-close :style="{ fontSize: '12px' }" />
         </div>
-        <div class="title">{{rightBoxTitle}}</div>
+        <div class="title">{{ rightBoxTitle }}</div>
       </div>
       <div class="contentMian">
         <slot name="rightSidePopUpWindow"></slot>
@@ -19,42 +18,42 @@
   </transition>
 </template>
 <script>
-import { toRefs } from 'vue'
-import { IconClose } from '@arco-design/web-vue/es/icon';
+import { toRefs } from "vue";
+import { IconClose } from "@arco-design/web-vue/es/icon";
 export default {
   components: { IconClose },
   props: {
     rightBoxTitle: {
       type: String,
-      default: ''
+      default: "",
     },
     showRightBox: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup(props, context) {
-    const contentProps = toRefs(props)
-    const showRightBox = contentProps.showRightBox
-    let rightBoxTitle = contentProps.rightBoxTitle
+    const contentProps = toRefs(props);
+    const showRightBox = contentProps.showRightBox;
+    let rightBoxTitle = contentProps.rightBoxTitle;
     const closePop = () => {
-      context.emit('closePops', false)
-    }
+      context.emit("closePops", false);
+    };
     const reset = () => {
-      context.emit('reset')
-    }
+      context.emit("reset");
+    };
     const confirm = () => {
-      context.emit('confirm')
-    }
+      context.emit("confirm");
+    };
     return {
       rightBoxTitle,
       closePop,
       reset,
       confirm,
-      showRightBox
-    }
-  }
-}
+      showRightBox,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -69,7 +68,7 @@ export default {
 .slide-fade-leave-active {
   transition: all 1s;
 }
- .slide-fade-leave-to {
+.slide-fade-leave-to {
   transform: translateX(350px);
   opacity: 0;
 }
@@ -93,14 +92,14 @@ export default {
     display: flex;
     justify-content: right;
     cursor: pointer;
-    color: #4E5969;
+    color: #4e5969;
     margin-right: 14px;
   }
   .title {
     font-size: 16px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
-    color: #1D2129;
+    color: #1d2129;
     line-height: 24px;
   }
 }
@@ -119,12 +118,12 @@ export default {
     border-radius: 0px;
     width: 50%;
     &:nth-of-type(1) {
-      background: #FFFFFF;
+      background: #ffffff;
       box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.1);
-      color: #165DFF;
+      color: #165dff;
     }
     &:nth-of-type(2) {
-      background: #165DFF;
+      background: #165dff;
       color: #fff;
     }
   }

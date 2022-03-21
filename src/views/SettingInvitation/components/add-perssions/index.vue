@@ -73,52 +73,44 @@
         <div v-show="titles=='详情'"
              class="outerBox">
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>平台名称</div>
-            <div class="detail">{{form.platformName}}</div>
+            <div class="labels"><span class="bz">*</span>邀请码</div>
+            <div class="detail">{{form.invitationCode}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>root账号</div>
-            <div class="detail">{{form.rootUsername}}</div>
+            <div class="labels"><span class="bz">*</span>创建人</div>
+            <div class="detail">{{form.createBy}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels">最大用户数</div>
+            <div class="labels">账号角色</div>
             <div class="detail">{{form.userTotal}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>平台编号</div>
-            <div class="detail">{{form.identificationCode}}</div>
+            <div class="labels"><span class="bz">*</span>账号过期时间</div>
+            <div class="detail1">{{form.userExpiredTime}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>root密码</div>
-            <div class="detail">{{form.rootPassword}}</div>
+            <div class="labels"><span class="bz">*</span>账号描述</div>
+            <div class="detail1">{{form.userDescription}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>时区</div>
-            <div class="detail">{{form.timeZone}}</div>
+            <div class="labels"><span class="bz">*</span>邀请码有效次数</div>
+            <div class="detail">{{form.validTimes}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>有效日期</div>
+            <div class="labels"><span class="bz">*</span>邀请码过期时间</div>
             <div class="detail">{{form.expiredTime}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels">创建日期</div>
+            <div class="labels">邀请码创建时间</div>
             <div class="detail">{{form.registerTime}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels">是否启用</div>
-            <div class="detail">{{form.enable}}</div>
+            <div class="labels">邀请码描述</div>
+            <div class="detail1">{{form.description}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels">上传LOGO</div>
-            <div class="detail">{{form.logo}}</div>
-          </div>
-          <div class="centerBox">
-            <div class="labels">描述</div>
-            <div class="detail">{{form.description}}</div>
-          </div>
-          <div class="centerBox">
-            <div class="labels"></div>
-            <div class="detail"></div>
+            <div class="labels">是否需要再次确认</div>
+            <div class="detail1">{{form.needCheck==1?"是":'否'}}</div>
           </div>
 
         </div>
@@ -230,20 +222,26 @@ export default {
 
   .centerBox {
     display: flex;
-    text-align: center;
+    text-align: left;
     line-height: 40px;
     .labels {
+      text-align: center;
       background: #f7f8fa;
       width: 160px;
       height: 40px;
-      border-top: 1px solid #e5e6eb;
-      border-left: 1px solid #e5e6eb;
+      border: 1px solid #e5e6eb;
     }
     .detail {
       width: 320px;
       height: 40px;
-      border-top: 1px solid #e5e6eb;
-      border-left: 1px solid #e5e6eb;
+      padding-left: 20px;
+      border: 1px solid #e5e6eb;
+    }
+    .detail1 {
+      width: 1280px;
+      height: 40px;
+      padding-left: 20px;
+      border: 1px solid #e5e6eb;
     }
   }
 }

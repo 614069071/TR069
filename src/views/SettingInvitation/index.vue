@@ -112,7 +112,6 @@ export default {
       handleCancelDrawer,
       showBreadCrumb,
       tableData,
-      refreshData,
       breadList,
       titles,
       form,

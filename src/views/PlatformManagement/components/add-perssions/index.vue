@@ -246,14 +246,12 @@ export default {
       background: #f7f8fa;
       width: 160px;
       height: 40px;
-      border-top: 1px solid #e5e6eb;
-      border-left: 1px solid #e5e6eb;
+      border: 1px solid #e5e6eb;
     }
     .detail {
       width: 320px;
       height: 40px;
-      border-top: 1px solid #e5e6eb;
-      border-left: 1px solid #e5e6eb;
+      border: 1px solid #e5e6eb;
     }
   }
 }
