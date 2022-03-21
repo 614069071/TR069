@@ -34,8 +34,7 @@
 </template>
 
 <script setup>
-import { getPreConfigColles } from "@/services/api/jin.api";
-import { roleManagement } from "@/services/api/system-settings";
+import { upgradeTask } from "@/services/api/jin.api";
 import Pagination from "@/components/pagination/index.vue";
 import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import ControlButtons from "@/components/ControlButtons/index.vue";
@@ -60,12 +59,11 @@ onMounted(() => {
   getData();
 });
 
-const getData = async () => {
-  let params = { username: "", page: current.value, size: pageSize.value };
-  // const dataInfo = await getPreConfigColles(params);
-  const dataInfo = await roleManagement.getRole(params);
+const getData = async (data = {}) => {
+  let params = { page: current.value, size: pageSize.value, ...data };
+  const dataInfo = await upgradeTask(params);
   console.log("dataInfo", dataInfo);
-  dataInfo.data.forEach((e, index) => (e.index = index + 1));
+  dataInfo.data.data.forEach((e, index) => (e.index = index + 1));
   colles.value = dataInfo.data;
   paginationData.value = dataInfo.total;
 };
@@ -95,6 +93,8 @@ const actionList = (action, data) => {
     emit("change", { action, data });
   }
 };
+
+defineExpose({ action: getData });
 </script>
 
 <style lang="less" scoped>
