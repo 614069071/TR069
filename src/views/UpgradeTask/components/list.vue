@@ -3,15 +3,21 @@
     <a-table :data="colles" :scroll="{ y: 650 }" :pagination="false" :row-selection="{ type: 'checkbox', showCheckedAll: true }">
       <template #columns>
         <a-table-column title="序号" data-index="index" />
-        <a-table-column title="厂商名" data-index="username" />
-        <a-table-column title="OUI" data-index="roleNameZh" />
-        <a-table-column title="设备类型Model" data-index="description" />
-        <a-table-column title="升级文件" />
-        <a-table-column title="目标版本" />
-        <a-table-column title="升级规则" />
+        <a-table-column title="厂商名" data-index="ouiName" />
+        <a-table-column title="OUI" data-index="ouiName" />
+        <a-table-column title="设备类型Model" data-index="deviceType" />
+        <a-table-column title="升级文件" data-index="upgradeFileUrl">
+          <template #cell="{ record }">
+            <div>
+              <img :src="record.upgradeFileUrl" alt="" />
+            </div>
+          </template>
+        </a-table-column>
+        <a-table-column title="目标版本" data-index="targetVersion" />
+        <a-table-column title="升级规则" data-index="ouiName" />
         <a-table-column title="自动升级">
           <template #cell="{ record }">
-            <div class="vertical">关闭<a-switch size="mini" style="margin: 0 0 0 4px" /></div>
+            <div class="vertical">关闭<a-switch size="mini" style="margin: 0 0 0 4px" check-value="1" uncheck-value="0" v-model="record.autoUpgrade" /></div>
           </template>
         </a-table-column>
 
@@ -26,25 +32,23 @@
       </template>
     </a-table>
 
-    <a-button @click="look">chakan v-model</a-button>
-
     <Pagination :paginationData="paginationData" @changePage="handlePage" @changeSize="handleSize" />
 
-    <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="close" @reset="reset" @confirm="search">
+    <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="side.resetFields()" @confirm="getData(condition)">
       <!-- <RightSide rightBoxTitle="筛选" @reset="reset" @confirm="search"> -->
       <template v-slot:rightSidePopUpWindow>
-        <a-form layout="vertical" :model="condition">
-          <a-form-item label="目标版本">
-            <a-input v-model="condition.target_version" placeholder="please enter..." />
+        <a-form layout="vertical" :model="condition" ref="side">
+          <a-form-item field="targetVersion" label="目标版本">
+            <a-input v-model="condition.targetVersion" placeholder="please enter..." />
           </a-form-item>
-          <a-form-item label="OUI">
-            <a-input v-model="condition.value1" placeholder="please enter..." />
+          <a-form-item field="ouiName" label="OUI">
+            <a-input v-model="condition.ouiName" placeholder="please enter..." />
           </a-form-item>
-          <a-form-item label="设备类型">
-            <a-input v-model="condition.value1" placeholder="please enter..." />
+          <a-form-item field="deviceType" label="设备类型">
+            <a-input v-model="condition.deviceType" placeholder="please enter..." />
           </a-form-item>
           <a-form-item label="状态">
-            <a-select v-model="condition.value1" placeholder="please enter...">
+            <a-select placeholder="please enter...">
               <a-option label="所有" value="1"></a-option>
               <a-option label="在线" value="2"></a-option>
               <a-option label="离线" value="3"></a-option>
@@ -55,10 +59,10 @@
     </right-side>
   </div>
 
-  <a-modal v-model:visible="visible" @cancel="handleCancel" @before-ok="handleBeforeOk">
+  <!-- <a-modal v-model:visible="visible" @cancel="handleCancel" @before-ok="handleBeforeOk">
     <template #title>提示</template>
     <div>确定删除当前配置吗？</div>
-  </a-modal>
+  </a-modal> -->
 </template>
 
 <script setup>
@@ -78,43 +82,28 @@ const props = defineProps({
 const { modelValue } = toRefs(props);
 
 const emit = defineEmits(["change", "update:modelValue"]);
+
 const current = ref(1);
 const pageSize = ref(15);
 const paginationData = ref(0);
-const colles = ref([]);
-const visible = ref(false);
-const username = ref(123);
-const condition = ref({});
-
-onMounted(() => {
+const handlePage = page => {
+  current.value = page;
   getData();
-});
+};
+
+const handleSize = size => {
+  pageSize.value = size;
+  getData();
+};
+
+const colles = ref([]);
 
 const getData = async (data = {}) => {
   let params = { page: current.value, size: pageSize.value, ...data };
   const dataInfo = await upgradeTask(params);
-  console.log("dataInfo", dataInfo.data.data);
   dataInfo.data.data.forEach((e, index) => (e.index = index + 1));
   colles.value = dataInfo.data.data;
-  paginationData.value = dataInfo.total;
-};
-
-const handlePage = (current) => {
-  current.value = current;
-  getData();
-};
-
-const handleSize = (pageSize) => {
-  pageSize.value = pageSize;
-  getData();
-};
-
-const handleCancel = () => {
-  visible.value = false;
-};
-
-const handleBeforeOk = () => {
-  visible.value = false;
+  paginationData.value = dataInfo.data.total;
 };
 
 const actionList = (action, data) => {
@@ -125,21 +114,22 @@ const actionList = (action, data) => {
   }
 };
 
-const search = () => {
-  getData(condition.value);
-};
+const condition = reactive({ targetVersion: "", ouiName: "", deviceType: "" });
+let side = ref(null);
 
-const reset = () => {
-  condition.value = {};
-};
+// const visible = ref(false);
 
-const close = () => {
-  emit("update:modelValue");
-};
+// const handleCancel = () => {
+//   visible.value = false;
+// };
 
-const look = () => {
-  console.log("modelValue", modelValue);
-};
+// const handleBeforeOk = () => {
+//   visible.value = false;
+// };
+
+onMounted(() => {
+  getData();
+});
 </script>
 
 <style lang="less" scoped></style>
