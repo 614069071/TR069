@@ -38,7 +38,7 @@ const showBreadCrumb = ref(false);
 const breadList = reactive(["终端管理", "升级管理", "升级任务"]);
 const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
-let list = ref(null);
+const breads = { modify: "修改文件", rules: "修改规则", add: "创建任务" };
 
 const controlHandle = (type) => {
   sideVisible.value = false;
@@ -46,7 +46,7 @@ const controlHandle = (type) => {
   configType.value = type;
 
   if (type == "add") {
-    breadList.splice(3, 1, "创建任务");
+    breadList.splice(3, 1, breads[type]);
   }
 };
 
@@ -54,8 +54,6 @@ const comeBack = () => {
   configType.value = "list";
   showBreadCrumb.value = false;
 };
-
-const breads = { modify: "修改文件", rules: "修改规则" };
 
 const listChangeHandle = ({ action, data }) => {
   const currentBread = breads[action] || action;
@@ -67,6 +65,8 @@ const listChangeHandle = ({ action, data }) => {
 
 const filterList = () => {
   sideVisible.value = true;
+
+  console.log(sideVisible.value);
 };
 </script>
 

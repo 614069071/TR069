@@ -1,4 +1,4 @@
-import httpRequest from "../index";
+import { httpRequest } from "../index";
 
 //平台管理页面接口
 class PlatformManagement {
@@ -13,14 +13,14 @@ class PlatformManagement {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8'
       }
-    })
+    }, 'platform')
     return data
   }
   async getPlatformMenuType(params) {
     const { data } = await this.service({
       url: '/platform/menuType',
       method: 'get',
-    })
+    }, 'platform')
     return data
   }
   async getSystemSettings(params) {
@@ -30,7 +30,7 @@ class PlatformManagement {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8'
       }
-    })
+    }, 'platform')
     return data
   }
   async putPlatform(params) {
@@ -38,7 +38,7 @@ class PlatformManagement {
       url: '/platform',
       method: 'put',
       data: params,
-    })
+    }, 'platform')
     return data
   }
   async newPlatform(params) {
@@ -46,14 +46,14 @@ class PlatformManagement {
       url: '/platform',
       method: 'post',
       data: params,
-    })
+    }, 'platform')
     return data
   }
   async deletePlatform(params) {
     const { data } = await this.service({
       url: `/platform/${params}`,
       method: 'delete'
-    })
+    }, 'platform')
     return data
   }
 }
@@ -72,7 +72,7 @@ class SetUser {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-    })
+    }, 'platform')
     return data
   }
   async getRoleList() {
@@ -82,7 +82,7 @@ class SetUser {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-    })
+    }, 'platform')
     return data
   }
   async putUser(params) {
@@ -90,7 +90,7 @@ class SetUser {
       url: '/user/password',
       method: 'put',
       data: params,
-    })
+    }, 'platform')
     return data
   }
   async postUser(params) {
@@ -98,7 +98,7 @@ class SetUser {
       url: '/user',
       method: 'post',
       data: params,
-    })
+    }, 'platform')
     return data
   }
   async putUserStatus(params) {
@@ -106,7 +106,7 @@ class SetUser {
       url: '/user/status',
       method: 'put',
       data: params,
-    })
+    }, 'platform')
     return data
   }
   async deleteUser(params) {
@@ -114,7 +114,7 @@ class SetUser {
       url: '/user',
       method: 'delete',
       data: params,
-    })
+    }, 'platform')
     return data
   }
 }
@@ -126,27 +126,27 @@ class RoleManagement {
   }
   async getRole(params) {
     const { data } = await this.service({
-      url: 'role',
+      url: '/role',
       method: 'get',
       data: params,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8'
       },
-    })
+    }, 'platform')
     return data
   }
   async getPermissionList() {
     const { data } = await this.service({
       url: '/permission/permissionList',
       method: 'get',
-    })
+    }, 'platform')
     return data
   }
   async deleteRole(params) {
     const { data } = await this.service({
       url: `role/${params}`,
       method: 'delete',
-    })
+    }, 'platform')
     return data
   }
   async newRole(params) {
@@ -157,7 +157,7 @@ class RoleManagement {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
+    }, 'platform')
     return data
   }
   async putRole(params) {
@@ -168,7 +168,7 @@ class RoleManagement {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
+    }, 'platform')
     return data
   }
 }
@@ -186,7 +186,7 @@ class InvitationCodeManagement {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8'
       }
-    })
+    }, 'platform')
     return data
   }
   async newInvitation(params) {
@@ -194,14 +194,14 @@ class InvitationCodeManagement {
       url: '/invitation',
       method: 'post',
       data: params,
-    })
+    }, 'platform')
     return data
   }
   async deleteInvitation(params) {
     const { data } = await this.service({
       url: `/invitation/${params}`,
       method: 'delete'
-    })
+    }, 'platform')
     return data
   }
 }
@@ -210,49 +210,49 @@ const getPermissionListApi = (page, size) => {
   return httpRequest({
     url: `/permission?page=${page}&size=${size}`,
     method: 'get'
-  })
+  }, 'platform')
 }
 
 const initAllMenu = () => {
   return httpRequest({
     url: '/menu/allMenusWithChildren',
     method: 'get'
-  })
+  }, 'platform')
 }
 
 const getSelectPerssions = (pid) => {
   return httpRequest({
     url: `/menu/mids/${pid}`,
     method: 'get'
-  })
+  }, 'platform')
 }
 
 const resetPermissions = (urlParams) => {
   return httpRequest({
     url: `/permission?${urlParams}`,
     method: 'put'
-  })
+  }, 'platform')
 }
 
 const addPermission = (name) => {
   return httpRequest({
-    url: `permission?permissionName=${name}`,
+    url: `/permission?permissionName=${name}`,
     method: 'post'
-  })
+  }, 'platform')
 }
 
 const revisePermission = (pid, name) => {
   return httpRequest({
     url: `/permission?pid=${pid}&permissionName=${name}`,
     method: 'put'
-  })
+  }, 'platform')
 }
 
 const deletePermission = (pid) => {
   return httpRequest({
     url: `/permission/${pid}`,
     method: 'delete'
-  })
+  }, 'platform')
 }
 
 const setUser = new SetUser(httpRequest)

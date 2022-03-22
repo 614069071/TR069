@@ -98,9 +98,9 @@ export default defineConfig({
     port: 3001,
     proxy: {
       '/api': {
-        // target: 'http://112.74.171.82:8080', // 线上服务
-        target: 'http://192.168.6.163:9000/', // 明恺本地服务,此处走网关
-        target: 'http://192.168.6.163:8891/', // 明恺本地服务
+        // target: 'http://192.168.90.12:9000', // 刘钊本地服务
+        target: 'http://192.168.6.163:9000/', // 明恺本地服务
+        // target: 'http://159.75.218.86:9001/', // 云服务
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "")
       }

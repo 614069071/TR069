@@ -57,7 +57,6 @@ let httpErrorStatusHandle = (error) => {
       message = window.navigator.onLine ? '服务端异常！' : '您断网了！'
     }
     if (error.response.status == 401) {
-      console.log(error.response)
       message = error.response.data.msg
       clearToken()
       router.push(`/user/login?redirect=${location.pathname}`)
@@ -72,10 +71,15 @@ let httpErrorStatusHandle = (error) => {
   }
 }
 
-let baseUrl = '/nms/nms-platform-management-biz' //连接明恺本地服务，端口为9000时候需加上这段，具体上线时需重新配置
-// let baseUrl = ''
-
-function httpRequest(axiosConfig, customOptions) {
+// let baseUrl = '/nms' //打包上线时需改成这个
+let baseUrl = ''
+function httpRequest(axiosConfig, microserviceIdentification, customOptions) {
+  switch (microserviceIdentification) {
+    case 'platform': baseUrl = '/nms-platform-management-biz'
+      break;
+    default: baseUrl = '/nms-tr069-management'
+      break;
+  }
   const service = axios.create({
     baseURL: `${import.meta.env.VITE_APP_APIHOST}${baseUrl}`,
     timeout: 10000
@@ -149,4 +153,6 @@ function httpRequest(axiosConfig, customOptions) {
   return service(axiosConfig)
 }
 
-export default httpRequest
+
+
+export { httpRequest }

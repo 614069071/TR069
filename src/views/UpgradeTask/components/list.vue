@@ -26,9 +26,11 @@
       </template>
     </a-table>
 
+    <a-button @click="look">chakan v-model</a-button>
+
     <Pagination :paginationData="paginationData" @changePage="handlePage" @changeSize="handleSize" />
 
-    <RightSide rightBoxTitle="筛选" :showRightBox="value" @closePops="close" @reset="reset" @confirm="search">
+    <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="close" @reset="reset" @confirm="search">
       <!-- <RightSide rightBoxTitle="筛选" @reset="reset" @confirm="search"> -->
       <template v-slot:rightSidePopUpWindow>
         <a-form layout="vertical" :model="condition">
@@ -50,7 +52,7 @@
           </a-form-item>
         </a-form>
       </template>
-    </RightSide>
+    </right-side>
   </div>
 
   <a-modal v-model:visible="visible" @cancel="handleCancel" @before-ok="handleBeforeOk">
@@ -64,16 +66,18 @@ import { upgradeTask } from "@/services/api/jin.api";
 import Pagination from "@/components/pagination/index.vue";
 import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import ControlButtons from "@/components/ControlButtons/index.vue";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, toRefs } from "vue";
 
-defineProps({
-  value: {
+const props = defineProps({
+  modelValue: {
     type: Boolean,
     default: false,
   },
 });
 
-const emit = defineEmits(["change"]);
+const { modelValue } = toRefs(props);
+
+const emit = defineEmits(["change", "update:modelValue"]);
 const current = ref(1);
 const pageSize = ref(15);
 const paginationData = ref(0);
@@ -89,9 +93,9 @@ onMounted(() => {
 const getData = async (data = {}) => {
   let params = { page: current.value, size: pageSize.value, ...data };
   const dataInfo = await upgradeTask(params);
-  console.log("dataInfo", dataInfo);
+  console.log("dataInfo", dataInfo.data.data);
   dataInfo.data.data.forEach((e, index) => (e.index = index + 1));
-  colles.value = dataInfo.data;
+  colles.value = dataInfo.data.data;
   paginationData.value = dataInfo.total;
 };
 
@@ -130,7 +134,11 @@ const reset = () => {
 };
 
 const close = () => {
-  emit("input");
+  emit("update:modelValue");
+};
+
+const look = () => {
+  console.log("modelValue", modelValue);
 };
 </script>
 
