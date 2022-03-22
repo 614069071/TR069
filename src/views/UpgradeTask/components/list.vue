@@ -68,7 +68,6 @@
 import { upgradeTask } from "@/services/api/jin.api";
 import Pagination from "@/components/pagination/index.vue";
 import RightSide from "@/components/rightSidePopUpBox/index.vue";
-import ControlButtons from "@/components/ControlButtons/index.vue";
 import { ref, reactive, onMounted, toRefs } from "vue";
 
 const props = defineProps({

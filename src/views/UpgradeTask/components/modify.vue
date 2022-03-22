@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-import ConfigHeader from "@/components/ConfigHeader/index.vue";
 import { reactive } from "vue";
 
 const emit = defineEmits(["change"]);
