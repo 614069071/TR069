@@ -35,7 +35,6 @@
     <Pagination :paginationData="paginationData" @changePage="handlePage" @changeSize="handleSize" />
 
     <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="side.resetFields()" @confirm="getData(condition)">
-      <!-- <RightSide rightBoxTitle="筛选" @reset="reset" @confirm="search"> -->
       <template v-slot:rightSidePopUpWindow>
         <a-form layout="vertical" :model="condition" ref="side">
           <a-form-item field="targetVersion" label="目标版本">
