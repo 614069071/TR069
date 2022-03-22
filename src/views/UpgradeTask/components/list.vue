@@ -28,8 +28,8 @@
 
     <Pagination :paginationData="paginationData" @changePage="handlePage" @changeSize="handleSize" />
 
-    <!-- <RightSide rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="(v) => (sideVisible = v)" @reset="reset" @confirm="search"> -->
-    <RightSide rightBoxTitle="筛选" @reset="reset" @confirm="search">
+    <RightSide rightBoxTitle="筛选" :showRightBox="value" @closePops="close" @reset="reset" @confirm="search">
+      <!-- <RightSide rightBoxTitle="筛选" @reset="reset" @confirm="search"> -->
       <template v-slot:rightSidePopUpWindow>
         <a-form layout="vertical" :model="condition">
           <a-form-item label="目标版本">
@@ -67,7 +67,7 @@ import ControlButtons from "@/components/ControlButtons/index.vue";
 import { ref, reactive, onMounted } from "vue";
 
 defineProps({
-  sideVisible: {
+  value: {
     type: Boolean,
     default: false,
   },
@@ -128,11 +128,10 @@ const search = () => {
 const reset = () => {
   condition.value = {};
 };
+
+const close = () => {
+  emit("input");
+};
 </script>
 
-<style lang="less" scoped>
-.test-cls {
-  display: flex;
-  align-items: center;
-}
-</style>
+<style lang="less" scoped></style>

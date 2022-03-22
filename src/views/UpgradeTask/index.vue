@@ -7,7 +7,7 @@
 
     <template v-slot:contentMain>
       <div v-show="configType === 'list'">
-        <List @change="listChangeHandle" ref="list" />
+        <List @change="listChangeHandle" v-model="sideVisible" />
       </div>
 
       <div v-show="configType === 'add'">
