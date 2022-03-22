@@ -1,5 +1,5 @@
 <template>
-  <ConfigHeader>创建任务</ConfigHeader>
+  <config-header>创建任务</config-header>
 
   <a-form layout="vertical" :model="form">
     <a-row :gutter="40">

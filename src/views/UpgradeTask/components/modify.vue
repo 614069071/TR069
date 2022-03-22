@@ -1,5 +1,5 @@
 <template>
-  <ConfigHeader>修改文件</ConfigHeader>
+  <config-header>修改文件</config-header>
 
   <a-form layout="vertical" :model="form">
     <a-row :gutter="40">

@@ -11,39 +11,16 @@
       </div>
 
       <div v-show="configType === 'add'">
-        <Create @change="createOrderHandle" />
+        <Create @change="comeBack" />
       </div>
 
       <div v-show="configType === 'modify'">
-        <Modify @change="createOrderHandle" />
+        <Modify @change="comeBack" />
       </div>
 
       <div v-show="configType === 'rules'">
-        <Rules @change="createOrderHandle" />
+        <Rules @change="comeBack" />
       </div>
-
-      <RightSide rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="(v) => (sideVisible = v)" @reset="reset" @confirm="search">
-        <template v-slot:rightSidePopUpWindow>
-          <a-form layout="vertical" :model="condition">
-            <a-form-item label="目标版本">
-              <a-input v-model="condition.target_version" placeholder="please enter..." />
-            </a-form-item>
-            <a-form-item label="OUI">
-              <a-input v-model="condition.value1" placeholder="please enter..." />
-            </a-form-item>
-            <a-form-item label="设备类型">
-              <a-input v-model="condition.value1" placeholder="please enter..." />
-            </a-form-item>
-            <a-form-item label="状态">
-              <a-select v-model="condition.value1" placeholder="please enter...">
-                <a-option label="所有" value="1"></a-option>
-                <a-option label="在线" value="2"></a-option>
-                <a-option label="离线" value="3"></a-option>
-              </a-select>
-            </a-form-item>
-          </a-form>
-        </template>
-      </RightSide>
     </template>
   </Wrapper>
 </template>
@@ -61,7 +38,6 @@ const showBreadCrumb = ref(false);
 const breadList = reactive(["终端管理", "升级管理", "升级任务"]);
 const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
-const condition = ref({});
 let list = ref(null);
 
 const controlHandle = (type) => {
@@ -74,38 +50,23 @@ const controlHandle = (type) => {
   }
 };
 
-const createOrderHandle = () => {
+const comeBack = () => {
   configType.value = "list";
   showBreadCrumb.value = false;
 };
 
+const breads = { modify: "修改文件", rules: "修改规则" };
+
 const listChangeHandle = ({ action, data }) => {
+  const currentBread = breads[action] || action;
   sideVisible.value = false;
   showBreadCrumb.value = true;
   configType.value = action;
-
-  if (action == "modify") {
-    breadList.splice(3, 1, "修改文件");
-  } else if (action == "rules") {
-    breadList.splice(3, 1, "修改规则");
-  } else {
-  }
+  breadList.splice(3, 1, currentBread);
 };
 
 const filterList = () => {
   sideVisible.value = true;
-};
-
-const search = () => {
-  const { action } = list.value;
-
-  console.log("condition", action);
-
-  // action(condition.value);
-};
-
-const reset = () => {
-  condition.value = {};
 };
 </script>
 
