@@ -7,4 +7,5 @@ const post = (url, data, params, port) => httpRequest({ method: 'post', url, dat
 export const getPreConfigColles = params => get(`/preConfiguration/getPreConfigurationList`, params);
 
 // 升级任务
-export const upgradeTask = params => get(`/upgradeTask/getTR069UpgradeTaskList`, params);
+export const upgradeTask = params => get(`/upgradeTask/getTR069UpgradeTaskList`, params);//升级任务列表
+export const createUpgradeTask = (data, params) => post(`/upgradeTask`, data, params);//创建任务
