@@ -5,6 +5,7 @@ import { IconFaceFrownFill } from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/es/message/style/css.js'
 import { getToken, setToken, clearToken } from '@/utils/auth'
 import router from '@/router'
+import packConfig from '../../pack.config'
 
 const pendingMap = new Map()
 
@@ -71,8 +72,8 @@ let httpErrorStatusHandle = (error) => {
   }
 }
 
-// let baseUrl = '/nms' //打包上线时需改成这个
-let baseUrl = ''
+let baseUrl = packConfig.baseUrl
+
 function httpRequest(axiosConfig, microserviceIdentification, customOptions) {
   switch (microserviceIdentification) {
     case 'platform': baseUrl = '/nms-platform-management-biz'

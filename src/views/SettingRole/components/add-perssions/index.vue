@@ -2,49 +2,57 @@
   <OperationWrapper :title="titles">
     <template v-slot:formContent>
       <div>
-        <div class="asasdads">
-          <div class="addData">
-            <div class="box3">
-              <p> <span class="bz">*</span>角色名称</p>
-              <a-input v-model="form.roleNameZh"
-                       placeholder="please enter..." />
-            </div>
-            <div class="box3">
-              <p><span class="bz">*</span>权限集</p>
-              <!-- <a-select :OptionData="roleList"
-                        v-model="form.selectedPermissions"
-                        placeholder="Please select ..."
-                        multiple /> -->
-              <a-select :size="size"
-                        v-model="form.selectedPermissions"
-                        placeholder="Please select ..."
-                        multiple>
-                <a-option v-for="item in roleList"
-                          :key="item.value"
-                          :value="item.value"
-                          :label="item.label"></a-option>
+        <a-form layout="vertical"
+                :model="form"
+                @submit-success="handleBeforeOk">
+          <a-row :gutter="40">
+            <a-col :span="8">
+              <a-form-item label="用户名"
+                           field="roleNameZh"
+                           required
+                           :validate-trigger="['change', 'blur']">
+                <a-input v-model="form.roleNameZh"
+                         placeholder="please enter..." />
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item label="权限集"
+                           field="selectedPermissions"
+                           required>
+                <a-select :size="size"
+                          v-model="form.selectedPermissions"
+                          placeholder="Please select ..."
+                          multiple>
+                  <a-option v-for="item in roleList"
+                            :key="item.value"
+                            :value="item.value"
+                            :label="item.label"></a-option>
 
-              </a-select>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-item label="描述">
+                <a-textarea v-model="form.description"
+                            placeholder="Please enter something"
+                            allow-clear />
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item>
+                <a-space>
+                  <a-button @click="handleCancel">取消</a-button>
+                  <a-button html-type="submit"
+                            type="primary"
+                            @submit-success="handleBeforeOk">确定</a-button>
+                </a-space>
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
 
-            </div>
-
-            <div class="box6">
-              <p>描述</p>
-              <a-textarea v-model="form.description"
-                          placeholder="Please enter something"
-                          allow-clear />
-            </div>
-          </div>
-
-        </div>
       </div>
-      <div class="submits">
-        <a-button html-type="submit"
-                  @click="handleCancel">取消</a-button>
-        <a-button html-type="submit"
-                  type="primary"
-                  @click="handleBeforeOk">确定</a-button>
-      </div>
+
     </template>
   </OperationWrapper>
 </template>

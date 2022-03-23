@@ -1,6 +1,6 @@
 import { getMenuApi } from "@/services/api/login"
 import { useRoutesStore } from "@/store";
-import PageLayout from '@/layouts//PageLayout/index.vue'
+import PageLayout from '@/layouts/PageLayout/index.vue'
 
 const modules = import.meta.glob('../views/**/**.vue')
 export const formatRoutes = function (routers) {

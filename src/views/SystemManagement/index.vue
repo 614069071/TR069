@@ -11,13 +11,13 @@
           <a-input :style="{width:'240px'}"
                    placeholder="Please enter something"
                    allow-clear
-                   v-model="platformName"
+                   v-model="dataInfo.platformName"
                    size="small" />
         </div>
         <div class="contentxt">
           <p>平台识别码</p>
           <a-input :style="{width:'240px'}"
-                   v-model="identificationCode"
+                   v-model="dataInfo.identificationCode"
                    placeholder="Please enter something"
                    allow-clear
                    disabled="true"
@@ -27,7 +27,7 @@
           <p>有效日期</p>
           <a-date-picker style="width: 240px;"
                          show-time
-                         v-model="expiredTime"
+                         v-model="dataInfo.expiredTime"
                          disabled="true"
                          :time-picker-props="{ defaultValue: dayjs('09:09:06', 'HH:mm:ss') }"
                          format="YYYY-MM-DD HH:mm:ss" />
@@ -35,7 +35,7 @@
         <div class="contentxt">
           <p>时区</p>
           <a-select :style="{width:'240px'}"
-                    v-model="timeZone"
+                    v-model="dataInfo.timeZone"
                     placeholder="Please select ...">
             <a-option v-for="item in timeZoneOption"
                       :key="item.value"
@@ -64,6 +64,7 @@ export default {
   data() {
     return {
       dayjs,
+      dataInfo: {},
       timeZoneOption: [
         {
           value: 'GMT-12'
@@ -140,11 +141,7 @@ export default {
         {
           value: 'GMT+12'
         }
-      ],
-      timeZone: '',
-      identificationCode: '',
-      platformName: '',
-      expiredTime: ''
+      ]
     }
   },
   mounted() {
@@ -154,17 +151,14 @@ export default {
     async getValue() {
       // console.log(getPlatform(), 111)
       const dataInfo = await platformManagement.getSystemSettings()
+      this.dataInfo = dataInfo
       this.timeZone = dataInfo.timeZone
-      this.identificationCode = dataInfo.identificationCode
-      this.platformName = dataInfo.platformName
-      this.expiredTime = dataInfo.expiredTime
     },
     changeTheData() {
-      let params = {
-        timeZone: this.timeZone,
-        platformName: this.platformName
-      }
-      platformManagement.putPlatform(params).then((data) => {})
+      let params = this.dataInfo
+      platformManagement.putPlatform(params).then((data) => {
+        this.getValue()
+      })
     }
   }
 }

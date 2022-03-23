@@ -10,7 +10,7 @@ class ServiceTemplate {
     const { data } = await this.service({
       url: '/profile/pageProfile',
       method: 'get',
-      data: params,
+      params: params,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8'
       }

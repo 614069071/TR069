@@ -1,11 +1,11 @@
 <template>
-  <Wrapper :title="'用户管理'"
+  <Wrapper :title="'平台管理'"
            :breadList="breadList"
            :showBreadCrumb="showBreadCrumb">
     <template v-slot:operation>
       <a-button type="primary"
                 size="small"
-                @click="addPermission('添加用户')">添加用户</a-button>
+                @click="addPermission('新增模板')">新增模板</a-button>
       <a-button type="primary"
                 size="small"
                 @click="filters">筛选</a-button>
@@ -23,22 +23,7 @@
                  @closePops='handleCancelDrawer()'>
         <template v-slot:rightSidePopUpWindow>
           <div>
-            <p>动作类型</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>动作名称</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>MAC</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>SN</p>
+            <p>创建者</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
@@ -47,6 +32,7 @@
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
+
         </template>
       </RightSide>
     </template>
@@ -70,41 +56,34 @@ export default {
   setup(props, context) {
     const showBreadCrumb = ref(false)
     const drawerVisible = ref(false)
+    const tableData = ref(null)
     const showRightBox = ref(false)
     const breadList = ref([])
-    const tableData = ref(null)
     const titles = ref('')
     const form = ref({})
     const addPermission = (data, type) => {
       showBreadCrumb.value = true
-      if (data == '添加用户' && !type) {
+      if (data == '新增模板') {
         form.value = {
-          roleId: '',
-          username: '',
-          password: '',
-          parentId: '',
-          platformId: '',
-          enable: 1,
-          avatar: '',
-          email: '',
-          phone: '',
-          registerTime: '',
-          expiredTime: '2099-01-01 00:00:00',
-          firstLogin: 1,
-          sessionTimeout: 600,
+          createBy: '',
           description: '',
-          enabled: false
+          enable: '',
+          expiredTime: '',
+          invitationCode: '',
+          needCheck: '',
+          platformId: '',
+          registerTime: '',
+          roleId: '',
+          userDescription: '',
+          userExpiredTime: '',
+          validTimes: ''
         }
-        titles.value = '添加用户'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '添加用户']
-      } else if (data != '添加用户' && !type) {
-        form.value = data
-        titles.value = '修改'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '修改']
+        titles.value = '新增模板'
+        breadList.value = ['系统设置', '邀请码管理', '用户权限管理', '新增模板']
       } else {
         form.value = data
         titles.value = '详情'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '详情']
+        breadList.value = ['系统设置', '邀请码管理', '用户权限管理', '详情']
       }
     }
     const hideBreadCrumb = (data) => {
@@ -127,11 +106,10 @@ export default {
       closeRightSide,
       handleCancelDrawer,
       showBreadCrumb,
+      tableData,
       breadList,
-      showBreadCrumb,
       titles,
       form,
-      tableData,
       drawerVisible,
       showRightBox
     }

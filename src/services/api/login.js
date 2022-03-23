@@ -37,6 +37,31 @@ export const loginApi = (params) => {
 }
 
 /**
+ * @description 后台登录接口
+ * @param {*} params 用户信息
+ * @returns 
+ */
+ export const backstageLoginApi = (params) => {
+  return httpRequest({
+    url: '/doBackgroundLogin',
+    method: 'post',
+    data: params,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    transformRequest: [
+      (data) => {
+        let result = ''
+        for (let key in data) {
+          result += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]) + '&'
+        }
+        return result.slice(0, result.length - 1)
+      }
+    ]
+  }, 'platform')
+}
+
+/**
  * @description 获取用户菜单路由
  * @returns 
  */

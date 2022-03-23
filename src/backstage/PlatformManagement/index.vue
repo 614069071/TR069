@@ -1,11 +1,11 @@
 <template>
-  <Wrapper :title="'用户管理'"
+  <Wrapper :title="'平台管理'"
            :breadList="breadList"
            :showBreadCrumb="showBreadCrumb">
     <template v-slot:operation>
       <a-button type="primary"
                 size="small"
-                @click="addPermission('添加用户')">添加用户</a-button>
+                @click="addPermission('新增')">新增</a-button>
       <a-button type="primary"
                 size="small"
                 @click="filters">筛选</a-button>
@@ -68,36 +68,39 @@ export default {
     RightSide
   },
   setup(props, context) {
-    const showBreadCrumb = ref(false)
-    const drawerVisible = ref(false)
-    const showRightBox = ref(false)
+    let showBreadCrumb = ref(false)
+    let drawerVisible = ref(false)
+    let showRightBox = ref(false)
+    let refreshData = ref(false)
     const breadList = ref([])
     const tableData = ref(null)
-    const titles = ref('')
-    const form = ref({})
+    let titles = ref('')
+    let form = ref({})
     const addPermission = (data, type) => {
       showBreadCrumb.value = true
-      if (data == '添加用户' && !type) {
+      if (data == '新增' && !type) {
         form.value = {
-          roleId: '',
-          username: '',
-          password: '',
-          parentId: '',
-          platformId: '',
-          enable: 1,
-          avatar: '',
-          email: '',
-          phone: '',
-          registerTime: '',
-          expiredTime: '2099-01-01 00:00:00',
-          firstLogin: 1,
-          sessionTimeout: 600,
           description: '',
-          enabled: false
+          deviceOnline: '',
+          deviceTotal: '',
+          enable: '',
+          expiredTime: '',
+          identificationCode: '',
+          logo: '',
+          maxUser: '',
+          menuType: '',
+          platformCode: '',
+          platformName: '',
+          registerTime: '',
+          rootPassword: '',
+          rootUsername: '',
+          timeZone: '',
+          userOnline: '',
+          userTotal: ''
         }
-        titles.value = '添加用户'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '添加用户']
-      } else if (data != '添加用户' && !type) {
+        titles.value = '新增'
+        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '新增']
+      } else if (data != '新增' && !type) {
         form.value = data
         titles.value = '修改'
         breadList.value = ['系统设置', '用户权限管理', '权限集管理', '修改']
@@ -127,8 +130,8 @@ export default {
       closeRightSide,
       handleCancelDrawer,
       showBreadCrumb,
+      refreshData,
       breadList,
-      showBreadCrumb,
       titles,
       form,
       tableData,

@@ -3,49 +3,42 @@
     <div>
       <a-table :data="data"
                :scroll="{y:650}"
-               :pagination="false">
+               :pagination="false"
+               :row-selection="rowSelection">
         <template #columns>
           <a-table-column title="序号"
+                          width="60"
                           data-index="index"></a-table-column>
-          <a-table-column title="用户名"
-                          data-index="username"></a-table-column>
-          <a-table-column title="角色"
-                          data-index="roleNameZh"></a-table-column>
-          <a-table-column title="描述"
-                          data-index="description"></a-table-column>
-          <a-table-column title="状态">
+          <a-table-column title="平台名称"
+                          data-index="platformName"></a-table-column>
+          <a-table-column title="平台编码"
+                          data-index="identificationCode"></a-table-column>
+          <a-table-column title="设备数量（在线数/总数）">
             <template #cell="{ record }">
-              <div class="cell"
-                   v-if="record.enable === 3"
-                   style="color: #67C23A">在线</div>
-              <div class="cell"
-                   v-if="record.enable === 4"
-                   style="color: #F56C6C">离线</div>
-              <div class="cell"
-                   v-if="record.enable === 2"
-                   style="color: #E6A23C">待确认</div>
-              <div class="cell"
-                   v-if="record.enable === 0"
-                   style="color: #F56C6C">禁用</div>
+              <span>{{record.userOnline}}/{{record.userTotal}}</span>
             </template>
           </a-table-column>
+          <a-table-column title="用户数量（在线数/总数）">
+            <template #cell="{ record }">
+              <span>{{record.userOnline}}/{{record.userTotal}}</span>
+            </template>
+          </a-table-column>
+          <a-table-column title="描述"
+                          data-index="description"></a-table-column>
           <a-table-column title="启用">
             <template #cell="{ record }">
-              <a-switch v-model="record.enableType"
-                        checked-value="1"
-                        unchecked-value="0"
-                        @change="changeEnabled(record)" />
+              <span>{{record.enable==1?'是':'否'}}</span>
             </template>
           </a-table-column>
           <a-table-column title="操作"
-                          width="300">
+                          width="330">
             <template #cell="{ record }">
               <span @click="handleClick(record)"
                     class="dalst bod">修改</span>
               <span @click="handleDetail(record)"
                     class="dalst bod">详情</span>
               <span @click="changePassword(record)"
-                    class="dalst bod">修改密码</span>
+                    class="dalst bod">远程跳转</span>
               <span class="dalst col"
                     @click="handleDelete(record)">删除</span>
             </template>
@@ -69,7 +62,7 @@
   </div>
 </template>
 <script>
-import { setUser } from '@/services/api/system-settings'
+import { platformManagement } from '@/services/api/system-settings'
 import Pagination from '@/components/pagination/index.vue'
 import { Modal } from '@arco-design/web-vue'
 import RightSide from '@/components/rightSidePopUpBox/index.vue'
@@ -93,24 +86,23 @@ export default {
       roleList: [],
       paginationData: null,
       data: null,
-      visible: false
+      visible: false,
+      rowSelection: {
+        type: 'checkbox',
+        showCheckedAll: true
+      }
     }
   },
   mounted() {
-    this.getRole()
     this.getData()
   },
   methods: {
-    async getRole() {
-      const dataInfo = await setUser.getRoleList()
-      this.roleList = dataInfo
-    },
     async getData() {
       let params = { page: this.current, size: this.pageSize }
-      const dataInfo = await setUser.getUser(params)
+
+      const dataInfo = await platformManagement.getPlatform(params)
       dataInfo.data.forEach((element, index) => {
         element.index = index + 1
-        element.enableType = element.enable == 0 ? '0' : '1'
         this.roleList.forEach((data) => {
           if (element.roleId == data.roleId) {
             element.roleNameZh = data.roleNameZh
@@ -121,12 +113,18 @@ export default {
       this.paginationData = dataInfo.total
     },
     changeEnabled(record) {
+      let event
+      if (record.enable === 3 || record.enable === 4) {
+        event = 0
+      } else {
+        event = 1
+      }
       let params = {
         userId: record.userId,
         username: record.username,
-        enable: record.enableType
+        enable: event
       }
-      setUser.putUserStatus(params).then((data) => {
+      platformManagement.putUserStatus(params).then((data) => {
         this.getData()
       })
     },
@@ -157,13 +155,13 @@ export default {
       this.visible = false
     },
     handleDelete(record) {
-      let params = record.userId
+      let params = record.platformId
       Modal.warning({
         title: '删除',
         content: '是否删除',
         hideCancel: false,
         onOk: async () => {
-          await setUser.deleteUser(params)
+          await platformManagement.deletePlatform(params)
           this.getData()
         }
       })

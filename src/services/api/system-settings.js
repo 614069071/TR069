@@ -16,14 +16,14 @@ class PlatformManagement {
     }, 'platform')
     return data
   }
-  async getPlatformMenuType(params) {
+  async getPlatformMenuType() {
     const { data } = await this.service({
       url: '/platform/menuType',
       method: 'get',
     }, 'platform')
     return data
   }
-  async getSystemSettings(params) {
+  async getSystemSettings() {
     const { data } = await this.service({
       url: '/platform/platformId',
       method: 'get',
@@ -95,7 +95,7 @@ class SetUser {
   }
   async postUser(params) {
     const { data } = await this.service({
-      url: '/user',
+      url: '/user/addUser',
       method: 'post',
       data: params,
     }, 'platform')
@@ -111,9 +111,16 @@ class SetUser {
   }
   async deleteUser(params) {
     const { data } = await this.service({
-      url: '/user',
+      url: `/user/${params}`,
       method: 'delete',
       data: params,
+    }, 'platform')
+    return data
+  }
+  async judgmentUserName(params) {
+    const { data } = await this.service({
+      url: `/user/duplicateChecking?username=${params}`,
+      method: 'get'
     }, 'platform')
     return data
   }

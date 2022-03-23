@@ -22,7 +22,7 @@
           <a-table-column title="操作">
             <template #cell="{ record }">
               <span @click="handleClick(record)"
-                    class="dalst bod">详情</span>
+                    class="dalst bod">修改</span>
               <span class="dalst col"
                     @click="handleDelete(record)">删除</span>
             </template>
@@ -107,7 +107,7 @@ export default {
     handleClick(record) {
       this.$emit('showBread', record)
       if (typeof record == 'object') {
-        this.title = '详情'
+        this.title = '修改'
         this.form = JSON.parse(JSON.stringify(record))
       } else {
         this.title = '新增'

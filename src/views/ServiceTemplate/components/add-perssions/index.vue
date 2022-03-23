@@ -1,16 +1,12 @@
 <template>
   <OperationWrapper :title="titles">
     <template v-slot:formContent>
-      <div v-show="titles!='详情'"
-           class="newBox">
-        <a-form layout="vertical"
-                :model="form"
-                @submit-success="handleBeforeOk">
-          <a-row :gutter="24">
-            <a-col :span="12">
-              <a-form-item label="账号角色"
-                           field="username"
-                           required>
+      <div v-show="titles!='详情'">
+        <div>
+          <div class="asasdads">
+            <div class="addData">
+              <div class="box3">
+                <p> <span class="bz">*</span>账号角色</p>
                 <a-select v-model="form.roleId"
                           placeholder="Please select ...">
                   <a-option v-for="role in roleList"
@@ -18,54 +14,40 @@
                             :label="role.roleNameZh"
                             :value="role.roleId"></a-option>
                 </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item label="账号过期时间"
-                           field="userExpiredTime"
-                           required>
+              </div>
+              <div class="box3">
+                <p><span class="bz">*</span>账号过期时间</p>
                 <a-date-picker v-model="form.userExpiredTime"
                                show-time
                                style="width:360px"
                                format="YYYY-MM-DD HH:mm:ss" />
-              </a-form-item>
-            </a-col>
-            <a-col :span="24">
-              <a-form-item label="账号描述"
-                           field="userDescription">
+
+              </div>
+              <div class="box6">
+                <p><span class="bz">*</span>账号描述</p>
                 <a-input v-model="form.userDescription"
                          placeholder="please enter..." />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item label="邀请码有效次数"
-                           field="validTimes"
-                           required>
+              </div>
+              <div class="box3">
+
+                <p><span class="bz">*</span>邀请码有效次数</p>
                 <a-input v-model="form.validTimes"
                          placeholder="please enter..." />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item label="邀请码过期时间"
-                           field="expiredTime"
-                           required>
+              </div>
+              <div class="box3">
+                <p>邀请码过期时间</p>
                 <a-date-picker v-model="form.expiredTime"
                                show-time
                                style="width:360px"
                                format="YYYY-MM-DD HH:mm:ss" />
-              </a-form-item>
-            </a-col>
-            <a-col :span="24">
-              <a-form-item label="邀请码描述"
-                           field="description">
+              </div>
+              <div class="box6">
+                <p><span class="bz">*</span>邀请码描述</p>
                 <a-input v-model="form.description"
                          placeholder="please enter..." />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item label="是否需要再次确认"
-                           field="needCheck"
-                           required>
+              </div>
+              <div class="box3">
+                <p>是否需要再次确认</p>
                 <a-select v-model="form.needCheck"
                           placeholder="Please select ...">
                   <a-option v-for="item in needCheckList"
@@ -73,21 +55,19 @@
                             :label="item.label"
                             :value="item.value"></a-option>
                 </a-select>
-              </a-form-item>
-            </a-col>
 
-            <a-col :span="24">
-              <a-form-item>
-                <a-space>
-                  <a-button @click="handleCancel">取消</a-button>
-                  <a-button html-type="submit"
-                            @submit-success="handleBeforeOk"
-                            type="primary">确定</a-button>
-                </a-space>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="submits">
+          <a-button html-type="submit"
+                    @click="handleCancel">取消</a-button>
+          <a-button html-type="submit"
+                    type="primary"
+                    @click="handleBeforeOk">确定</a-button>
+        </div>
       </div>
       <div>
         <div v-show="titles=='详情'"
@@ -206,8 +186,21 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.newBox {
-  width: 750px;
+.addData {
+  width: 800px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .bz {
+    color: #f53f3f;
+  }
+  .box3 {
+    width: 360px;
+  }
+  .box6 {
+    width: 760px;
+  }
 }
 .submits {
   margin-top: 20px;

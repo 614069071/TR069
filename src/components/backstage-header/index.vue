@@ -41,7 +41,7 @@ export default {
           onOk: async () => {
             logout().then(res => {
               if (res.data) {
-                router.replace('/user/login')
+                router.replace('/backstageLogin')
               }
             })
           }

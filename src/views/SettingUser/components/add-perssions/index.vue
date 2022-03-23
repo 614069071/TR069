@@ -3,58 +3,79 @@
     <template v-slot:formContent>
       <div v-show="titles!='详情'">
         <div>
-          <div class="asasdads">
-            <div class="addData">
-              <div class="box3">
-                <p> <span class="bz">*</span>用户名</p>
-                <a-input v-model="form.username"
-                         placeholder="please enter..." />
-              </div>
-              <div class="box3">
-                <p><span class="bz">*</span>会话超时时间</p>
-                <a-input v-model="form.sessionTimeout"
-                         placeholder="please enter..." />
-              </div>
-              <div class="box3">
-                <p><span class="bz">*</span>过期时间</p>
-                <a-date-picker v-model="form.expiredTime" />
-              </div>
-              <div class="box3">
-                <p><span class="bz">*</span>角色</p>
-                <a-select v-model="form.roleId"
-                          placeholder="Please select ...">
-                  <a-option v-for="role in roleList"
-                            :key="role.roleId"
-                            :label="role.roleNameZh"
-                            :value="role.roleId"></a-option>
-                </a-select>
-              </div>
-              <div class="box3">
-                <p><span class="bz">*</span>电子邮箱</p>
-                <a-input v-model="form.email"
-                         placeholder="please enter..." />
-              </div>
-              <div class="box3">
-                <p><span class="bz">*</span>电话号码</p>
-                <a-input v-model="form.phone"
-                         placeholder="please enter..." />
-              </div>
-              <div class="box6">
-                <p>描述</p>
-                <a-textarea v-model="form.description"
-                            placeholder="Please enter something"
-                            allow-clear />
-              </div>
-            </div>
+          <a-form layout="vertical"
+                  :model="form"
+                  @submit-success="handleBeforeOk">
+            <a-row :gutter="40">
+              <a-col :span="8">
+                <a-form-item label="用户名"
+                             field="username"
+                             :rules="userRules"
+                             :validate-trigger="['change', 'blur']">
+                  <a-input v-model="form.username"
+                           placeholder="please enter..." />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="会话超时时间"
+                             field="sessionTimeout"
+                             required>
+                  <a-input v-model="form.sessionTimeout"
+                           placeholder="please enter..." />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="过期时间"
+                             field="expiredTime"
+                             required>
+                  <a-date-picker v-model="form.expiredTime" />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="角色"
+                             field="roleId"
+                             required>
+                  <a-select v-model="form.roleId"
+                            placeholder="Please select ...">
+                    <a-option v-for="role in roleList"
+                              :key="role.roleId"
+                              :label="role.roleNameZh"
+                              :value="role.roleId"></a-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="电子邮箱">
+                  <a-input v-model="form.email"
+                           placeholder="please enter..." />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item label="电话号码">
+                  <a-input v-model="form.phone"
+                           placeholder="please enter..." />
+                </a-form-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-item label="描述"
+                             required>
+                  <a-textarea v-model="form.description"
+                              placeholder="Please enter something"
+                              allow-clear />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-item>
+                  <a-space>
+                    <a-button @click="handleCancel">取消</a-button>
+                    <a-button html-type="submit"
+                              type="primary">确定</a-button>
+                  </a-space>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
 
-          </div>
-        </div>
-        <div class="submits">
-          <a-button html-type="submit"
-                    @click="handleCancel">取消</a-button>
-          <a-button html-type="submit"
-                    type="primary"
-                    @click="handleBeforeOk">确定</a-button>
         </div>
       </div>
       <div>
@@ -74,7 +95,7 @@
           </div>
           <div class="centerBox">
             <div class="labels"><span class="bz">*</span>角色</div>
-            <div class="detail">{{form.timeZone}}</div>
+            <div class="detail">{{form.roleId}}</div>
           </div>
           <div class="centerBox">
             <div class="labels"><span class="bz">*</span>会话超时时间</div>
@@ -127,7 +148,6 @@ export default {
     // let form = reactive(props.formData)
     const roleList = ref([])
     const form = computed(() => reactive(props.formData))
-    console.log(form)
     const RoleList = async () => {
       const dataInfo = await setUser.getRoleList()
       roleList.value = dataInfo
@@ -138,11 +158,12 @@ export default {
     const handleCancel = () => {
       context.emit('cancelAdd')
     }
+
     const handleBeforeOk = () => {
       let params = form
       let title = ref(props.titles).value
       params.situsIdList = [5, 0, 17, 18, 19, 31, 32]
-      if (title == '详情') {
+      if (title == '添加用户') {
         setUser.postUser(form._value).then((data) => {
           context.emit('cancelAdd', true)
         })
@@ -160,7 +181,22 @@ export default {
       handleCancel,
       handleBeforeOk,
       form,
-      roleList
+      roleList,
+      userRules: [
+        {
+          required: true,
+          validator: async (value, callback) => {
+            if (value == undefined) {
+              callback('请输入用户名')
+            } else {
+              const data = await setUser.judgmentUserName(value)
+              if (data.obj) {
+                callback('用户名已存在')
+              }
+            }
+          }
+        }
+      ]
     }
   }
 }
