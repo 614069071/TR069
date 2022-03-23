@@ -31,7 +31,6 @@ import Create from "./components/add.vue";
 import Modify from "./components/modify.vue";
 import Rules from "./components/rules.vue";
 import Wrapper from "@/components/wrapper/index.vue";
-import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import { reactive, ref } from "vue";
 
 const showBreadCrumb = ref(false);
@@ -40,7 +39,7 @@ const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
 const breads = { modify: "修改文件", rules: "修改规则", add: "创建任务" };
 
-const controlHandle = (type) => {
+const controlHandle = type => {
   sideVisible.value = false;
   showBreadCrumb.value = true;
   configType.value = type;

@@ -73,16 +73,17 @@ let httpErrorStatusHandle = (error) => {
 }
 
 let baseUrl = packConfig.baseUrl
+let microservicePrefixUrl = ''
 
 function httpRequest(axiosConfig, microserviceIdentification, customOptions) {
   switch (microserviceIdentification) {
-    case 'platform': baseUrl = '/nms-platform-management-biz'
+    case 'platform': microservicePrefixUrl = '/nms-platform-management-biz'
       break;
-    default: baseUrl = '/nms-tr069-management'
+    default: microservicePrefixUrl = '/nms-tr069-management'
       break;
   }
   const service = axios.create({
-    baseURL: `${import.meta.env.VITE_APP_APIHOST}${baseUrl}`,
+    baseURL: `${import.meta.env.VITE_APP_APIHOST}${baseUrl}${microservicePrefixUrl}`,
     timeout: 10000
   })
 

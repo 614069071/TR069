@@ -3,26 +3,37 @@
 
   <div class="pre-config-detail-table-wrapper">
     <div class="table-title">设备唯一标识</div>
-    <div class="table-content">admin</div>
+    <div class="table-content">{{ data.sn }}</div>
     <div class="table-title">2.4G SSID名称</div>
-    <div class="table-content">1234567</div>
+    <div class="table-content">{{ data.ssidname24G }}</div>
     <div class="table-title">5G SSID名称</div>
-    <div class="table-content">1234567</div>
+    <div class="table-content">{{ data.ssidname58G }}</div>
     <div class="table-title">PPPOE账号</div>
-    <div class="table-content">1234567</div>
+    <div class="table-content">{{ data.pppoeUsername }}</div>
     <div class="table-title">PPPOE密码</div>
-    <div class="table-content col-1">1234567</div>
+    <div class="table-content col-1">{{ data.pppoePassword }}</div>
     <div class="table-title">SIP用户信息</div>
-    <div class="table-content col-2">1234567</div>
+    <div class="table-content col-2">{{ data.sipuser }}</div>
     <div class="table-title sp">备注</div>
-    <div class="table-content col-2 sp">1234567</div>
+    <div class="table-content col-2 sp">{{ data.remark }}</div>
     <div class="table-title sp">配置模板</div>
-    <div class="table-content col-2 sp">1234567</div>
+    <div class="table-content col-2 sp">{{ data.configurationId }}</div>
   </div>
 </template>
 
 <script setup>
-import ConfigHeader from "@/components/ConfigHeader/index.vue";
+import { toRefs } from "vue";
+
+const _props = defineProps({
+  data: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
+const { data } = toRefs(_props);
+
+console.log("data", data.value);
 </script>
 
 <style scoped lang="less">

@@ -60,7 +60,6 @@
 <script setup>
 import { upgradeTask } from "@/services/api/jin.api";
 import Pagination from "@/components/pagination/index.vue";
-import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import { ref, reactive, onMounted, toRefs } from "vue";
 
 const props = defineProps({
@@ -77,13 +76,13 @@ const emit = defineEmits(["change", "update:modelValue"]);
 const current = ref(1);
 const pageSize = ref(15);
 const paginationData = ref(0);
-const handlePage = page => {
-  current.value = page;
+const handlePage = v => {
+  current.value = v;
   getData();
 };
 
-const handleSize = size => {
-  pageSize.value = size;
+const handleSize = v => {
+  pageSize.value = v;
   getData();
 };
 

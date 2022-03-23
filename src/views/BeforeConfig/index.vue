@@ -9,53 +9,16 @@
 
     <template v-slot:contentMain>
       <div v-show="configType === 'list'">
-        <List @change="listChangeHandle" />
+        <List @change="listChangeHandle" v-model="sideVisible" />
       </div>
 
       <div v-show="configType === 'add'">
-        <Create @change="createOrderHandle" />
+        <Create @change="comeBack" />
       </div>
 
       <div v-show="configType === 'detail'">
-        <Detail />
+        <Detail :data="detailData" />
       </div>
-
-      <RightSide rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="(v) => (sideVisible = v)">
-        <template v-slot:rightSidePopUpWindow>
-          <div>
-            <p>状态</p>
-            <a-select v-model="form.value1" placeholder="please enter...">
-              <a-option label="1" value="1"></a-option>
-              <a-option label="2" value="2"></a-option>
-              <a-option label="3" value="3"></a-option>
-            </a-select>
-          </div>
-          <div>
-            <p>设备型号</p>
-            <a-select v-model="form.value1" placeholder="please enter...">
-              <a-option label="1" value="1"></a-option>
-              <a-option label="2" value="2"></a-option>
-              <a-option label="3" value="3"></a-option>
-            </a-select>
-          </div>
-          <div>
-            <p>MAC</p>
-            <a-input v-model="form.value1" placeholder="please enter..." />
-          </div>
-          <div>
-            <p>SN</p>
-            <a-input v-model="form.value1" placeholder="please enter..." />
-          </div>
-          <div>
-            <p>工单号</p>
-            <a-input v-model="form.value1" placeholder="please enter..." />
-          </div>
-          <div>
-            <p>执行时间</p>
-            <a-range-picker @change="" @select="" />
-          </div>
-        </template>
-      </RightSide>
     </template>
   </Wrapper>
 </template>
@@ -65,16 +28,15 @@ import List from "./components/list.vue";
 import Create from "./components/add.vue";
 import Detail from "./components/detail.vue";
 import Wrapper from "@/components/wrapper/index.vue";
-import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import { reactive, ref } from "vue";
 
 const showBreadCrumb = ref(false);
 const breadList = reactive(["终端管理", "设备管理", "预配置"]);
 const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
-const form = reactive({});
+const detailData = ref({});
 
-const controlHandle = (type) => {
+const controlHandle = type => {
   sideVisible.value = false;
 
   if (type == "add") {
@@ -86,7 +48,7 @@ const controlHandle = (type) => {
   }
 };
 
-const createOrderHandle = () => {
+const comeBack = () => {
   configType.value = "list";
   showBreadCrumb.value = false;
 };
@@ -96,6 +58,7 @@ const listChangeHandle = ({ action, data }) => {
     configType.value = "detail";
     showBreadCrumb.value = true;
     breadList.splice(3, 1, "详情");
+    detailData.value = data;
   }
 };
 
