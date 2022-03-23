@@ -35,6 +35,7 @@
 </template>
 
 <script setup>
+import { upgradeTask } from "@/services/api/jin.api";
 import { reactive } from "vue";
 
 const emit = defineEmits(["change"]);
