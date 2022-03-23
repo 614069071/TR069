@@ -5,12 +5,15 @@ const post = (url, data, params, port) => httpRequest({ method: 'post', url, dat
 const put = (url, data, params, port) => httpRequest({ method: 'put', url, data, params }, port);
 const dele = (url, data, params, port) => httpRequest({ method: 'delete', url, data, params }, port);
 
-// 预配置
+/* 公共 */
+export const getAllProfiles = params => get('/profile/allProfiles', params);//获取业务模板
+
+/* 预配置 */
 export const getPreConfigColles = params => get(`/preConfiguration/getPreConfigurationList`, params);//预配置列表
 export const delPreConfigItem = id => dele(`/preConfiguration/${id}`);//删除配置
 export const addPreConfigItem = data => post(`/preConfiguration/add`, data);//添加配置
 
-// 升级任务
+/* 升级任务 */
 export const upgradeTask = params => get('/upgradeTask/getTR069UpgradeTaskList', params);//升级任务列表
 export const createUpgradeTask = (data, params) => post('/upgradeTask', data, params);//创建升级任务
 export const modifyUpgradeFile = (data, params) => put('/upgradeFile', data, params);//修改文件

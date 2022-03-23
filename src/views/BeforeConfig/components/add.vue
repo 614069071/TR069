@@ -43,7 +43,7 @@
     <ConfigHeader>配置模板</ConfigHeader>
 
     <a-form-item>
-      <a-transfer :title="['备选模板', '已选模板']" :data="configModel" :default-value="configDef" />
+      <a-transfer :title="['备选模板', '已选模板']" :data="defModels" v-model="condition.profilesIdList" />
     </a-form-item>
 
     <a-form-item>
@@ -56,13 +56,14 @@
 </template>
 
 <script setup>
-import { addPreConfigItem } from "@/services/api/jin.api";
-import { reactive, ref } from "vue";
+import { addPreConfigItem, getAllProfiles } from "@/services/api/jin.api";
+import { reactive, ref, onMounted } from "vue";
 
 const emit = defineEmits(["change"]);
 
 const formRef = ref(null);
-const condition = reactive({ deviceType: "", ssidname24G: "", pppoeUsername: "", sipuser: "", ssidname58G: "", pppoePassword: "", remark: "" });
+const condition = reactive({ deviceType: "", ssidname24G: "", pppoeUsername: "", sipuser: "", ssidname58G: "", pppoePassword: "", remark: "", profilesIdList: [] });
+const defModels = ref([]);
 
 const handleCancel = () => {
   emit("change");
@@ -81,12 +82,20 @@ const handleBeforeOk = () => {
     });
 };
 
-const configModel = reactive([
-  { value: 1, label: "1" },
-  { value: 2, label: "2" },
-]);
+onMounted(() => {
+  getAllProfiles()
+    .then(res => {
+      console.log(res);
+      const { status, obj = [] } = res.data;
 
-const configDef = reactive([]);
+      if (status !== 200) return;
+
+      defModels.value = obj.map(({ id, profileName }) => ({ label: profileName, value: id }));
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 </script>
 
 <style lang="less" scoped></style>
