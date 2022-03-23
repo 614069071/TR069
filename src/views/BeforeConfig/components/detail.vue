@@ -3,7 +3,7 @@
 
   <div class="pre-config-detail-table-wrapper">
     <div class="table-title">设备唯一标识</div>
-    <div class="table-content">{{ data.sn }}</div>
+    <div class="table-content">{{ data.deviceType }}</div>
     <div class="table-title">2.4G SSID名称</div>
     <div class="table-content">{{ data.ssidname24G }}</div>
     <div class="table-title">5G SSID名称</div>
@@ -17,7 +17,7 @@
     <div class="table-title sp">备注</div>
     <div class="table-content col-2 sp">{{ data.remark }}</div>
     <div class="table-title sp">配置模板</div>
-    <div class="table-content col-2 sp">{{ data.configurationId }}</div>
+    <div class="table-content col-2 sp">{{ data.profilesIdList }}</div>
   </div>
 </template>
 
