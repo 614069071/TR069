@@ -43,9 +43,7 @@
     <ConfigHeader>配置模板</ConfigHeader>
 
     <a-form-item>
-      <div class="form-transfer-wapper">
-        <a-transfer :title="['备选模板', '已选模板']" :data="configModel" :default-value="configDef" />
-      </div>
+      <a-transfer :title="['备选模板', '已选模板']" :data="configModel" :default-value="configDef" />
     </a-form-item>
 
     <a-form-item>
@@ -54,8 +52,6 @@
         <a-button html-type="submit" type="primary" @click="handleBeforeOk">创建</a-button>
       </a-space>
     </a-form-item>
-
-    <div class="create-order-submits" style="margin: 15px 0"></div>
   </a-form>
 </template>
 
