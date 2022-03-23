@@ -3,9 +3,12 @@ import { httpRequest } from "../";
 const get = (url, params, port) => httpRequest({ method: 'get', url, params }, port);
 const post = (url, data, params, port) => httpRequest({ method: 'post', url, data, params }, port);
 const put = (url, data, params, port) => httpRequest({ method: 'put', url, data, params }, port);
+const dele = (url, data, params, port) => httpRequest({ method: 'delete', url, data, params }, port);
 
 // 预配置
-export const getPreConfigColles = params => get(`/preConfiguration/getPreConfigurationList`, params);
+export const getPreConfigColles = params => get(`/preConfiguration/getPreConfigurationList`, params);//预配置列表
+export const delPreConfigItem = id => dele(`/preConfiguration/${id}`);//删除配置
+export const addPreConfigItem = data => post(`/preConfiguration/add`, data);//添加配置
 
 // 升级任务
 export const upgradeTask = params => get('/upgradeTask/getTR069UpgradeTaskList', params);//升级任务列表

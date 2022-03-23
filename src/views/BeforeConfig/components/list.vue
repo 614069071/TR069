@@ -4,7 +4,7 @@
       <a-table-column title="序号" data-index="index" />
       <a-table-column title="MAC地址" data-index="mac" />
       <a-table-column title="SN" data-index="sn" />
-      <a-table-column title="工单号" data-index="configurationId" />
+      <a-table-column title="工单号" data-index="orderNumber" />
       <a-table-column title="创建时间" data-index="createTime" />
       <a-table-column title="执行时间" data-index="executeTime" />
       <a-table-column title="备注" data-index="remark" />
@@ -12,7 +12,7 @@
         <template #cell="{ record }">
           <control-buttons>
             <span class="primary-color" @click="actionList('detail', record)">详情</span>
-            <span class="danger-color" @click="actionList('delete', record)">删除</span>
+            <span class="danger-color" @click="actionList('delete', record.configurationId)">删除</span>
           </control-buttons>
         </template>
       </a-table-column>
@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import { getPreConfigColles } from "@/services/api/jin.api";
+import { getPreConfigColles, delPreConfigItem } from "@/services/api/jin.api";
 import Pagination from "@/components/pagination/index.vue";
 import { ref, reactive, onMounted, toRefs } from "vue";
 
@@ -80,6 +80,7 @@ const colles = ref([]);
 const visible = ref(false);
 const condition = reactive({ state: "", deviceMAC: "", deviceSN: "", configId: "", startTime: "" });
 const formRef = ref(null);
+const deleteId = null;
 
 onMounted(() => {
   getData();
@@ -100,6 +101,8 @@ const getData = () => {
     });
 };
 
+defineExpose({ refresh: getData });
+
 const handlePage = v => {
   current.value = v;
   getData();
@@ -115,12 +118,20 @@ const handleCancel = () => {
 };
 
 const handleBeforeOk = () => {
+  delPreConfigItem(deleteId)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   visible.value = false;
 };
 
 const actionList = (action, data) => {
   if (action === "delete") {
     visible.value = true;
+    deleteId = data;
   } else {
     emit("change", { action, data });
   }

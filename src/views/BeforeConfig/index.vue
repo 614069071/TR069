@@ -9,7 +9,7 @@
 
     <template v-slot:contentMain>
       <div v-show="configType === 'list'">
-        <List @change="listChangeHandle" v-model="sideVisible" />
+        <List ref="list" @change="listChangeHandle" v-model="sideVisible" />
       </div>
 
       <div v-show="configType === 'add'">
@@ -35,6 +35,7 @@ const breadList = reactive(["终端管理", "设备管理", "预配置"]);
 const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
 const detailData = ref({});
+const list = ref(null);
 
 const controlHandle = type => {
   sideVisible.value = false;
@@ -51,6 +52,7 @@ const controlHandle = type => {
 const comeBack = () => {
   configType.value = "list";
   showBreadCrumb.value = false;
+  list.value.refresh();
 };
 
 const listChangeHandle = ({ action, data }) => {
