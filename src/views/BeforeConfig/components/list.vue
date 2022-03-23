@@ -80,7 +80,7 @@ const colles = ref([]);
 const visible = ref(false);
 const condition = reactive({ state: "", deviceMAC: "", deviceSN: "", configId: "", startTime: "" });
 const formRef = ref(null);
-const deleteId = null;
+let deleteId = null;
 
 onMounted(() => {
   getData();
@@ -118,14 +118,19 @@ const handleCancel = () => {
 };
 
 const handleBeforeOk = () => {
-  delPreConfigItem(deleteId)
-    .then(res => {
-      console.log(res);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  visible.value = false;
+  deleteId &&
+    delPreConfigItem(deleteId)
+      .then(res => {
+        if (res.data.status !== 200) return;
+
+        getData();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        visible.value = false;
+      });
 };
 
 const actionList = (action, data) => {
