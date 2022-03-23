@@ -3,7 +3,7 @@
     <a-table :data="colles" :scroll="{ y: 650 }" :pagination="false" :row-selection="{ type: 'checkbox', showCheckedAll: true }">
       <template #columns>
         <a-table-column title="序号" data-index="index" />
-        <a-table-column title="厂商名" data-index="ouiName" />
+        <a-table-column title="厂商名" data-index="manufacturer" />
         <a-table-column title="OUI" data-index="ouiName" />
         <a-table-column title="设备类型Model" data-index="deviceType" />
         <a-table-column title="升级文件" data-index="upgradeFileUrl">
@@ -14,7 +14,7 @@
           </template>
         </a-table-column>
         <a-table-column title="目标版本" data-index="targetVersion" />
-        <a-table-column title="升级规则" data-index="ouiName" />
+        <a-table-column title="升级规则" data-index="upgradeRuleId" />
         <a-table-column title="自动升级">
           <template #cell="{ record }">
             <div class="vertical">关闭<a-switch size="mini" style="margin: 0 0 0 4px" check-value="1" uncheck-value="0" v-model="record.autoUpgrade" /></div>
@@ -45,13 +45,6 @@
           </a-form-item>
           <a-form-item field="deviceType" label="设备类型">
             <a-input v-model="condition.deviceType" placeholder="please enter..." />
-          </a-form-item>
-          <a-form-item label="状态">
-            <a-select placeholder="please enter...">
-              <a-option label="所有" value="1"></a-option>
-              <a-option label="在线" value="2"></a-option>
-              <a-option label="离线" value="3"></a-option>
-            </a-select>
           </a-form-item>
         </a-form>
       </template>
