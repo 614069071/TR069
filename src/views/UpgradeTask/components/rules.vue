@@ -4,7 +4,7 @@
   <a-form layout="vertical" :model="condition">
     <a-row :gutter="40" ref="formRef">
       <a-col :span="8">
-        <a-form-item label="当前文件">
+        <a-form-item label="当前规则">
           <a-select v-model="condition.value1" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>
@@ -13,7 +13,7 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="新文件">
+        <a-form-item label="新规则">
           <a-select v-model="condition.value1" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>

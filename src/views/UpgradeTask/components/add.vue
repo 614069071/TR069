@@ -4,7 +4,7 @@
   <a-form layout="vertical" ref="formRef" :model="condition">
     <a-row :gutter="40">
       <a-col :span="8">
-        <a-form-item field="manufacturer" label="厂商">
+        <a-form-item field="manufacturer" label="厂商" required>
           <a-select v-model="condition.manufacturer" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>
@@ -13,7 +13,7 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item field="deviceType" label="设备类型">
+        <a-form-item field="deviceType" label="设备类型" required>
           <a-select v-model="condition.deviceType" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>
@@ -22,7 +22,7 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item field="upgradeFileUrl" label="升级文件">
+        <a-form-item field="upgradeFileUrl" label="升级文件" required>
           <a-select v-model="condition.upgradeFileUrl" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>
@@ -31,7 +31,7 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item field="upgradeRuleId" label="升级规则">
+        <a-form-item field="upgradeRuleId" label="升级规则" required>
           <a-select v-model="condition.upgradeRuleId" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>
@@ -52,7 +52,7 @@
 
   <div class="create-order-submits" style="margin: 15px 0">
     <a-space>
-      <a-button html-type="submit" @click="cancelHandle">取消</a-button>
+      <a-button @click="cancelHandle">取消</a-button>
       <a-button html-type="submit" type="primary" @click="handleBeforeOk">创建</a-button>
     </a-space>
   </div>
@@ -73,7 +73,11 @@ const cancelHandle = () => {
   formRef.value.resetFields();
 };
 
-const handleBeforeOk = () => {
+const handleBeforeOk = async () => {
+  const isPass = await formRef.value.validate();
+
+  if (isPass) return;
+
   createUpgradeTask(condition)
     .then(res => {
       console.log(res);
