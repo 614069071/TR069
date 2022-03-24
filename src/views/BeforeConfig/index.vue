@@ -46,6 +46,7 @@ const controlHandle = type => {
     breadList.splice(3, 1, "新增工单");
   } else if (type == "import") {
   } else if (type == "delete") {
+    list.value.delete();
   }
 };
 

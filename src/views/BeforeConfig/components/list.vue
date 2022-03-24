@@ -1,5 +1,15 @@
 <template>
-  <a-table :data="colles" :scroll="{ y: 650 }" :pagination="false" :row-selection="{ type: 'checkbox', showCheckedAll: true }">
+  <a-table
+    :data="colles"
+    :scroll="{ y: 650 }"
+    :pagination="{ total: collesTotal, showTotal: true, pageSize: pageSize, showJumper: true, showPageSize: true }"
+    :row-key="rowKey"
+    :row-selection="{ type: 'checkbox', showCheckedAll: true }"
+    @select="checkItem"
+    @select-all="checkItems"
+    @page-change="pageChange"
+    @page-size-change="pageSizeChange"
+  >
     <template #columns>
       <a-table-column title="序号" data-index="index" />
       <a-table-column title="MAC地址" data-index="mac" />
@@ -12,14 +22,12 @@
         <template #cell="{ record }">
           <control-buttons>
             <span class="primary-color" @click="actionList('detail', record)">详情</span>
-            <span class="danger-color" @click="actionList('delete', record.configurationId)">删除</span>
+            <span class="danger-color" @click="actionList('delete', record[rowKey])">删除</span>
           </control-buttons>
         </template>
       </a-table-column>
     </template>
   </a-table>
-
-  <Pagination :paginationData="paginationData" @changePage="handlePage" @changeSize="handleSize" />
 
   <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="formRef.resetFields()" @confirm="search(condition)">
     <template v-slot:rightSidePopUpWindow>
@@ -53,16 +61,20 @@
     </template>
   </right-side>
 
-  <a-modal v-model:visible="visible" @cancel="handleCancel" @before-ok="handleBeforeOk">
+  <a-modal v-model:visible="delCurrentVisible" @cancel="handleCancel" @before-ok="handleBeforeOk">
     <template #title>提示</template>
     <div>确定删除当前配置吗？</div>
+  </a-modal>
+
+  <a-modal v-model:visible="delCheckVisible" @cancel="delCheckCancel" @before-ok="delCheckSubmit">
+    <template #title>提示</template>
+    <div>确定删除所选配置吗？</div>
   </a-modal>
 </template>
 
 <script setup>
 import { getPreConfigColles, delPreConfigItem } from "@/services/api/jin.api";
-import Pagination from "@/components/pagination/index.vue";
-import { ref, reactive, onMounted, toRefs } from "vue";
+import { ref, reactive, onMounted, toRefs, computed } from "vue";
 
 const _props = defineProps({
   modelValue: {
@@ -74,13 +86,17 @@ const _props = defineProps({
 const emit = defineEmits(["change", "update:modelValue"]);
 const { modelValue } = toRefs(_props);
 const current = ref(1);
-const pageSize = ref(15);
-const paginationData = ref(0);
+const pageSize = ref(30);
+const collesTotal = ref(0);
 const colles = ref([]);
-const visible = ref(false);
+const delCurrentVisible = ref(false);
 const condition = reactive({ state: "", deviceMAC: "", deviceSN: "", configId: "", startTime: "" });
 const formRef = ref(null);
 let deleteId = null;
+const rowKey = ref("configurationId");
+let checkKeys = [];
+const collesAllKeys = computed(() => colles.value.map(e => e[rowKey.value]));
+const delCheckVisible = ref(false);
 
 onMounted(() => {
   getData();
@@ -92,7 +108,7 @@ const getData = () => {
   getPreConfigColles(params)
     .then(res => {
       const { data = [], total } = res.data;
-      paginationData.value = total;
+      collesTotal.value = total;
       data.forEach((e, index) => (e.index = index + 1));
       colles.value = data;
     })
@@ -101,20 +117,18 @@ const getData = () => {
     });
 };
 
-defineExpose({ refresh: getData });
-
-const handlePage = v => {
+const pageChange = v => {
   current.value = v;
   getData();
 };
 
-const handleSize = v => {
+const pageSizeChange = v => {
   pageSize.value = v;
   getData();
 };
 
 const handleCancel = () => {
-  visible.value = false;
+  delCurrentVisible.value = false;
 };
 
 const handleBeforeOk = () => {
@@ -129,13 +143,13 @@ const handleBeforeOk = () => {
         console.log(err);
       })
       .finally(() => {
-        visible.value = false;
+        delCurrentVisible.value = false;
       });
 };
 
 const actionList = (action, data) => {
   if (action === "delete") {
-    visible.value = true;
+    delCurrentVisible.value = true;
     deleteId = data;
   } else {
     emit("change", { action, data });
@@ -144,6 +158,30 @@ const actionList = (action, data) => {
 const search = data => {
   console.log(data);
 };
+
+const checkItem = v => {
+  checkKeys = v;
+};
+
+const checkItems = v => {
+  checkKeys = v ? collesAllKeys.value : [];
+};
+
+const delChecks = () => {
+  if (!checkKeys.length) return;
+
+  delCheckVisible.value = true;
+};
+
+const delCheckCancel = () => {
+  delCheckVisible.value = false;
+};
+
+const delCheckSubmit = () => {
+  console.log("checkKeys", checkKeys);
+};
+
+defineExpose({ refresh: getData, delete: delChecks });
 </script>
 
 <style lang="less" scoped></style>

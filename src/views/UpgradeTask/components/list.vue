@@ -1,6 +1,13 @@
 <template>
   <div>
-    <a-table :data="colles" :scroll="{ y: 650 }" :pagination="false" :row-selection="{ type: 'checkbox', showCheckedAll: true }">
+    <a-table
+      :data="colles"
+      :scroll="{ y: 650 }"
+      :pagination="{ total: collesTotal, showTotal: true, pageSize: pageSize, showJumper: true, showPageSize: true }"
+      :row-selection="{ type: 'checkbox', showCheckedAll: true }"
+      @page-change="pageChange"
+      @page-size-change="pageSizeChange"
+    >
       <template #columns>
         <a-table-column title="序号" data-index="index" />
         <a-table-column title="厂商名" data-index="manufacturer" />
@@ -32,8 +39,6 @@
       </template>
     </a-table>
 
-    <Pagination :paginationData="paginationData" @changePage="handlePage" @changeSize="handleSize" />
-
     <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="side.resetFields()" @confirm="getData(condition)">
       <template v-slot:rightSidePopUpWindow>
         <a-form layout="vertical" :model="condition" ref="side">
@@ -59,7 +64,6 @@
 
 <script setup>
 import { upgradeTask } from "@/services/api/jin.api";
-import Pagination from "@/components/pagination/index.vue";
 import { ref, reactive, onMounted, toRefs } from "vue";
 
 const props = defineProps({
@@ -74,14 +78,14 @@ const { modelValue } = toRefs(props);
 const emit = defineEmits(["change", "update:modelValue"]);
 
 const current = ref(1);
-const pageSize = ref(15);
-const paginationData = ref(0);
-const handlePage = v => {
+const pageSize = ref(30);
+const collesTotal = ref(0);
+const pageChange = v => {
   current.value = v;
   getData();
 };
 
-const handleSize = v => {
+const pageSizeChange = v => {
   pageSize.value = v;
   getData();
 };
@@ -93,7 +97,7 @@ const getData = async (data = {}) => {
   const dataInfo = await upgradeTask(params);
   dataInfo.data.data.forEach((e, index) => (e.index = index + 1));
   colles.value = dataInfo.data.data;
-  paginationData.value = dataInfo.data.total;
+  collesTotal.value = dataInfo.data.total;
 };
 
 const actionList = (action, data) => {
