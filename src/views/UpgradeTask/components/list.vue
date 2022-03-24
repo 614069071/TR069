@@ -13,13 +13,7 @@
         <a-table-column title="厂商名" data-index="manufacturer" />
         <a-table-column title="OUI" data-index="ouiName" />
         <a-table-column title="设备类型Model" data-index="deviceType" />
-        <a-table-column title="升级文件" data-index="upgradeFileUrl">
-          <template #cell="{ record }">
-            <div>
-              <img :src="record.upgradeFileUrl" alt="" />
-            </div>
-          </template>
-        </a-table-column>
+        <a-table-column title="升级文件" data-index="upgradeFileName" />
         <a-table-column title="目标版本" data-index="targetVersion" />
         <a-table-column title="升级规则" data-index="upgradeRuleId" />
         <a-table-column title="自动升级">

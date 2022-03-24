@@ -13,13 +13,7 @@
     >
       <template #columns>
         <a-table-column title="序号" data-index="index" />
-        <a-table-column title="升级文件" data-index="upgradeFileUrl">
-          <template #cell="{ record }">
-            <div>
-              <img :src="record.upgradeFileUrl" alt="" />
-            </div>
-          </template>
-        </a-table-column>
+        <a-table-column title="升级文件" data-index="upgradeFileName" />
         <a-table-column title="厂商OUI" data-index="ouiName" />
         <a-table-column title="设备类型" data-index="deviceType" />
         <a-table-column title="导入时间" data-index="uploadTime" />
