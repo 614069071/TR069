@@ -13,7 +13,7 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item field="deviceType" label="设备类型">
+        <a-form-item field="deviceType" label="设备类型" required>
           <a-select v-model="condition.deviceType" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>
@@ -70,11 +70,9 @@ const cancelHandle = f => {
 };
 
 const handleBeforeOk = async () => {
-  const isPass = await !formRef.value.validate();
+  const isPass = await formRef.value.validate();
 
-  console.log("isPass", isPass);
-
-  if (!isPass) return;
+  if (isPass) return;
 
   const fd = new FormData();
   const conditionToArg = Object.entries(condition);
@@ -122,5 +120,10 @@ const uploadFile = e => {
   color: #86909c;
   padding: 0 12px;
   cursor: pointer;
+  transition: background-color 0.1s cubic-bezier(0, 0, 1, 1);
+
+  &:hover {
+    background-color: #e5e6eb;
+  }
 }
 </style>
