@@ -21,5 +21,6 @@ export const modifyUpgradeRule = (data, params) => post('/upgradeRule', data, pa
 export const modifyUpgradeTask = (data, params) => put('/upgradeTask', data, params);//修改升级任务
 
 export const getUpgradeFiles = params => get(`/upgradeFile/getTR069UpgradeFileList`, params);//获取配置文件列表
+export const uploadUpgradeFile = (data, params) => post(`/upgradeFile/uploadUpgradeFile`, data, params);//上传文件包
 
 

@@ -8,11 +8,11 @@
 
     <template v-slot:contentMain>
       <div v-show="configType === 'list'">
-        <List @change="listChangeHandle" v-model="sideVisible" />
+        <List @change="listChangeHandle" ref="listRef" v-model="sideVisible" />
       </div>
 
-      <div v-show="configType === 'add'">
-        <Create @change="comeBack" />
+      <div v-show="configType === 'upload'">
+        <Create @change="addCallback" />
       </div>
 
       <div v-show="configType === 'modify'">
@@ -39,6 +39,7 @@ const breadList = reactive(["终端管理", "升级管理", "升级文件"]);
 const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
 const breads = { upload: "上传文件", modify: "修改" };
+const listRef = ref(null);
 
 const controlHandle = type => {
   sideVisible.value = false;
@@ -54,6 +55,11 @@ const controlHandle = type => {
 const comeBack = () => {
   configType.value = "list";
   showBreadCrumb.value = false;
+};
+
+const addCallback = f => {
+  comeBack();
+  f && listRef.value.refresh();
 };
 
 const listChangeHandle = ({ action, data }) => {

@@ -2,9 +2,12 @@
   <div>
     <a-table
       :data="colles"
+      :row-key="rowKey"
       :scroll="{ y: 650 }"
       :row-selection="{ type: 'checkbox', showCheckedAll: true }"
       :pagination="{ total: pageTotal, showTotal: true, pageSize: pageSize, showJumper: true, showPageSize: true }"
+      @select="checkItem"
+      @select-all="checkItems"
       @page-change="pageChange"
       @page-size-change="pageSizeChange"
     >
@@ -28,7 +31,7 @@
           <template #cell="{ record }">
             <control-buttons>
               <span class="primary-color" @click="actionList('modify', record)">修改</span>
-              <span class="danger-color" @click="actionList('delete', record.upgradeFileId)">删除</span>
+              <span class="danger-color" @click="actionList('delete', record[rowKey])">删除</span>
             </control-buttons>
           </template>
         </a-table-column>
@@ -60,7 +63,7 @@
 
 <script setup>
 import { getUpgradeFiles } from "@/services/api/jin.api";
-import { ref, reactive, onMounted, toRefs } from "vue";
+import { ref, reactive, onMounted, toRefs, computed } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -77,6 +80,12 @@ const current = ref(1);
 const pageSize = ref(30);
 const pageTotal = ref(0);
 const visible = ref(false);
+const condition = reactive({ targetVersion: "", ouiName: "", deviceType: "" });
+const side = ref(null);
+const rowKey = ref("upgradeFileId");
+const colles = ref([]);
+const collesAllKeys = computed(() => colles.value.map(e => e[rowKey.value]));
+let checkKeys = [];
 
 const pageChange = v => {
   current.value = v;
@@ -87,8 +96,6 @@ const pageSizeChange = v => {
   pageSize.value = v;
   getData();
 };
-
-const colles = ref([]);
 
 const getData = async (data = {}) => {
   let params = { page: current.value, size: pageSize.value, ...data };
@@ -115,10 +122,6 @@ const actionList = (action, data) => {
   }
 };
 
-const condition = reactive({ targetVersion: "", ouiName: "", deviceType: "" });
-
-let side = ref(null);
-
 const handleCancel = () => {
   visible.value = false;
 };
@@ -130,6 +133,22 @@ const handleBeforeOk = () => {
 onMounted(() => {
   getData();
 });
+
+const checkItem = v => {
+  checkKeys = v;
+};
+
+const checkItems = v => {
+  checkKeys = v ? collesAllKeys.value : [];
+};
+
+const delChecks = () => {
+  if (!checkKeys.length) return;
+
+  delCheckVisible.value = true;
+};
+
+defineExpose({ refresh: getData, delete: delChecks });
 </script>
 
 <style lang="less" scoped></style>
