@@ -17,12 +17,12 @@
     <div class="table-title sp">备注</div>
     <div class="table-content col-2 sp">{{ data.remark }}</div>
     <div class="table-title sp">配置模板</div>
-    <div class="table-content col-2 sp">{{ data.profilesIdList }}</div>
+    <div class="table-content col-2 sp">{{ mapProfilsName }}</div>
   </div>
 </template>
 
 <script setup>
-import { toRefs } from "vue";
+import { toRefs, computed } from "vue";
 
 const _props = defineProps({
   data: {
@@ -33,7 +33,10 @@ const _props = defineProps({
 
 const { data } = toRefs(_props);
 
-console.log("data", data.value);
+const mapProfilsName = computed(() => {
+  const names = (data.value.profiles || []).map(({ profileName }) => profileName);
+  return names.join(", ");
+});
 </script>
 
 <style scoped lang="less">
