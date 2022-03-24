@@ -4,7 +4,7 @@
   <a-form layout="vertical" ref="formRef" :model="condition">
     <a-row :gutter="40">
       <a-col :span="8">
-        <a-form-item field="ouiName" label="厂商OUI">
+        <a-form-item field="ouiName" label="厂商OUI" required>
           <a-select v-model="condition.ouiName" placeholder="please enter...">
             <a-option label="1" value="1"></a-option>
             <a-option label="2" value="2"></a-option>
@@ -22,9 +22,9 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="文件">
+        <a-form-item field="file" label="文件" :rules="[{ required: true, message: '请选择文件 （仅支持 .bin .img .tag 格式文件）' }]">
           <label for="upload_file" class="upload-file-wrapper">
-            <input id="upload_file" accept=".bin,.img,.tag" type="file" style="display: none" @change="uploadFile" />{{ uploadHodel }}<icon-right />
+            <input id="upload_file" ref="uploadRef" accept=".bin,.img,.tag" type="file" style="display: none" @change="uploadFile" />{{ uploadHodel }}<icon-right />
           </label>
         </a-form-item>
       </a-col>
@@ -60,6 +60,7 @@ import { makeMap } from "@/utils/jin.utils";
 const emit = defineEmits(["change"]);
 
 const formRef = ref(null);
+const uploadRef = ref(null);
 const condition = reactive({ status: "", deviceType: "", ouiName: "", remark: "", file: null });
 const uploadHodel = ref("请选择");
 
@@ -68,7 +69,13 @@ const cancelHandle = f => {
   formRef.value.resetFields();
 };
 
-const handleBeforeOk = () => {
+const handleBeforeOk = async () => {
+  const isPass = await !formRef.value.validate();
+
+  console.log("isPass", isPass);
+
+  if (!isPass) return;
+
   const fd = new FormData();
   const conditionToArg = Object.entries(condition);
 
@@ -99,7 +106,7 @@ const uploadFile = e => {
     uploadHodel.value = name;
     condition.file = file;
   } else {
-    console.log("不支持的格式");
+    uploadRef.value = null;
   }
 };
 </script>
