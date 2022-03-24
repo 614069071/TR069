@@ -1,10 +1,10 @@
 <template>
   <a-table
     :data="colles"
-    :scroll="{ y: 650 }"
-    :pagination="{ total: collesTotal, showTotal: true, pageSize: pageSize, showJumper: true, showPageSize: true }"
     :row-key="rowKey"
+    :scroll="{ y: 650 }"
     :row-selection="{ type: 'checkbox', showCheckedAll: true }"
+    :pagination="{ total: pageTotal, showTotal: true, pageSize: pageSize, showJumper: true, showPageSize: true }"
     @select="checkItem"
     @select-all="checkItems"
     @page-change="pageChange"
@@ -87,7 +87,7 @@ const emit = defineEmits(["change", "update:modelValue"]);
 const { modelValue } = toRefs(_props);
 const current = ref(1);
 const pageSize = ref(30);
-const collesTotal = ref(0);
+const pageTotal = ref(0);
 const colles = ref([]);
 const delCurrentVisible = ref(false);
 const condition = reactive({ state: "", deviceMAC: "", deviceSN: "", configId: "", startTime: "" });
@@ -108,7 +108,7 @@ const getData = () => {
   getPreConfigColles(params)
     .then(res => {
       const { data = [], total } = res.data;
-      collesTotal.value = total;
+      pageTotal.value = total;
       data.forEach((e, index) => (e.index = index + 1));
       colles.value = data;
     })

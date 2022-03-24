@@ -3,8 +3,8 @@
     <a-table
       :data="colles"
       :scroll="{ y: 650 }"
-      :pagination="{ total: collesTotal, showTotal: true, pageSize: pageSize, showJumper: true, showPageSize: true }"
       :row-selection="{ type: 'checkbox', showCheckedAll: true }"
+      :pagination="{ total: pageTotal, showTotal: true, pageSize: pageSize, showJumper: true, showPageSize: true }"
       @page-change="pageChange"
       @page-size-change="pageSizeChange"
     >
@@ -79,7 +79,7 @@ const emit = defineEmits(["change", "update:modelValue"]);
 
 const current = ref(1);
 const pageSize = ref(30);
-const collesTotal = ref(0);
+const pageTotal = ref(0);
 const pageChange = v => {
   current.value = v;
   getData();
@@ -97,7 +97,7 @@ const getData = async (data = {}) => {
   const dataInfo = await upgradeTask(params);
   dataInfo.data.data.forEach((e, index) => (e.index = index + 1));
   colles.value = dataInfo.data.data;
-  collesTotal.value = dataInfo.data.total;
+  pageTotal.value = dataInfo.data.total;
 };
 
 const actionList = (action, data) => {
