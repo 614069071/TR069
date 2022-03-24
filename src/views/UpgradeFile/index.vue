@@ -2,7 +2,7 @@
   <Wrapper title="升级文件" :breadList="breadList" :showBreadCrumb="showBreadCrumb">
     <template v-slot:operation>
       <a-button type="primary" size="small" @click="controlHandle('upload')">上传文件</a-button>
-      <a-button type="primary" size="small" @click="controlHandle('delete')">删除</a-button>
+      <a-button type="primary" size="small" @click="delChecks">删除</a-button>
       <a-button type="primary" size="small" @click="filterList">筛选</a-button>
     </template>
 
@@ -50,6 +50,10 @@ const controlHandle = type => {
     breadList.splice(3, 1, breads[type]);
   } else if (type == "delete") {
   }
+};
+
+const delChecks = () => {
+  listRef.value.delete();
 };
 
 const comeBack = () => {

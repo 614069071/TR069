@@ -34,7 +34,7 @@
 
     <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="side.resetFields()" @confirm="getData(condition)">
       <template v-slot:rightSidePopUpWindow>
-        <a-form layout="vertical" :model="condition" ref="side">
+        <a-form layout="vertical" :model="condition" ref="sideRef">
           <a-form-item field="targetVersion" label="目标版本">
             <a-input v-model="condition.targetVersion" placeholder="please enter..." />
           </a-form-item>
@@ -53,6 +53,11 @@
     <template #title>提示</template>
     <div>确定删除当前升级文件吗？</div>
   </a-modal>
+
+  <a-modal v-model:visible="delCheckVisible" @cancel="delCheckCancel" @before-ok="delCheckSubmit">
+    <template #title>提示</template>
+    <div>确定删除所选升级文件吗？</div>
+  </a-modal>
 </template>
 
 <script setup>
@@ -67,19 +72,18 @@ const props = defineProps({
 });
 
 const { modelValue } = toRefs(props);
-
 const emit = defineEmits(["change", "update:modelValue"]);
-
 const current = ref(1);
 const pageSize = ref(30);
 const pageTotal = ref(0);
 const visible = ref(false);
 const condition = reactive({ targetVersion: "", ouiName: "", deviceType: "" });
-const side = ref(null);
+const sideRef = ref(null);
 const rowKey = ref("upgradeFileId");
 const colles = ref([]);
 const collesAllKeys = computed(() => colles.value.map(e => e[rowKey.value]));
 let checkKeys = [];
+const delCheckVisible = ref(false);
 
 const pageChange = v => {
   current.value = v;
@@ -140,6 +144,14 @@ const delChecks = () => {
   if (!checkKeys.length) return;
 
   delCheckVisible.value = true;
+};
+
+const delCheckCancel = () => {
+  delCheckVisible.value = false;
+};
+
+const delCheckSubmit = () => {
+  console.log("checkKeys", checkKeys);
 };
 
 defineExpose({ refresh: getData, delete: delChecks });
