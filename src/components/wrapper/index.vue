@@ -1,56 +1,53 @@
 <template>
   <div class="content-wrapper">
-    <BreadCrumb :items="breadList"
-                v-show="showBreadCrumb"></BreadCrumb>
-    <div class="wrapper-header"
-         v-show="!showBreadCrumb">
-      <div class="wrapper-title">{{title}}</div>
+    <!-- <BreadCrumb :items="breadList" v-show="showBreadCrumb"></BreadCrumb> -->
+    <div class="wrapper-header" v-show="!showBreadCrumb">
+      <div class="wrapper-title"></div>
       <div class="button-group">
         <slot name="operation"></slot>
       </div>
     </div>
-    <div class="wrapper-main"
-         :class="{'subpage-content-height': showBreadCrumb}">
+    <div class="wrapper-main" :class="{ 'subpage-content-height': showBreadCrumb }">
       <slot name="contentMain"></slot>
     </div>
   </div>
 </template>
 
 <script>
-import BreadCrumb from '@/components/breadcrumb/index.vue'
-import { toRefs } from 'vue'
+import BreadCrumb from "@/components/breadcrumb/index.vue";
+import { toRefs } from "vue";
 export default {
   components: {
-    BreadCrumb
+    BreadCrumb,
   },
   props: {
     title: {
       type: String,
-      default: ''
+      default: "",
     },
     breadList: {
       type: Array,
       default() {
-        return []
-      }
+        return [];
+      },
     },
     showBreadCrumb: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup(props) {
-    let contentProps = toRefs(props)
-    let title = contentProps.title
-    let breadList = contentProps.breadList
-    let showBreadCrumb = contentProps.showBreadCrumb
+    let contentProps = toRefs(props);
+    let title = contentProps.title;
+    let breadList = contentProps.breadList;
+    let showBreadCrumb = contentProps.showBreadCrumb;
     return {
       title,
       breadList,
-      showBreadCrumb
-    }
-  }
-}
+      showBreadCrumb,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>

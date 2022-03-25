@@ -52,7 +52,7 @@
 
   <div class="create-order-submits" style="margin: 15px 0">
     <a-space>
-      <a-button @click="cancelHandle">取消</a-button>
+      <NavButton :onClick="cancelHandle">取消</NavButton>
       <a-button html-type="submit" type="primary" @click="handleBeforeOk">创建</a-button>
     </a-space>
   </div>
@@ -61,6 +61,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { createUpgradeTask } from "@/services/api/jin.api";
+import NavButton from "@/components/Nav/nav-button.vue";
 
 const emit = defineEmits(["change"]);
 

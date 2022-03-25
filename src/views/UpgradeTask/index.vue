@@ -1,7 +1,7 @@
 <template>
   <Wrapper title="升级任务" :breadList="breadList" :showBreadCrumb="showBreadCrumb">
     <template v-slot:operation>
-      <a-button type="primary" size="small" @click="controlHandle('add')">创建任务</a-button>
+      <NavButton type="primary" size="small" :onClick="controlHandle">创建任务</NavButton>
       <a-button type="primary" size="small" @click="filterList">筛选</a-button>
     </template>
 
@@ -32,6 +32,7 @@ import Modify from "./components/modify.vue";
 import Rules from "./components/rules.vue";
 import Wrapper from "@/components/wrapper/index.vue";
 import { reactive, ref } from "vue";
+import NavButton from "@/components/nav/nav-button.vue";
 
 const showBreadCrumb = ref(false);
 const breadList = reactive(["终端管理", "升级管理", "升级任务"]);
@@ -39,14 +40,14 @@ const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
 const breads = { modify: "修改文件", rules: "修改规则", add: "创建任务" };
 
-const controlHandle = type => {
+const controlHandle = () => {
   sideVisible.value = false;
   showBreadCrumb.value = true;
-  configType.value = type;
+  configType.value = "add";
 
-  if (type == "add") {
-    breadList.splice(3, 1, breads[type]);
-  }
+  return function createTask() {
+    comeBack();
+  };
 };
 
 const comeBack = () => {
