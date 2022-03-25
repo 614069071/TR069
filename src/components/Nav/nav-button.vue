@@ -5,21 +5,11 @@
 <script setup>
 import { toRefs } from "vue";
 import { useNavigationStore } from "@/store";
-// const _props = defineProps({
-//   data: { default: null },
-//   onClick: {
-//     type: Function,
-//     default: () => {},
-//   },
-// type
-// });
 
 const _props = defineProps(["onClick", "type", "shape", "status", "size", "long", "loading", "disabled"]);
-
 const navStore = useNavigationStore();
 const { onClick, type, shape, status, size, long, loading, disabled } = toRefs(_props);
 const callback = () => {
-  console.log(123);
   const result = onClick.value && onClick.value();
 
   if (typeof result === "function") {
