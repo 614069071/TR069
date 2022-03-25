@@ -5,12 +5,12 @@
     <a-row :gutter="40">
       <a-col :span="8">
         <a-form-item label="当前文件">
-          <div>{{ (data.current || {}).upgradeFileName }}</div>
+          <div class="def-im-form-item">{{ (data.current || {}).upgradeFileName }}</div>
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="新文件">
-          <a-select v-model="condition.value1" placeholder="please enter...">
+        <a-form-item field="newid" label="新文件" required>
+          <a-select v-model="condition.newid" placeholder="please enter...">
             <a-option :label="upgradeFileName" :value="upgradeFileId" v-for="{ upgradeFileName, upgradeFileId } in data.list"></a-option>
           </a-select>
         </a-form-item>
@@ -19,7 +19,7 @@
       <a-col :span="24">
         <a-form-item>
           <a-space>
-            <a-button html-type="submit" @click="cancel">取消</a-button>
+            <a-button @click="cancel">取消</a-button>
             <a-button html-type="submit" type="primary" @click="submit">创建</a-button>
           </a-space>
         </a-form-item>
@@ -44,14 +44,31 @@ const { data } = toRefs(_props);
 const emit = defineEmits(["change"]);
 
 let formRef = ref(null);
-const condition = reactive({});
+const condition = reactive({ newid: "" });
 
 const cancel = () => {
   emit("change");
   formRef.value.resetFields();
 };
 
-const submit = () => {};
+const submit = async () => {
+  const isPass = !(await formRef.value.validate());
+  const params = { old: data.value.current.upgradeFileId, new: condition.newid };
+
+  if (!isPass || params.old === params.new) return;
+
+  console.log("params", params);
+
+  return;
+
+  upgradeTask(params)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
 </script>
 
 <style lang="less" scoped></style>

@@ -23,7 +23,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item field="file" label="文件" :rules="[{ required: true, message: '请选择文件 （仅支持 .bin .img .tag 格式文件）' }]">
-          <label for="upload_file" class="upload-file-wrapper">
+          <label for="upload_file" class="def-im-form-item">
             <input id="upload_file" ref="uploadRef" accept=".bin,.img,.tag" type="file" style="display: none" @change="uploadFile" />{{ uploadHodel }}<icon-right />
           </label>
         </a-form-item>
@@ -111,21 +111,4 @@ const uploadFile = e => {
 };
 </script>
 
-<style lang="less" scoped>
-.upload-file-wrapper {
-  width: 100%;
-  height: 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f2f3f5;
-  color: #86909c;
-  padding: 0 12px;
-  cursor: pointer;
-  transition: background-color 0.1s cubic-bezier(0, 0, 1, 1);
-
-  &:hover {
-    background-color: #e5e6eb;
-  }
-}
-</style>
+<style lang="less" scoped></style>
