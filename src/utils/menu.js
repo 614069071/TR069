@@ -3,7 +3,7 @@ import { useRoutesStore } from "@/store";
 import PageLayout from '@/layouts/PageLayout/index.vue'
 
 const modules = import.meta.glob('../views/**/**.vue')
-export const formatRoutes = function (routers) {
+export const formatRoutes = function (routers, nav = []) {
   let fmRoutes = [];
   routers.forEach((router) => {
     let {
@@ -13,14 +13,16 @@ export const formatRoutes = function (routers) {
       component,
       children
     } = router;
+    let routerNav = [...nav, menuName];
     if (children && children instanceof Array && children.length !== 0) {
-      children = formatRoutes(children);
+      children = formatRoutes(children, routerNav);
     }
     let fmRouter = {
       path: `/layout${menuUrl}`,
       name: menuName,
       iconCls: iconCls,
-      children: children
+      children: children,
+      meta: { nav: routerNav },
     }
     if (!children.length) {
       if (component === 'Home') {

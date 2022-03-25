@@ -5,6 +5,7 @@ import BackstageLayout from '@/layouts/BackstageLayout/index.vue'
 import { initMenu } from '@/utils/menu.js'
 import { initBackstageMenu } from '@/utils/backstageMenu.js'
 import packConfig from '../../pack.config'
+import { useNavigationStore } from '@/store';
 
 let targetUsers = packConfig.targetUsers // GENERAL_USER , SUPER_ADMIN , UNLIMITED
 
@@ -100,6 +101,14 @@ router.beforeEach((to, from, next) => {
       next('/?redirect=' + to.path)
     }
   }
+})
+
+let navStore = null;
+
+router.afterEach((to, from, next) => {
+  !navStore && (navStore = useNavigationStore());
+  const parent = to.matched[to.matched.length - 1].meta.nav;
+  navStore.updateParent(parent);
 })
 
 export default router
