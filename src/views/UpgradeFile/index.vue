@@ -16,7 +16,7 @@
       </div>
 
       <div v-show="configType === 'modify'">
-        <Modify @change="comeBack" />
+        <Modify @change="comeBack" :data="modifyData" />
       </div>
 
       <div v-show="configType === 'rules'">
@@ -40,6 +40,7 @@ const configType = ref("list"); //add delete import detail
 const sideVisible = ref(false);
 const breads = { upload: "上传文件", modify: "修改" };
 const listRef = ref(null);
+const modifyData = ref({});
 
 const controlHandle = type => {
   sideVisible.value = false;
@@ -72,6 +73,10 @@ const listChangeHandle = ({ action, data }) => {
   showBreadCrumb.value = true;
   configType.value = action;
   breadList.splice(3, 1, currentBread);
+
+  if (action === "modify") {
+    modifyData.value = data;
+  }
 };
 
 const filterList = () => {

@@ -5,19 +5,13 @@
     <a-row :gutter="40">
       <a-col :span="8">
         <a-form-item label="当前文件">
-          <a-select v-model="condition.value1" placeholder="please enter...">
-            <a-option label="1" value="1"></a-option>
-            <a-option label="2" value="2"></a-option>
-            <a-option label="3" value="3"></a-option>
-          </a-select>
+          <div>{{ (data.current || {}).upgradeFileName }}</div>
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="新文件">
           <a-select v-model="condition.value1" placeholder="please enter...">
-            <a-option label="1" value="1"></a-option>
-            <a-option label="2" value="2"></a-option>
-            <a-option label="3" value="3"></a-option>
+            <a-option :label="upgradeFileName" :value="upgradeFileId" v-for="{ upgradeFileName, upgradeFileId } in data.list"></a-option>
           </a-select>
         </a-form-item>
       </a-col>
@@ -36,7 +30,16 @@
 
 <script setup>
 import { upgradeTask } from "@/services/api/jin.api";
-import { reactive, ref } from "vue";
+import { reactive, ref, toRefs } from "vue";
+
+const _props = defineProps({
+  data: {
+    type: Object,
+    default: () => ({ currnet: {}, list: [] }),
+  },
+});
+
+const { data } = toRefs(_props);
 
 const emit = defineEmits(["change"]);
 

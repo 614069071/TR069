@@ -114,14 +114,13 @@ const getData = async (data = {}) => {
 };
 
 const actionList = (action, data) => {
-  console.log(action, data);
   if (action === "delete") {
     visible.value = true;
     fileId = data;
-
-    console.log("fileId", fileId);
   } else {
-    emit("change", { action, data });
+    const toModify = { current: ref(data), list: colles };
+
+    emit("change", { action, data: toModify });
   }
 };
 
