@@ -80,8 +80,10 @@ const handleBeforeOk = async () => {
   conditionToArg.forEach(([k, v]) => fd.append(k, v));
 
   uploadUpgradeFile(fd)
-    .then(res => {
-      console.log(res);
+    .then(({ data: { status } }) => {
+      if (status !== 200) return;
+
+      emit("change", true);
     })
     .catch(err => {
       console.log(err);

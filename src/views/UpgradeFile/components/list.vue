@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import { getUpgradeFiles } from "@/services/api/jin.api";
+import { getUpgradeFiles, delUpgradeFile } from "@/services/api/jin.api";
 import { ref, reactive, onMounted, toRefs, computed } from "vue";
 
 const props = defineProps({
@@ -84,6 +84,7 @@ const colles = ref([]);
 const collesAllKeys = computed(() => colles.value.map(e => e[rowKey.value]));
 let checkKeys = [];
 const delCheckVisible = ref(false);
+let fileId = null;
 
 const pageChange = v => {
   current.value = v;
@@ -113,8 +114,12 @@ const getData = async (data = {}) => {
 };
 
 const actionList = (action, data) => {
+  console.log(action, data);
   if (action === "delete") {
     visible.value = true;
+    fileId = data;
+
+    console.log("fileId", fileId);
   } else {
     emit("change", { action, data });
   }
@@ -125,7 +130,18 @@ const handleCancel = () => {
 };
 
 const handleBeforeOk = () => {
-  visible.value = false;
+  fileId &&
+    delUpgradeFile(fileId)
+      .then(res => {
+        console.log(res);
+        getData();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        visible.value = false;
+      });
 };
 
 onMounted(() => {

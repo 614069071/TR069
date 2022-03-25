@@ -22,5 +22,6 @@ export const modifyUpgradeTask = (data, params) => put('/upgradeTask', data, par
 
 export const getUpgradeFiles = params => get(`/upgradeFile/getTR069UpgradeFileList`, params);//获取配置文件列表
 export const uploadUpgradeFile = (data, params) => post(`/upgradeFile/uploadUpgradeFile`, data, params);//上传文件包
+export const delUpgradeFile = id => dele(`/upgradeFile/${id}`);//删除上传包
 
 
