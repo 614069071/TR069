@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div class="layout-page-view-controls">
+      <a-button type="primary" size="small" @click="addUploadFile">上传文件</a-button>
+      <a-button type="primary" size="small" @click="delChecks">删除</a-button>
+      <a-button type="primary" size="small" @click="showFilter">筛选</a-button>
+    </div>
+
     <a-table
       :data="colles"
       :row-key="rowKey"
@@ -32,7 +38,7 @@
       </template>
     </a-table>
 
-    <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="side.resetFields()" @confirm="getData(condition)">
+    <right-side rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="sideVisible = false" @reset="side.resetFields()" @confirm="getData">
       <template v-slot:rightSidePopUpWindow>
         <a-form layout="vertical" :model="condition" ref="sideRef">
           <a-form-item field="targetVersion" label="目标版本">
@@ -62,17 +68,10 @@
 
 <script setup>
 import { getUpgradeFiles, delUpgradeFile } from "@/services/api/jin.api";
-import { ref, reactive, onMounted, toRefs, computed } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-});
+const emit = defineEmits(["change"]);
 
-const { modelValue } = toRefs(props);
-const emit = defineEmits(["change", "update:modelValue"]);
 const current = ref(1);
 const pageSize = ref(30);
 const pageTotal = ref(0);
@@ -85,6 +84,7 @@ const collesAllKeys = computed(() => colles.value.map(e => e[rowKey.value]));
 let checkKeys = [];
 const delCheckVisible = ref(false);
 let fileId = null;
+const sideVisible = ref(false);
 
 const pageChange = v => {
   current.value = v;
@@ -169,7 +169,15 @@ const delCheckSubmit = () => {
   console.log("checkKeys", checkKeys);
 };
 
-defineExpose({ refresh: getData, delete: delChecks });
+const showFilter = () => {
+  sideVisible.value = true;
+};
+
+const addUploadFile = () => {
+  emit("change", { action: "upload" });
+};
+
+defineExpose({ refresh: getData });
 </script>
 
 <style lang="less" scoped></style>

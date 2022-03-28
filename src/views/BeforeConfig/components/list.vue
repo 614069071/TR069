@@ -111,6 +111,9 @@ const getData = () => {
     })
     .catch(err => {
       console.log(err);
+    })
+    .finally(() => {
+      sideVisible.value = false;
     });
 };
 
