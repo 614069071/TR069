@@ -36,7 +36,7 @@
     </template>
   </a-table>
 
-  <right-side rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="sideVisible = false" @reset="formRef.resetFields()" @confirm="search(condition)">
+  <right-side rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="sideVisible = false" @reset="formRef.resetFields()" @confirm="search">
     <template v-slot:rightSidePopUpWindow>
       <a-form layout="vertical" :model="condition" ref="formRef">
         <a-form-item field="state" label="状态">
@@ -80,7 +80,7 @@
 </template>
 
 <script setup>
-import { getPreConfigColles, delPreConfigItem } from "@/services/api/jin.api";
+import { getPreConfigColles, delPreConfigItem, delCheckPreConfigItems, filterPreConfigColles } from "@/services/api/jin.api";
 import { ref, reactive, onMounted, computed } from "vue";
 
 const emit = defineEmits(["change"]);
@@ -163,8 +163,18 @@ const actionList = (action, data) => {
     emit("change", { action, data });
   }
 };
-const search = data => {
-  console.log(data);
+const search = () => {
+  console.log(condition);
+
+  return;
+
+  filterPreConfigColles(condition)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 const checkItem = v => {
@@ -186,7 +196,19 @@ const delCheckCancel = () => {
 };
 
 const delCheckSubmit = () => {
-  console.log("checkKeys", checkKeys);
+  delCheckPreConfigItems(checkKeys)
+    .then(res => {
+      if (res.data.status === 200) {
+        getData();
+      }
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .finally(() => {
+      delCheckVisible.value = false;
+    });
 };
 
 const showFilter = () => {
