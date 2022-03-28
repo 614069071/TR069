@@ -3,7 +3,7 @@
     <a-breadcrumb v-if="child">
       <a-breadcrumb-item v-for="item in colles" :key="item">{{ $t(item) }}</a-breadcrumb-item>
       <a-breadcrumb-item style="cursor: pointer" @click.native="callback">{{ $t(last) }}</a-breadcrumb-item>
-      <a-breadcrumb-item>{{ child }}</a-breadcrumb-item>
+      <a-breadcrumb-item>{{ $t(child) }}</a-breadcrumb-item>
     </a-breadcrumb>
 
     <div v-else class="nav-title">{{ $t(title) }}</div>

@@ -25,7 +25,7 @@
       <a-col :span="24">
         <a-form-item>
           <a-space>
-            <a-button html-type="submit" @click="cancel">取消</a-button>
+            <NavButton :onClick="cancel">取消</NavButton>
             <a-button html-type="submit" type="primary" @click="submit">创建</a-button>
           </a-space>
         </a-form-item>

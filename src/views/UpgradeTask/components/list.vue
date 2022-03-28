@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="layout-page-view-controls">
+      <NavButton type="primary" size="small" :onClick="addTask">创建任务</NavButton>
+      <a-button type="primary" size="small" @click="showFilter">筛选</a-button>
+    </div>
+
     <a-table
       :data="colles"
       :scroll="{ y: 650 }"
@@ -33,7 +38,7 @@
       </template>
     </a-table>
 
-    <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="side.resetFields()" @confirm="getData(condition)">
+    <right-side rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="sideVisible = false" @reset="side.resetFields()" @confirm="getData(condition)">
       <template v-slot:rightSidePopUpWindow>
         <a-form layout="vertical" :model="condition" ref="side">
           <a-form-item field="targetVersion" label="目标版本">
@@ -60,20 +65,13 @@
 import { upgradeTask } from "@/services/api/jin.api";
 import { ref, reactive, onMounted, toRefs } from "vue";
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const { modelValue } = toRefs(props);
-
 const emit = defineEmits(["change", "update:modelValue"]);
 
 const current = ref(1);
 const pageSize = ref(30);
 const pageTotal = ref(0);
+const sideVisible = ref(false);
+
 const pageChange = v => {
   current.value = v;
   getData();
@@ -114,6 +112,20 @@ let side = ref(null);
 // const handleBeforeOk = () => {
 //   visible.value = false;
 // };
+
+const addTask = () => {
+  emit("change", { action: "add" });
+
+  return function createTask() {
+    comeBack();
+  };
+};
+
+const showFilter = () => {
+  sideVisible.value = true;
+
+  console.log(sideVisible.value);
+};
 
 onMounted(() => {
   getData();

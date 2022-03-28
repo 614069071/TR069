@@ -1,8 +1,8 @@
 <template>
   <config-header>修改规则</config-header>
 
-  <a-form layout="vertical" :model="condition">
-    <a-row :gutter="40" ref="formRef">
+  <a-form layout="vertical" ref="formRef" :model="condition">
+    <a-row :gutter="40">
       <a-col :span="8">
         <a-form-item label="当前规则">
           <a-select v-model="condition.value1" placeholder="please enter...">
@@ -25,7 +25,7 @@
       <a-col :span="24">
         <a-form-item>
           <a-space>
-            <a-button html-type="cancel" @click="cancel">取消</a-button>
+            <NavButton :onClick="cancel">取消</NavButton>
             <a-button html-type="submit" type="primary" @click="submit">创建</a-button>
           </a-space>
         </a-form-item>
