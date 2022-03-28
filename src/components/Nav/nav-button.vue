@@ -19,6 +19,15 @@ const callback = () => {
     navStore.updateChild(result);
   }
 };
+
+window.navigationTo = function (callback) {
+  if (typeof callback === "function") {
+    navStore.updateChild(callback.name);
+    navStore.updateEvent(callback);
+  } else {
+    navStore.updateChild(callback);
+  }
+};
 </script>
 
 <style scoped lang="less"></style>

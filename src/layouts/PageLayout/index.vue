@@ -9,7 +9,9 @@
       </a-layout-sider>
       <a-layout-content>
         <div class="layout-content">
-          <div class="layout-nav-wrapper"><Nav></Nav></div>
+          <div class="layout-nav-wrapper">
+            <Nav></Nav>
+          </div>
           <router-view></router-view>
         </div>
       </a-layout-content>

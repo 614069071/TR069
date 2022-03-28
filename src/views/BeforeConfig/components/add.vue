@@ -48,7 +48,7 @@
 
     <a-form-item>
       <a-space>
-        <a-button @click="handleCancel">取消</a-button>
+        <NavButton :onClick="handleCancel">取消</NavButton>
         <a-button html-type="submit" type="primary" @click="handleBeforeOk">创建</a-button>
       </a-space>
     </a-form-item>

@@ -110,3 +110,23 @@ body,
     background-color: #e5e6eb;
   }
 }
+
+.layout-page-view-wrapper {
+  padding: 0px 20px;
+  position: relative;
+  height: calc(100% - 76px);
+
+  .layout-page-view-controls {
+    display: flex;
+    align-items: center;
+    height: 76px;
+    padding: 0px 20px;
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+
+    & > * + * {
+      margin-left: 12px;
+    }
+  }
+}

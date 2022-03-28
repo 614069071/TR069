@@ -1,4 +1,11 @@
 <template>
+  <div class="layout-page-view-controls">
+    <NavButton type="primary" size="small" :onClick="addOrder">新增工单</NavButton>
+    <a-button type="primary" size="small" @click="bulkImport">批量导入</a-button>
+    <a-button type="primary" size="small" @click="delChecks">删除</a-button>
+    <a-button type="primary" size="small" @click="showFilter">筛选</a-button>
+  </div>
+
   <a-table
     :data="colles"
     :row-key="rowKey"
@@ -29,7 +36,7 @@
     </template>
   </a-table>
 
-  <right-side rightBoxTitle="筛选" :showRightBox="modelValue" @closePops="emit('update:modelValue', false)" @reset="formRef.resetFields()" @confirm="search(condition)">
+  <right-side rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="sideVisible = false" @reset="formRef.resetFields()" @confirm="search(condition)">
     <template v-slot:rightSidePopUpWindow>
       <a-form layout="vertical" :model="condition" ref="formRef">
         <a-form-item field="state" label="状态">
@@ -74,17 +81,9 @@
 
 <script setup>
 import { getPreConfigColles, delPreConfigItem } from "@/services/api/jin.api";
-import { ref, reactive, onMounted, toRefs, computed } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 
-const _props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const emit = defineEmits(["change", "update:modelValue"]);
-const { modelValue } = toRefs(_props);
+const emit = defineEmits(["change"]);
 const current = ref(1);
 const pageSize = ref(30);
 const pageTotal = ref(0);
@@ -97,6 +96,17 @@ const rowKey = ref("configurationId");
 let checkKeys = [];
 const collesAllKeys = computed(() => colles.value.map(e => e[rowKey.value]));
 const delCheckVisible = ref(false);
+const sideVisible = ref(false);
+
+const addOrder = () => {
+  emit("change", { action: "add" });
+
+  return function createOrder() {};
+};
+const bulkImport = () => {
+  alert("还没做");
+};
+const deleteAll = () => {};
 
 onMounted(() => {
   getData();
@@ -181,7 +191,11 @@ const delCheckSubmit = () => {
   console.log("checkKeys", checkKeys);
 };
 
-defineExpose({ refresh: getData, delete: delChecks });
+const showFilter = () => {
+  sideVisible.value = true;
+};
+
+defineExpose({ refresh: getData });
 </script>
 
 <style lang="less" scoped></style>
