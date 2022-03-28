@@ -46,16 +46,16 @@ export const initBackstageMenu = (router) => {
     const routesStore = useRoutesStore()
     let data = [
       {
-        "menuNameAlias":"平台管理",
-        "menuName":"home.platformManagement",
-        "menuOperation":15,
-        "url":null,
-        "menuUrl":"/platformManagement",
-        "iconCls":null,
-        "component":"PlatformManagement",
-        "parentId":42,
-        "menuType":1,
-        "children":[]
+        "menuNameAlias": "平台管理",
+        "menuName": "home.platformManagement",
+        "menuOperation": 15,
+        "url": null,
+        "menuUrl": "/platformManagement",
+        "iconCls": null,
+        "component": "PlatformManagement",
+        "parentId": 42,
+        "menuType": 1,
+        "children": []
       }
     ]
     let fmtRoutes = formatRoutes(data)

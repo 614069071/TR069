@@ -9,7 +9,7 @@
           <a-row :gutter="24">
             <a-col :span="12">
               <a-form-item label="账号角色"
-                           field="username"
+                           field="roleId"
                            required>
                 <a-select v-model="form.roleId"
                           placeholder="Please select ...">

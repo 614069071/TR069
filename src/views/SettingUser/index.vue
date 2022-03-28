@@ -23,27 +23,17 @@
                  @closePops='handleCancelDrawer()'>
         <template v-slot:rightSidePopUpWindow>
           <div>
-            <p>动作类型</p>
+            <p>用户名</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
           <div>
-            <p>动作名称</p>
+            <p>角色</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
           <div>
-            <p>MAC</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>SN</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>状态</p>
+            <p>是否启用</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
@@ -58,14 +48,13 @@
 import Table from './components/table/index.vue'
 import Wrapper from '@/components/wrapper/index.vue'
 import CreatePermission from './components/add-perssions/index.vue'
-import RightSide from '@/components/rightSidePopUpBox/index.vue'
+// import RightSide from '@/components/rightSidePopUpBox/index.vue'
 import { ref } from 'vue'
 export default {
   components: {
     Wrapper,
     Table,
-    CreatePermission,
-    RightSide
+    CreatePermission
   },
   setup(props, context) {
     const showBreadCrumb = ref(false)
@@ -96,15 +85,15 @@ export default {
           enabled: false
         }
         titles.value = '添加用户'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '添加用户']
+        breadList.value = ['系统设置', '用户权限管理', '用户管理', '添加用户']
       } else if (data != '添加用户' && !type) {
         form.value = data
         titles.value = '修改'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '修改']
+        breadList.value = ['系统设置', '用户权限管理', '用户管理', '修改']
       } else {
         form.value = data
         titles.value = '详情'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '详情']
+        breadList.value = ['系统设置', '用户权限管理', '用户管理', '详情']
       }
     }
     const hideBreadCrumb = (data) => {

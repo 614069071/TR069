@@ -100,7 +100,6 @@ export default {
   methods: {
     async getData() {
       let params = { page: this.current, size: this.pageSize }
-
       const dataInfo = await invitationCodeManagement.getInvitation(params)
       dataInfo.data.forEach((element, index) => {
         element.index = index + 1

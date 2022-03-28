@@ -68,7 +68,7 @@ class SetUser {
     const { data } = await this.service({
       url: '/user',
       method: 'get',
-      data: params,
+      params: params,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
@@ -135,7 +135,7 @@ class RoleManagement {
     const { data } = await this.service({
       url: '/role',
       method: 'get',
-      data: params,
+      params: params,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8'
       },
@@ -189,10 +189,7 @@ class InvitationCodeManagement {
     const { data } = await this.service({
       url: '/invitation',
       method: 'get',
-      data: params,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
-      }
+      params: params
     }, 'platform')
     return data
   }

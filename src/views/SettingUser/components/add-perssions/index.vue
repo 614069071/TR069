@@ -58,7 +58,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-item label="描述"
-                             required>
+                             >
                   <a-textarea v-model="form.description"
                               placeholder="Please enter something"
                               allow-clear />

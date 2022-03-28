@@ -72,15 +72,15 @@ export default {
           selectedPermissions: []
         }
         titles.value = '添加角色'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '添加角色']
+        breadList.value = ['系统设置', '用户权限管理', '角色管理', '添加角色']
       } else {
         data.selectedPermissions = []
         data.permissions.forEach((item) => {
           data.selectedPermissions.push(item.permissionId)
         })
         form.value = data
-        titles.value = '详情'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '详情']
+        titles.value = '修改'
+        breadList.value = ['系统设置', '用户权限管理', '角色管理', '修改']
       }
     }
     const hideBreadCrumb = (data) => {

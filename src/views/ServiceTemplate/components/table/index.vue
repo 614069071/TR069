@@ -9,11 +9,17 @@
                           width="60"
                           data-index="index"></a-table-column>
           <a-table-column title="业务名称"
-                          data-index="invitationCode"></a-table-column>
+                          data-index="profileName"></a-table-column>
           <a-table-column title="模板成员"
-                          data-index="createBy"></a-table-column>
+                          data-index="createBy">
+            <template #cell="{ record }">
+              <span v-for="val in record.actionList"
+                    :key="val.id">{{val.name}},</span>
+
+            </template>
+          </a-table-column>
           <a-table-column title="备注"
-                          data-index="createBy"></a-table-column>
+                          data-index="remark"></a-table-column>
           <a-table-column title="状态">
             <template #cell="{ record }">
               <div class="cell"
@@ -29,7 +35,7 @@
             <template #cell="{ record }">
               <span @click="handleDetail(record)"
                     class="dalst bod">明细</span>
-              <span @click="handleDetail(record)"
+              <span @click="handleClick(record)"
                     class="dalst bod">编辑</span>
               <span class="dalst col"
                     @click="handleDelete(record)">删除</span>
@@ -73,8 +79,8 @@ export default {
   setup(props, context) {
     const current = ref(1)
     const pageSize = ref(15)
-    const paginationData = ref(null)
-    const data = ref(null)
+    const paginationData = ref(0)
+    const data = ref([])
     const visible = ref(false)
     const title = ref('')
     const getData = async () => {
@@ -85,26 +91,30 @@ export default {
         status: ''
       }
       const dataInfo = await serviceTemplate.getProfile(params)
-      dataInfo.obj.records.forEach((element, index) => {
+      dataInfo.data.forEach((element, index) => {
         element.index = index + 1
       })
-      data._value = dataInfo.data
-      paginationData._value = dataInfo.total
+      data.value = dataInfo.data
+      paginationData.value = dataInfo.total
     }
     const compareDate = () => {
       return new Date().getTime() > new Date(expiredTime).getTime()
     }
     const handlePage = (size) => {
       current._value = size
-      getData
+      getData()
     }
     const handleSize = (size) => {
       pageSize._value = size
-      getData
+      getData()
     }
     const handleDetail = (record) => {
       title._value = '明细'
       context.emit('showBread', record, true)
+    }
+    const handleClick = (record) => {
+      title._value = '编辑'
+      context.emit('showBread', record)
     }
     const handleCancel = () => {
       visible._value = false
@@ -112,15 +122,15 @@ export default {
     const handleBeforeOk = () => {
       visible._value = false
     }
-    const handleDelete = () => {
-      let params = record.invitationId
+    const handleDelete = (record) => {
+      let params = record.id
       Modal.warning({
         title: '删除',
         content: '是否删除',
         hideCancel: false,
         onOk: async () => {
-          await serviceTemplate.deleteInvitation(params)
-          getData
+          await serviceTemplate.delProfile(params)
+          getData()
         }
       })
     }
@@ -130,8 +140,9 @@ export default {
     return {
       current: 1,
       pageSize: 15,
-      paginationData: null,
-      data: null,
+      paginationData,
+      data,
+      title,
       visible: false,
       getData,
       compareDate,
@@ -140,7 +151,8 @@ export default {
       handleDetail,
       handleCancel,
       handleBeforeOk,
-      handleDelete
+      handleDelete,
+      handleClick 
     }
   }
 }

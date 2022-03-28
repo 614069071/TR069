@@ -7,7 +7,7 @@
                 @submit-success="handleBeforeOk">
           <a-row :gutter="40">
             <a-col :span="8">
-              <a-form-item label="用户名"
+              <a-form-item label="角色名"
                            field="roleNameZh"
                            required
                            :validate-trigger="['change', 'blur']">

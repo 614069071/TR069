@@ -67,6 +67,9 @@ const router = createRouter({
 // 记录路由,刷新页面时后会走这一步
 let hasRoles = true
 router.beforeEach((to, from, next) => {
+  if (to.query.redirect) {
+    hasRoles = true
+  }
   if (to.path === '/' || to.path === '/user/login' || to.path === '/user/register' || to.path === '/user/find-password' || to.path === '/backstageLogin') {
     next()
   } else if (to.path === '/backstage/platformManagement') {// /layout/platformManagement

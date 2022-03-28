@@ -1,5 +1,5 @@
 <template>
-  <Wrapper :title="'平台管理'"
+  <Wrapper :title="'业务模板'"
            :breadList="breadList"
            :showBreadCrumb="showBreadCrumb">
     <template v-slot:operation>
@@ -65,25 +65,22 @@ export default {
       showBreadCrumb.value = true
       if (data == '新增模板') {
         form.value = {
-          createBy: '',
-          description: '',
-          enable: '',
-          expiredTime: '',
-          invitationCode: '',
-          needCheck: '',
-          platformId: '',
-          registerTime: '',
-          roleId: '',
-          userDescription: '',
-          userExpiredTime: '',
-          validTimes: ''
+          profileName: '1111',
+          actionIdArray: [1],
+          remark: '',
+          status: '',
+          isDefault: false,
         }
         titles.value = '新增模板'
-        breadList.value = ['系统设置', '邀请码管理', '用户权限管理', '新增模板']
+        breadList.value = ['终端管理', '模板管理', '业务模板', '新增模板']
+      } else if (data != '新增模板' && !type) {
+        form.value = data
+        titles.value = '编辑'
+        breadList.value = ['终端管理', '模板管理', '业务模板', '编辑']
       } else {
         form.value = data
-        titles.value = '详情'
-        breadList.value = ['系统设置', '邀请码管理', '用户权限管理', '详情']
+        titles.value = '明细'
+        breadList.value = ['终端管理', '模板管理', '业务模板', '明细']
       }
     }
     const hideBreadCrumb = (data) => {

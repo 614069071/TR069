@@ -2,6 +2,7 @@ import axios from 'axios'
 import { h } from 'vue';
 import { Message } from '@arco-design/web-vue';
 import { IconFaceFrownFill } from '@arco-design/web-vue/es/icon';
+import { IconFaceSmileFill } from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/es/message/style/css.js'
 import { getToken, setToken, clearToken } from '@/utils/auth'
 import router from '@/router'
@@ -60,7 +61,14 @@ let httpErrorStatusHandle = (error) => {
     if (error.response.status == 401) {
       message = error.response.data.msg
       clearToken()
-      router.push(`/user/login?redirect=${location.pathname}`)
+      if (location.href.indexOf('?redirect') === -1) {
+        if (location.pathname.indexOf('/backstage') !== -1) {
+          router.push(`/backstageLogin?redirect=${location.pathname}`)
+        } else {
+          router.push(`/user/login?redirect=${location.pathname}`)
+        }
+
+      }
     }
     Message.error({
       id: 'httpInfo',
@@ -131,7 +139,7 @@ function httpRequest(axiosConfig, microserviceIdentification, customOptions) {
           content: response.data.msg,
           duration: 2000,
           position: 'top',
-          icon: () => h(IconFaceFrownFill)
+          icon: () => h(IconFaceSmileFill)
         })
         if (response.data.msg == "注销成功!") {
           clearToken()

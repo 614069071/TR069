@@ -81,14 +81,14 @@ export default {
         titles.value = '生成邀请码'
         breadList.value = [
           '系统设置',
-          '邀请码管理',
           '用户权限管理',
+          '邀请码管理',
           '生成邀请码'
         ]
       } else {
         form.value = data
         titles.value = '详情'
-        breadList.value = ['系统设置', '邀请码管理', '用户权限管理', '详情']
+        breadList.value = ['系统设置', '用户权限管理', '邀请码管理', '详情']
       }
     }
     const hideBreadCrumb = (data) => {

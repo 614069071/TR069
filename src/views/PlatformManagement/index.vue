@@ -23,30 +23,21 @@
                  @closePops='handleCancelDrawer()'>
         <template v-slot:rightSidePopUpWindow>
           <div>
-            <p>动作类型</p>
+            <p>平台名称</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
           <div>
-            <p>动作名称</p>
+            <p>客户编码</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
           <div>
-            <p>MAC</p>
+            <p>启用状态</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
-          <div>
-            <p>SN</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>状态</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
+          
         </template>
       </RightSide>
     </template>

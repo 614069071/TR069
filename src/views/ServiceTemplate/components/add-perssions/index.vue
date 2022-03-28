@@ -1,76 +1,62 @@
 <template>
   <OperationWrapper :title="titles">
     <template v-slot:formContent>
-      <div v-show="titles!='详情'">
-        <div>
-          <div class="asasdads">
-            <div class="addData">
-              <div class="box3">
-                <p> <span class="bz">*</span>账号角色</p>
-                <a-select v-model="form.roleId"
+      <div v-show="titles!='明细'">
+        <a-form layout="vertical"
+                :model="form"
+                @submit-success="handleBeforeOk">
+          <a-row :gutter="40">
+            <a-col :span="8">
+              <a-form-item label="模板名称"
+                           field="profileName">
+                <a-input v-model="form.profileName"
+                         placeholder="please enter..." />
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item label="状态"
+                           field="status"
+                           required>
+                <a-select :size="size"
+                          v-model="form.status"
                           placeholder="Please select ...">
-                  <a-option v-for="role in roleList"
-                            :key="role.roleId"
-                            :label="role.roleNameZh"
-                            :value="role.roleId"></a-option>
-                </a-select>
-              </div>
-              <div class="box3">
-                <p><span class="bz">*</span>账号过期时间</p>
-                <a-date-picker v-model="form.userExpiredTime"
-                               show-time
-                               style="width:360px"
-                               format="YYYY-MM-DD HH:mm:ss" />
-
-              </div>
-              <div class="box6">
-                <p><span class="bz">*</span>账号描述</p>
-                <a-input v-model="form.userDescription"
-                         placeholder="please enter..." />
-              </div>
-              <div class="box3">
-
-                <p><span class="bz">*</span>邀请码有效次数</p>
-                <a-input v-model="form.validTimes"
-                         placeholder="please enter..." />
-              </div>
-              <div class="box3">
-                <p>邀请码过期时间</p>
-                <a-date-picker v-model="form.expiredTime"
-                               show-time
-                               style="width:360px"
-                               format="YYYY-MM-DD HH:mm:ss" />
-              </div>
-              <div class="box6">
-                <p><span class="bz">*</span>邀请码描述</p>
-                <a-input v-model="form.description"
-                         placeholder="please enter..." />
-              </div>
-              <div class="box3">
-                <p>是否需要再次确认</p>
-                <a-select v-model="form.needCheck"
-                          placeholder="Please select ...">
-                  <a-option v-for="item in needCheckList"
+                  <a-option v-for="item in statusList"
                             :key="item.value"
-                            :label="item.label"
-                            :value="item.value"></a-option>
+                            :value="item.value"
+                            :label="item.label"></a-option>
+
                 </a-select>
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <div class="submits">
-          <a-button html-type="submit"
-                    @click="handleCancel">取消</a-button>
-          <a-button html-type="submit"
-                    type="primary"
-                    @click="handleBeforeOk">确定</a-button>
-        </div>
+              </a-form-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-item label="描述">
+                <a-textarea v-model="form.remark"
+                            placeholder="Please enter something"
+                            allow-clear />
+              </a-form-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-item label="配置模板">
+                <a-transfer :data="alternateTemplate"
+                            :model-value="form.actionIdArray"
+                            :title="['备选模板','已选模板']" />
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item>
+                <a-space>
+                  <a-button @click="handleCancel">取消</a-button>
+                  <a-button html-type="submit"
+                            type="primary"
+                            @submit-success="handleBeforeOk">确定</a-button>
+                </a-space>
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
       </div>
       <div>
-        <div v-show="titles=='详情'"
+        <div v-show="titles=='明细'"
              class="outerBox">
           <div class="centerBox">
             <div class="labels"><span class="bz">*</span>邀请码</div>
@@ -115,7 +101,7 @@
 
         </div>
         <a-button html-type="submit"
-                  v-show="titles=='详情'"
+                  v-show="titles=='明细'"
                   @click="handleCancel">取消</a-button>
       </div>
     </template>
@@ -124,11 +110,8 @@
 
 <script>
 import OperationWrapper from '@/components/operation-wrapper/index.vue'
-import {
-  invitationCodeManagement,
-  setUser
-} from '@/services/api/system-settings'
-import { ref, onMounted, reactive, computed } from 'vue'
+import { actionPool,serviceTemplate  } from '@/services/api/terminal-managenent'
+import { ref, onMounted, reactive, watch, toRefs } from 'vue'
 export default {
   components: {
     OperationWrapper
@@ -148,15 +131,27 @@ export default {
   setup(props, context) {
     // let form = reactive(props.formData)
     const menuType = ref([])
-    const roleList = ref([])
-    const needCheckList = ref([
-      { label: '是', value: '1' },
-      { label: '否', value: '0' }
+    const actionIdArray = ref([])
+    const alternateTemplate = ref([])
+    const statusList = ref([
+      { label: '开启', value: 1 },
+      { label: '禁用', value: 0 }
     ])
-    const form = computed(() => reactive(props.formData))
+    const form = ref({})
+    watch(
+      () => toRefs(props.formData),
+      (newValue, oldValue) => {
+        form.value = reactive(props.formData)
+      },
+      { immediate: true }
+    )
     const RoleList = async () => {
-      const dataInfo = await setUser.getRoleList()
-      roleList.value = dataInfo
+      let val = []
+      const dataInfo = await actionPool.actionList()
+      dataInfo.data.forEach((item) => {
+        val.push({ label: item.name, value: item.id })
+      })
+      alternateTemplate.value = val
     }
 
     const cancel = () => {
@@ -166,7 +161,7 @@ export default {
       context.emit('cancelAdd')
     }
     const handleBeforeOk = () => {
-      invitationCodeManagement.newInvitation(form._value).then((data) => {
+      serviceTemplate.postProfile(form._value).then((data) => {
         context.emit('cancelAdd', true)
       })
     }
@@ -174,13 +169,14 @@ export default {
       RoleList()
     })
     return {
-      roleList,
-      needCheckList,
       cancel,
       handleCancel,
       handleBeforeOk,
+      statusList,
+      alternateTemplate,
       form,
-      menuType
+      menuType,
+      actionIdArray
     }
   }
 }
