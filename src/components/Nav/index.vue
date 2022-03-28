@@ -49,7 +49,7 @@ const callback = () => {
     font-weight: 600;
   }
 
-  .nav-bread-wrapper > :deep *:last-child {
+  .nav-bread-wrapper > :deep(*:last-child) {
     color: #1d2129;
     font-weight: 600;
   }
