@@ -1,6 +1,6 @@
 <template>
   <div class="layout-page-view-controls">
-    <NavButton type="primary" size="small" :onClick="addOrder">新增工单</NavButton>
+    <a-button type="primary" size="small" @click="addOrder">新增工单</a-button>
     <a-button type="primary" size="small" @click="bulkImport">批量导入</a-button>
     <a-button type="primary" size="small" @click="delChecks">删除</a-button>
     <a-button type="primary" size="small" @click="showFilter">筛选</a-button>
@@ -100,8 +100,6 @@ const sideVisible = ref(false);
 
 const addOrder = () => {
   emit("change", { action: "add" });
-
-  return function createOrder() {};
 };
 const bulkImport = () => {
   alert("还没做");

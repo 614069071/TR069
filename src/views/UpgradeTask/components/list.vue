@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="layout-page-view-controls">
-      <NavButton type="primary" size="small" :onClick="addTask">创建任务</NavButton>
+      <a-button type="primary" size="small" @click="addTask">创建任务</a-button>
       <a-button type="primary" size="small" @click="showFilter">筛选</a-button>
     </div>
 

@@ -42,15 +42,15 @@ const listChangeHandle = ({ action, data }) => {
   configType.value = action;
 
   if (action === "add") {
-    navigationTo(function addTask() {
+    navigationTo(function addUpgredeTask() {
       configType.value = "list";
     });
   } else if (action === "modify") {
-    navigationTo(function modifyTask() {
+    navigationTo(function modifyUpgredeTask() {
       configType.value = "list";
     });
   } else if (action === "rules") {
-    navigationTo(function rulesTask() {
+    navigationTo(function rulesUpgredeTask() {
       configType.value = "list";
     });
   }

@@ -30,13 +30,15 @@ const comeBack = () => {
 };
 
 const listChangeHandle = ({ action, data }) => {
+  configType.value = action;
   if (action === "add") {
-    configType.value = "add";
+    navigationTo(function preConfigAddTask() {
+      configType.value = "list";
+    });
   } else if (action === "detail") {
-    configType.value = "detail";
     detailData.value = data;
 
-    navigationTo(function preDetail() {
+    navigationTo(function commonDetail() {
       configType.value = "list";
     });
   }
