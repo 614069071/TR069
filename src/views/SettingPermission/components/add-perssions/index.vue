@@ -15,41 +15,39 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
-import OperationWrapper from '@/components/operation-wrapper/index.vue'
-import { addPermission } from '@/services/api/system-settings'
+import { reactive } from "vue";
+import OperationWrapper from "@/components/operation-wrapper/index.vue";
+import { addPermission } from "@/services/api/system-settings";
+import { hideBreadcrumb } from "@/utils/common";
 export default {
   components: {
-    OperationWrapper
+    OperationWrapper,
   },
   setup(props, context) {
     const form = reactive({
-      name: ''
-    })
-    const isAdd = ref(false)
+      name: "",
+    });
+
     const cancel = () => {
-      isAdd.value = false
-      context.emit('cancelAdd', isAdd.value)
-    }
+      hideBreadcrumb();
+    };
 
     const confirmAdd = () => {
-      
       addPermission(form.name).then(res => {
         if (res.data.status == 200) {
-          isAdd.value = true
-          context.emit('cancelAdd', isAdd.value)
+          context.emit("addSuccess");
+          hideBreadcrumb();
         }
-      })
-    }
+      });
+    };
 
     return {
       cancel,
       confirmAdd,
-      isAdd,
-      form
-    }
-  }
-}
+      form,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>

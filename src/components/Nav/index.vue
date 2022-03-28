@@ -1,6 +1,6 @@
 <template>
   <div class="nav-wrapper">
-    <a-breadcrumb v-if="child">
+    <a-breadcrumb v-if="child" class="nav-bread-wrapper">
       <a-breadcrumb-item v-for="item in colles" :key="item">{{ $t(item) }}</a-breadcrumb-item>
       <a-breadcrumb-item style="cursor: pointer" @click.native="callback">{{ $t(last) }}</a-breadcrumb-item>
       <a-breadcrumb-item>{{ $t(child) }}</a-breadcrumb-item>
@@ -46,6 +46,12 @@ const callback = () => {
 
   .nav-title {
     font-size: 16px;
+    font-weight: 600;
+  }
+
+  .nav-bread-wrapper > :deep *:last-child {
+    color: #1d2129;
+    font-weight: 600;
   }
 }
 </style>

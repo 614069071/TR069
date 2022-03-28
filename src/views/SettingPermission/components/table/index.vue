@@ -1,7 +1,5 @@
 <template>
-  <SelfTable :paginationData="tableNums"
-             @changePage="handlePage"
-             @changeSize="handleSize">
+  <SelfTable :paginationData="tableNums" @changePage="handlePage" @changeSize="handleSize">
     <template v-slot:table>
       <a-table :data="tableData" class="table-content" :pagination="false">
         <template #columns>
@@ -22,63 +20,65 @@
 </template>
 
 <script>
-import { ref, toRefs } from 'vue'
-import { useAppStore } from '@/store'
-import { Modal } from '@arco-design/web-vue'
-import { deletePermission } from '@/services/api/system-settings'
-import  SelfTable  from '@/components/self-table/index.vue'
+import { ref, toRefs } from "vue";
+import { useAppStore, useNavigationStore } from "@/store";
+import { Modal } from "@arco-design/web-vue";
+import { deletePermission } from "@/services/api/system-settings";
+import SelfTable from "@/components/self-table/index.vue";
 export default {
   components: {
-    SelfTable
+    SelfTable,
   },
   props: {
     tableData: {
       type: Array,
       default() {
-        []
-      }
+        [];
+      },
     },
     tableNums: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
-  setup(props,context) {
-    let { tableData, tableNums } = toRefs(props)
-    const appStore = useAppStore()
-    const paginationData = ref(0)
-    const showModify = (record) => {
+  setup(props, context) {
+    let { tableData, tableNums } = toRefs(props);
+    const appStore = useAppStore();
+    const navigationStore = useNavigationStore();
+    const paginationData = ref(0);
+    const showModify = record => {
       const row = {
-        operation: 'modify',
-        ...record
-      }
-      appStore.updateSettings({ permissionsModifyRow: row })
-      context.emit('modify')
-    }
-    const showResource = (record) => {
-      appStore.updateShowRightBox(true)
-      appStore.updatePermissionsRow(record)
-    }
-    const showDelete = (record) => {
-      let pid = record.permissionId
+        operation: "modify",
+        ...record,
+      };
+      appStore.updateSettings({ permissionsModifyRow: row });
+      context.emit("modify");
+      navigationStore.updateChild("修改");
+    };
+    const showResource = record => {
+      appStore.updateShowRightBox(true);
+      appStore.updatePermissionsRow(record);
+    };
+    const showDelete = record => {
+      let pid = record.permissionId;
       Modal.warning({
-        title: '删除',
-        content: '请确定是否要删除',
+        title: "删除",
+        content: "请确定是否要删除",
         onOk: () => {
           deletePermission(pid).then(res => {
-             if (res.data.status == 200) {
-               context.emit('deleteSuccess')
-             }
-          })
-        }
-      })
-    }
-    const handlePage = (current) => {
-      context.emit('changePage', current)
-    }
-    const handleSize = (pageSize) => {
-      context.emit('changeSize', pageSize)
-    }
+            if (res.data.status == 200) {
+              context.emit("deleteSuccess");
+            }
+          });
+        },
+      });
+    };
+    const handlePage = current => {
+      context.emit("changePage", current);
+    };
+    const handleSize = pageSize => {
+      context.emit("changeSize1", pageSize);
+    };
 
     return {
       tableData,
@@ -88,56 +88,58 @@ export default {
       handlePage,
       handleSize,
       paginationData,
-      tableNums
-    }
-  }
-}
+      tableNums,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>
 .table-wrapper {
   :deep(.table-content) {
     tbody {
-    .arco-table-tr {
-      .arco-table-td {
-        &:nth-last-of-type(1) {
-          .arco-table-cell {
-            display: flex;
-            .revise,.resource {
-              color: #165DFF;
-              height: 22px;
-              line-height: 22px;
-              position: relative;
-              padding-right: 12px;
-              cursor: pointer;
-            }
-            .resource {
-              padding-left: 12px;
-            }
-            .delete {
-              color: #F53F3F;
-              height: 22px;
-              line-height: 22px;
-              position: relative;
-              padding-left: 12px;
-              cursor: pointer;
-            }
-            .resource::before, .delete::before {
-              content: '';
-              display: block;
-              width: 1px;
-              height: 50%;
-              background: #C4C4C4;
-              position: absolute;
-              left:0px;
-              top: 50%;
-              transform: translateY(-50%);
+      .arco-table-tr {
+        .arco-table-td {
+          &:nth-last-of-type(1) {
+            .arco-table-cell {
+              display: flex;
+              .revise,
+              .resource {
+                color: #165dff;
+                height: 22px;
+                line-height: 22px;
+                position: relative;
+                padding-right: 12px;
+                cursor: pointer;
+              }
+              .resource {
+                padding-left: 12px;
+              }
+              .delete {
+                color: #f53f3f;
+                height: 22px;
+                line-height: 22px;
+                position: relative;
+                padding-left: 12px;
+                cursor: pointer;
+              }
+              .resource::before,
+              .delete::before {
+                content: "";
+                display: block;
+                width: 1px;
+                height: 50%;
+                background: #c4c4c4;
+                position: absolute;
+                left: 0px;
+                top: 50%;
+                transform: translateY(-50%);
+              }
             }
           }
         }
       }
     }
-  }
   }
 }
 </style>

@@ -59,9 +59,9 @@ export default {
     },
   },
   created() {
-    this.loginForm.username = localStorage.getItem("userId");
-    this.loginForm.userPasssword = localStorage.getItem("password");
-    this.isRemenber = localStorage.getItem("userId") ? true : false;
+    this.loginForm.username = localStorage.getItem("superUserId");
+    this.loginForm.userPasssword = localStorage.getItem("superPassword");
+    this.isRemenber = localStorage.getItem("superUserId") ? true : false;
     this.dealCode();
   },
   methods: {
@@ -74,11 +74,11 @@ export default {
     },
     login() {
       if (this.isRemenber) {
-        localStorage.setItem("userId", this.loginForm.username);
-        localStorage.setItem("password", this.loginForm.userPasssword);
+        localStorage.setItem("superUserId", this.loginForm.username);
+        localStorage.setItem("superPassword", this.loginForm.userPasssword);
       } else {
-        localStorage.removeItem("userId");
-        localStorage.removeItem("password");
+        localStorage.removeItem("superUserId");
+        localStorage.removeItem("superPassword");
       }
       sessionStorage.removeItem("routes"); // 登录去掉之前缓存中的菜单数据
       const params = {

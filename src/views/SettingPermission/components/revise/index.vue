@@ -15,57 +15,55 @@
 </template>
 
 <script>
-import { ref, reactive, computed, watch } from 'vue'
-import OperationWrapper from '@/components/operation-wrapper/index.vue'
-import { revisePermission } from '@/services/api/system-settings'
-import { useAppStore } from '@/store'
+import { ref, reactive, computed, watch } from "vue";
+import OperationWrapper from "@/components/operation-wrapper/index.vue";
+import { revisePermission } from "@/services/api/system-settings";
+import { useAppStore } from "@/store";
+import { hideBreadcrumb } from "@/utils/common";
 export default {
   components: {
-    OperationWrapper
+    OperationWrapper,
   },
   setup(props, context) {
-    const appStore = useAppStore()
+    const appStore = useAppStore();
     const form = reactive({
-      name: ''
-    })
-    const isAdd = ref(false)
+      name: "",
+    });
+
     const cancel = () => {
-      isAdd.value = false
-      context.emit('cancelRevise', isAdd.value)
-    }
+      hideBreadcrumb();
+    };
 
     // form.name = computed(() => appStore.permissionsModifyRow.permissionName)
 
     watch(
       () => appStore.permissionsModifyRow,
-      (newVal) => {
-        form.name = newVal.permissionName
+      newVal => {
+        form.name = newVal.permissionName;
       },
       {
         immediate: true,
-        deep: true
+        deep: true,
       }
-    )
-
+    );
 
     const confirmRevise = () => {
-      let pid = appStore.permissionsModifyRow.permissionId
+      let pid = appStore.permissionsModifyRow.permissionId;
       revisePermission(pid, form.name).then(res => {
         if (res.data.status == 200) {
-          isAdd.value = true
-          context.emit('cancelRevise', isAdd.value)
+          context.emit("reviseSuccess");
+          hideBreadcrumb();
         }
-      })
-    }
+      });
+    };
 
     return {
       cancel,
       confirmRevise,
-      isAdd,
-      form
-    }
-  }
-}
+      form,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>
