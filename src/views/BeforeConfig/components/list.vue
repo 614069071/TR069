@@ -39,30 +39,20 @@
   <right-side rightBoxTitle="筛选" :showRightBox="sideVisible" @closePops="sideVisible = false" @reset="formRef.resetFields()" @confirm="search">
     <template v-slot:rightSidePopUpWindow>
       <a-form layout="vertical" :model="condition" ref="formRef">
-        <a-form-item field="state" label="状态">
-          <a-select v-model="condition.state" placeholder="please enter...">
-            <a-option label="启用" value="0"></a-option>
-            <a-option label="禁用" value="1"></a-option>
-          </a-select>
+        <a-form-item field="mac" label="MAC">
+          <a-input v-model="condition.mac" placeholder="please enter..." />
         </a-form-item>
-        <a-form-item label="设备型号">
-          <a-select field="" v-model="condition.value1" placeholder="please enter...">
-            <a-option label="1" value="1"></a-option>
-            <a-option label="2" value="2"></a-option>
-            <a-option label="3" value="3"></a-option>
-          </a-select>
+        <a-form-item field="sn" label="SN">
+          <a-input v-model="condition.sn" placeholder="please enter..." />
         </a-form-item>
-        <a-form-item field="deviceMAC" label="MAC">
-          <a-input v-model="condition.value1" placeholder="please enter..." />
+        <a-form-item field="orderNmuber" label="工单号">
+          <a-input v-model="condition.orderNmuber" placeholder="please enter..." />
         </a-form-item>
-        <a-form-item field="deviceSN" label="SN">
-          <a-input v-model="condition.deviceSN" placeholder="please enter..." />
+        <a-form-item field="startTime" label="起始时间">
+          <a-date-picker show-time format="YYYY-MM-DD hh:mm" v-model="condition.startTime" />
         </a-form-item>
-        <a-form-item field="configId" label="工单号">
-          <a-input v-model="condition.configId" placeholder="please enter..." />
-        </a-form-item>
-        <a-form-item field="startTime" label="执行时间">
-          <a-range-picker @change="" @select="" />
+        <a-form-item field="endTime" label="结束时间">
+          <a-date-picker show-time format="YYYY-MM-DD hh:mm" v-model="condition.endTime" />
         </a-form-item>
       </a-form>
     </template>
@@ -80,7 +70,7 @@
 </template>
 
 <script setup>
-import { getPreConfigColles, delPreConfigItem, delCheckPreConfigItems, filterPreConfigColles } from "@/services/api/jin.api";
+import { delPreConfigItem, delCheckPreConfigItems, filterPreConfigColles } from "@/services/api/jin.api";
 import { ref, reactive, onMounted, computed } from "vue";
 
 const emit = defineEmits(["change"]);
@@ -89,7 +79,7 @@ const pageSize = ref(30);
 const pageTotal = ref(0);
 const colles = ref([]);
 const delCurrentVisible = ref(false);
-const condition = reactive({ state: "", deviceMAC: "", deviceSN: "", configId: "", startTime: "" });
+const condition = reactive({ mac: "", sn: "", orderNmuber: "", startTime: "", endTime: "" });
 const formRef = ref(null);
 let deleteId = null;
 const rowKey = ref("configurationId");
@@ -111,11 +101,10 @@ onMounted(() => {
 });
 
 const getData = () => {
-  let params = { page: current.value, size: pageSize.value };
-
-  getPreConfigColles(params)
+  filterPreConfigColles(condition)
     .then(res => {
-      const { data = [], total } = res.data;
+      const { data, total } = res.data;
+
       pageTotal.value = total;
       data.forEach((e, index) => (e.index = index + 1));
       colles.value = data;
@@ -164,17 +153,9 @@ const actionList = (action, data) => {
   }
 };
 const search = () => {
-  console.log(condition);
+  current.value = 1;
 
-  return;
-
-  filterPreConfigColles(condition)
-    .then(res => {
-      console.log(res);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  getData();
 };
 
 const checkItem = v => {
