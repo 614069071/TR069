@@ -1,42 +1,36 @@
 <template>
-  <Wrapper :title="'角色管理'"
-           :breadList="breadList"
-           :showBreadCrumb="showBreadCrumb">
-    <template v-slot:operation>
-      <a-button type="primary"
-                size="small"
-                @click="addPermission('添加角色')">添加角色</a-button>
-      <a-button type="primary"
-                size="small"
-                @click="filters">筛选</a-button>
-    </template>
-    <template v-slot:contentMain>
-      <CreatePermission v-show="showBreadCrumb"
-                        :titles="titles"
-                        :formData="form"
-                        @cancelAdd="hideBreadCrumb"></CreatePermission>
-      <Table v-show="!showBreadCrumb"
-             @showBread="addPermission"
-             ref="tableData"></Table>
-      <RightSide v-show="drawerVisible"
-                 :showpow="drawerVisible"
-                 @closePops='handleCancelDrawer()'>
-        <template v-slot:rightSidePopUpWindow>
-          <div>
-            <p>角色名称</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>权限集</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
+  <div class="layout-page-view-wrapper">
+    <div class="layout-page-view-controls">
+      <NavButton type="primary"
+                 size="large"
+                 :onClick="createPermission"
+                 v-show="!showBreadCrumb">添加角色</NavButton>
+    </div>
+    <CreatePermission v-show="showBreadCrumb"
+                      :titles="titles"
+                      :formData="form"
+                      @cancelAdd="hideBreadCrumb"></CreatePermission>
+    <Table v-show="!showBreadCrumb"
+           @showBread="showDetail"
+           ref="tableData"></Table>
+    <RightSide v-show="drawerVisible"
+               :showpow="drawerVisible"
+               @closePops='handleCancelDrawer()'>
+      <template v-slot:rightSidePopUpWindow>
+        <div>
+          <p>角色名称</p>
+          <a-input v-model="form.value1"
+                   placeholder="please enter..." />
+        </div>
+        <div>
+          <p>权限集</p>
+          <a-input v-model="form.value1"
+                   placeholder="please enter..." />
+        </div>
 
-        </template>
-      </RightSide>
-    </template>
-  </Wrapper>
+      </template>
+    </RightSide>
+  </div>
 </template>
 
 <script>
@@ -45,7 +39,8 @@ import Table from './components/table/index.vue'
 import Wrapper from '@/components/wrapper/index.vue'
 import CreatePermission from './components/add-perssions/index.vue'
 import RightSide from '@/components/rightSidePopUpBox/index.vue'
-import { ref } from 'vue'
+import { useNavigationStore } from '@/store'
+import { ref, watch } from 'vue'
 export default {
   components: {
     Wrapper,
@@ -60,8 +55,19 @@ export default {
     let titles = ref('')
     const tableData = ref(null)
     let form = ref({})
-    const addPermission = (data) => {
+    const navigationStore = useNavigationStore()
+    const createPermission = (data) => {
       showBreadCrumb.value = true
+      form.value = {
+        description: '',
+        permissions: [],
+        platformId: '',
+        roleName: '',
+        roleNameZh: '',
+        selectedPermissions: []
+      }
+      titles.value = '添加角色'
+      return titles.value
       if (data == '添加角色') {
         form.value = {
           description: '',
@@ -72,21 +78,57 @@ export default {
           selectedPermissions: []
         }
         titles.value = '添加角色'
-        breadList.value = ['系统设置', '用户权限管理', '角色管理', '添加角色']
       } else {
         data.selectedPermissions = []
         data.permissions.forEach((item) => {
           data.selectedPermissions.push(item.permissionId)
         })
         form.value = data
+        for (let val in data) {
+          if (data[val]) {
+            form._value[val] = data[val]
+          } else {
+            form._value[val] = ''
+          }
+        }
         titles.value = '修改'
-        breadList.value = ['系统设置', '用户权限管理', '角色管理', '修改']
+      }
+    }
+    const showDetail = (data, type) => {
+      for (let val in data) {
+        if (data[val]) {
+          form._value[val] = data[val]
+        } else {
+          form._value[val] = ''
+        }
+      }
+      if (!type) {
+        titles.value = '修改'
+        showBreadCrumb.value = true
+        navigationTo(function informationTask() {})
+      } else {
+        titles.value = '详情'
+        showBreadCrumb.value = true
+        navigationTo(function commonDetail() {})
       }
     }
     const hideBreadCrumb = (data) => {
       if (data) tableData._value.getData()
       showBreadCrumb.value = false
+      const navigationStore = useNavigationStore()
+      navigationStore.updateChild(null)
     }
+    watch(
+      () => navigationStore.child,
+      (newVal) => {
+        if (newVal == null) {
+          showBreadCrumb.value = false
+        }
+      },
+      {
+        immediate: true
+      }
+    )
     const filters = (data) => {
       drawerVisible.value = true
     }
@@ -97,11 +139,12 @@ export default {
       drawerVisible.value = false
     }
     return {
-      addPermission,
+      createPermission,
       hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,
+      showDetail,
       showBreadCrumb,
       tableData,
       breadList,

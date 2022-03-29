@@ -1,42 +1,36 @@
 <template>
-  <Wrapper :title="'平台管理'"
-           :breadList="breadList"
-           :showBreadCrumb="showBreadCrumb">
-    <template v-slot:operation>
-      <a-button type="primary"
-                size="small"
-                @click="addPermission('生成邀请码')">生成邀请码</a-button>
-      <a-button type="primary"
-                size="small"
-                @click="filters">筛选</a-button>
-    </template>
-    <template v-slot:contentMain>
-      <CreatePermission v-show="showBreadCrumb"
-                        :titles="titles"
-                        :formData="form"
-                        @cancelAdd="hideBreadCrumb"></CreatePermission>
-      <Table v-show="!showBreadCrumb"
-             @showBread="addPermission"
-             ref="tableData"></Table>
-      <RightSide v-show="drawerVisible"
-                 :showpow="drawerVisible"
-                 @closePops='handleCancelDrawer()'>
-        <template v-slot:rightSidePopUpWindow>
-          <div>
-            <p>创建者</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>状态</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
+  <div class="layout-page-view-wrapper">
+    <div class="layout-page-view-controls">
+      <NavButton type="primary"
+                 size="large"
+                 :onClick="createPermission"
+                 v-show="!showBreadCrumb">生成邀请码</NavButton>
+    </div>
+    <CreatePermission v-show=" showBreadCrumb"
+                      :titles="titles"
+                      :formData="form"
+                      @cancelAdd="hideBreadCrumb"></CreatePermission>
+    <Table v-show="!showBreadCrumb"
+           @showBread="showDetail"
+           ref="tableData"></Table>
+    <RightSide v-show="drawerVisible"
+               :showpow="drawerVisible"
+               @closePops='handleCancelDrawer()'>
+      <template v-slot:rightSidePopUpWindow>
+        <div>
+          <p>创建者</p>
+          <a-input v-model="form.value1"
+                   placeholder="please enter..." />
+        </div>
+        <div>
+          <p>状态</p>
+          <a-input v-model="form.value1"
+                   placeholder="please enter..." />
+        </div>
 
-        </template>
-      </RightSide>
-    </template>
-  </Wrapper>
+      </template>
+    </RightSide>
+  </div>
 </template>
 
 <script>
@@ -45,13 +39,16 @@ import Table from './components/table/index.vue'
 import Wrapper from '@/components/wrapper/index.vue'
 import CreatePermission from './components/add-perssions/index.vue'
 import RightSide from '@/components/rightSidePopUpBox/index.vue'
-import { ref } from 'vue'
+import NavButton from '@/components/Nav/nav-button.vue'
+import { ref, computed, watch } from 'vue'
+import { useNavigationStore } from '@/store'
 export default {
   components: {
     Wrapper,
     Table,
     CreatePermission,
-    RightSide
+    RightSide,
+    NavButton
   },
   setup(props, context) {
     const showBreadCrumb = ref(false)
@@ -61,39 +58,43 @@ export default {
     const breadList = ref([])
     const titles = ref('')
     const form = ref({})
-    const addPermission = (data, type) => {
-      showBreadCrumb.value = true
-      if (data == '生成邀请码') {
-        form.value = {
-          createBy: '',
-          description: '',
-          enable: '',
-          expiredTime: '',
-          invitationCode: '',
-          needCheck: '',
-          platformId: '',
-          registerTime: '',
-          roleId: '',
-          userDescription: '',
-          userExpiredTime: '',
-          validTimes: ''
+    const navigationStore = useNavigationStore()
+    const showDetail = (data) => {
+      for (let val in data) {
+        if (data[val]) {
+          form._value[val] = data[val]
+        } else {
+          form._value[val] = ''
         }
-        titles.value = '生成邀请码'
-        breadList.value = [
-          '系统设置',
-          '用户权限管理',
-          '邀请码管理',
-          '生成邀请码'
-        ]
-      } else {
-        form.value = data
-        titles.value = '详情'
-        breadList.value = ['系统设置', '用户权限管理', '邀请码管理', '详情']
       }
+      titles.value = '详情'
+      showBreadCrumb.value = true
+      navigationTo(function commonDetail() {})
+    }
+    const createPermission = (data, type) => {
+      showBreadCrumb.value = true
+      form.value = {
+        createBy: '',
+        description: '',
+        enable: '',
+        expiredTime: '',
+        invitationCode: '',
+        needCheck: '',
+        platformId: '',
+        registerTime: '',
+        roleId: '',
+        userDescription: '',
+        userExpiredTime: '',
+        validTimes: ''
+      }
+      titles.value = '生成邀请码'
+      return titles.value
     }
     const hideBreadCrumb = (data) => {
       if (data) tableData._value.getData()
       showBreadCrumb.value = false
+      const navigationStore = useNavigationStore()
+      navigationStore.updateChild(null)
     }
     const filters = (data) => {
       drawerVisible.value = true
@@ -104,12 +105,24 @@ export default {
     const handleCancelDrawer = (data) => {
       drawerVisible.value = false
     }
+    watch(
+      () => navigationStore.child,
+      (newVal) => {
+        if (newVal == null) {
+          showBreadCrumb.value = false
+        }
+      },
+      {
+        immediate: true
+      }
+    )
     return {
-      addPermission,
       hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,
+      createPermission,
+      showDetail,
       showBreadCrumb,
       tableData,
       breadList,

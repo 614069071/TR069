@@ -19,6 +19,8 @@
               <a-col :span="8">
                 <a-form-item label="会话超时时间"
                              field="sessionTimeout"
+                             :rules="userTimeout"
+                             :validate-trigger="['change', 'blur']"
                              required>
                   <a-input v-model="form.sessionTimeout"
                            placeholder="please enter..." />
@@ -57,8 +59,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="24">
-                <a-form-item label="描述"
-                             >
+                <a-form-item label="描述">
                   <a-textarea v-model="form.description"
                               placeholder="Please enter something"
                               allow-clear />
@@ -183,6 +184,20 @@ export default {
       form,
       roleList,
       userRules: [
+        {
+          required: true,
+          validator: (value, callback) => {
+            if (value == undefined) {
+              callback('请输入会话超时时间')
+            } else {
+              if (value > 86400 || value > 30) {
+                callback('会话超时时间不正确')
+              }
+            }
+          }
+        }
+      ],
+      userTimeout: [
         {
           required: true,
           validator: async (value, callback) => {

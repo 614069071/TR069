@@ -23,21 +23,30 @@
                  @closePops='handleCancelDrawer()'>
         <template v-slot:rightSidePopUpWindow>
           <div>
-            <p>平台名称</p>
+            <p>动作类型</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
           <div>
-            <p>客户编码</p>
+            <p>动作名称</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
           <div>
-            <p>启用状态</p>
+            <p>MAC</p>
             <a-input v-model="form.value1"
                      placeholder="please enter..." />
           </div>
-          
+          <div>
+            <p>SN</p>
+            <a-input v-model="form.value1"
+                     placeholder="please enter..." />
+          </div>
+          <div>
+            <p>状态</p>
+            <a-input v-model="form.value1"
+                     placeholder="please enter..." />
+          </div>
         </template>
       </RightSide>
     </template>
@@ -90,15 +99,15 @@ export default {
           userTotal: ''
         }
         titles.value = '新增'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '新增']
+        breadList.value = ['系统设置', '系统管理', '平台管理', '新增']
       } else if (data != '新增' && !type) {
         form.value = data
         titles.value = '修改'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '修改']
+        breadList.value = ['系统设置', '系统管理', '平台管理', '修改']
       } else {
         form.value = data
         titles.value = '详情'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '详情']
+        breadList.value = ['系统设置', '系统管理', '平台管理', '详情']
       }
     }
     const hideBreadCrumb = (data) => {

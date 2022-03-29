@@ -102,6 +102,13 @@ export default {
         breadList.value = ['系统设置', '用户权限管理', '权限集管理', '新增']
       } else if (data != '新增' && !type) {
         form.value = data
+        for (let val in data) {
+          if (data[val]) {
+            form._value[val] = data[val]
+          } else {
+            form._value[val] = ''
+          }
+        }
         titles.value = '修改'
         breadList.value = ['系统设置', '用户权限管理', '权限集管理', '修改']
       } else {

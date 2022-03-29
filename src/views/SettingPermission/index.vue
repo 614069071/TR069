@@ -38,11 +38,6 @@ export default {
     const breadList = ref([]);
     const isModify = ref(false);
     const tableNums = ref(0);
-    const addPermission = () => {
-      navigationStore.updateChild("添加权限集");
-      showBreadCrumb.value = true;
-      breadList.value = ["系统设置", "用户权限管理", "权限集管理", "添加权限集"];
-    };
 
     const modify = () => {
       breadList.value = ["系统设置", "用户权限管理", "权限集管理", "修改"];
@@ -103,7 +98,6 @@ export default {
     };
 
     return {
-      addPermission,
       deleteSuccess,
       changePage,
       changeSize1,

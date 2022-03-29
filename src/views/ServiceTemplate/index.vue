@@ -69,12 +69,18 @@ export default {
           actionIdArray: [1],
           remark: '',
           status: '',
-          isDefault: false,
+          isDefault: false
         }
         titles.value = '新增模板'
         breadList.value = ['终端管理', '模板管理', '业务模板', '新增模板']
       } else if (data != '新增模板' && !type) {
-        form.value = data
+        for (let val in data) {
+          if (data[val]) {
+            form._value[val] = data[val]
+          } else {
+            form._value[val] = ''
+          }
+        }
         titles.value = '编辑'
         breadList.value = ['终端管理', '模板管理', '业务模板', '编辑']
       } else {

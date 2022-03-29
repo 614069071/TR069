@@ -42,6 +42,7 @@
                            field="validTimes"
                            required>
                 <a-input v-model="form.validTimes"
+                         type="number"
                          placeholder="please enter..." />
               </a-form-item>
             </a-col>
@@ -102,7 +103,7 @@
           </div>
           <div class="centerBox">
             <div class="labels">账号角色</div>
-            <div class="detail">{{form.userTotal}}</div>
+            <div class="detail">{{form.roleNameZh}}</div>
           </div>
           <div class="centerBox">
             <div class="labels"><span class="bz">*</span>账号过期时间</div>
@@ -186,6 +187,15 @@ export default {
       context.emit('cancelAdd')
     }
     const handleBeforeOk = () => {
+      let dataInfo = form._value
+      roleList._value.forEach((item) => {
+        if (item.roleId == dataInfo.roleId) {
+          dataInfo.roleNameZh = item.roleNameZh
+        }
+      })
+      if (form._value.userExpiredTime < form._value.expiredTime) {
+        return
+      }
       invitationCodeManagement.newInvitation(form._value).then((data) => {
         context.emit('cancelAdd', true)
       })

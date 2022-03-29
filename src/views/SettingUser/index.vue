@@ -1,46 +1,40 @@
 <template>
-  <Wrapper :title="'用户管理'"
-           :breadList="breadList"
-           :showBreadCrumb="showBreadCrumb">
-    <template v-slot:operation>
-      <a-button type="primary"
-                size="small"
-                @click="addPermission('添加用户')">添加用户</a-button>
-      <a-button type="primary"
-                size="small"
-                @click="filters">筛选</a-button>
-    </template>
-    <template v-slot:contentMain>
-      <CreatePermission v-show="showBreadCrumb"
-                        :titles="titles"
-                        :formData="form"
-                        @cancelAdd="hideBreadCrumb"></CreatePermission>
-      <Table v-show="!showBreadCrumb"
-             @showBread="addPermission"
-             ref="tableData"></Table>
-      <RightSide v-show="drawerVisible"
-                 :showpow="drawerVisible"
-                 @closePops='handleCancelDrawer()'>
-        <template v-slot:rightSidePopUpWindow>
-          <div>
-            <p>用户名</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>角色</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>是否启用</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-        </template>
-      </RightSide>
-    </template>
-  </Wrapper>
+  <div class="layout-page-view-wrapper">
+    <div class="layout-page-view-controls">
+      <NavButton type="primary"
+                 size="large"
+                 :onClick="createPermission"
+                 v-show="!showBreadCrumb">添加用户</NavButton>
+    </div>
+    <CreatePermission v-show="showBreadCrumb"
+                      :titles="titles"
+                      :formData="form"
+                      @cancelAdd="hideBreadCrumb"></CreatePermission>
+    <Table v-show="!showBreadCrumb"
+           @showBread="showDetail"
+           ref="tableData"></Table>
+    <RightSide v-show="drawerVisible"
+               :showpow="drawerVisible"
+               @closePops='handleCancelDrawer()'>
+      <template v-slot:rightSidePopUpWindow>
+        <div>
+          <p>用户名</p>
+          <a-input v-model="form.value1"
+                   placeholder="please enter..." />
+        </div>
+        <div>
+          <p>角色</p>
+          <a-input v-model="form.value1"
+                   placeholder="please enter..." />
+        </div>
+        <div>
+          <p>是否启用</p>
+          <a-input v-model="form.value1"
+                   placeholder="please enter..." />
+        </div>
+      </template>
+    </RightSide>
+  </div>
 </template>
 
 <script>
@@ -49,7 +43,8 @@ import Table from './components/table/index.vue'
 import Wrapper from '@/components/wrapper/index.vue'
 import CreatePermission from './components/add-perssions/index.vue'
 // import RightSide from '@/components/rightSidePopUpBox/index.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useNavigationStore } from '@/store'
 export default {
   components: {
     Wrapper,
@@ -64,41 +59,61 @@ export default {
     const tableData = ref(null)
     const titles = ref('')
     const form = ref({})
-    const addPermission = (data, type) => {
+    const navigationStore = useNavigationStore()
+    const createPermission = (data, type) => {
       showBreadCrumb.value = true
-      if (data == '添加用户' && !type) {
-        form.value = {
-          roleId: '',
-          username: '',
-          password: '',
-          parentId: '',
-          platformId: '',
-          enable: 1,
-          avatar: '',
-          email: '',
-          phone: '',
-          registerTime: '',
-          expiredTime: '2099-01-01 00:00:00',
-          firstLogin: 1,
-          sessionTimeout: 600,
-          description: '',
-          enabled: false
+      form.value = {
+        roleId: '',
+        username: '',
+        password: '',
+        parentId: '',
+        platformId: '',
+        enable: 1,
+        avatar: '',
+        email: '',
+        phone: '',
+        registerTime: '',
+        expiredTime: '2099-01-01 00:00:00',
+        firstLogin: 1,
+        sessionTimeout: 600,
+        description: '',
+        enabled: false
+      }
+
+      titles.value = '添加用户'
+      return titles.value
+    
+    }
+    const showDetail = (data, type) => {
+      if (!type) {
+        for (let val in data) {
+          if (data[val]) {
+            form._value[val] = data[val]
+          } else {
+            form._value[val] = ''
+          }
         }
-        titles.value = '添加用户'
-        breadList.value = ['系统设置', '用户权限管理', '用户管理', '添加用户']
-      } else if (data != '添加用户' && !type) {
-        form.value = data
         titles.value = '修改'
-        breadList.value = ['系统设置', '用户权限管理', '用户管理', '修改']
+        showBreadCrumb.value = true
+        navigationTo(function informationTask() {})
       } else {
-        form.value = data
+        for (let val in data) {
+          if (data[val]) {
+            form._value[val] = data[val]
+          } else {
+            form._value[val] = ''
+          }
+        }
         titles.value = '详情'
-        breadList.value = ['系统设置', '用户权限管理', '用户管理', '详情']
+        showBreadCrumb.value = true
+        navigationTo(function commonDetail() {})
       }
     }
     const hideBreadCrumb = (data) => {
       if (data) tableData._value.getData()
       showBreadCrumb.value = false
+      const navigationStore = useNavigationStore()
+      navigationStore.updateChild(null)
     }
     const filters = (data) => {
       drawerVisible.value = true
@@ -109,12 +124,24 @@ export default {
     const handleCancelDrawer = (data) => {
       drawerVisible.value = false
     }
+    watch(
+      () => navigationStore.child,
+      (newVal) => {
+        if (newVal == null) {
+          showBreadCrumb.value = false
+        }
+      },
+      {
+        immediate: true
+      }
+    )
     return {
-      addPermission,
+      createPermission,
       hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,
+      showDetail,
       showBreadCrumb,
       breadList,
       showBreadCrumb,
