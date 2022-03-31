@@ -1,33 +1,25 @@
 <template>
   <div class="layout-page-view-wrapper">
-    <div class="layout-page-view-controls">
-      <NavButton type="primary"
-                 size="large"
-                 :onClick="createPermission"
-                 v-show="!showBreadCrumb">添加角色</NavButton>
+    <div class="layout-page-view-controls" v-show="!showBreadCrumb">
+      <NavButton type="primary" :onClick="createPermission">添加角色</NavButton>
+      <a-button type="primary" @click="filters">筛选</a-button>
     </div>
-    <CreatePermission v-show="showBreadCrumb"
-                      :titles="titles"
-                      :formData="form"
-                      @cancelAdd="hideBreadCrumb"></CreatePermission>
-    <Table v-show="!showBreadCrumb"
-           @showBread="showDetail"
-           ref="tableData"></Table>
-    <RightSide v-show="drawerVisible"
-               :showpow="drawerVisible"
-               @closePops='handleCancelDrawer()'>
+    <CreatePermission v-show="showBreadCrumb" :titles="titles" :formData="form" @cancelAdd="hideBreadCrumb"></CreatePermission>
+    <Table v-show="!showBreadCrumb" @showBread="showDetail" ref="tableData"></Table>
+    <RightSide v-show="!showBreadCrumb && drawerVisible" :showpow="drawerVisible" @closePops="handleCancelDrawer()" @confirm="confirmDrawer()" @reset="resetDrawer()">
       <template v-slot:rightSidePopUpWindow>
         <div>
           <p>角色名称</p>
-          <a-input v-model="form.value1"
-                   placeholder="please enter..." />
+          <a-input v-model="roleName" placeholder="please enter..." />
         </div>
         <div>
           <p>权限集</p>
-          <a-input v-model="form.value1"
-                   placeholder="please enter..." />
+          <a-select :size="size" v-model="permissionIdList" allow-clear placeholder="Please select ..." multiple>
+            <a-option v-for="item in roleList" :key="item.value" :value="item.value" :label="item.label"></a-option>
+          </a-select>
+          <!-- <a-input v-model="permissionIdList"
+                   placeholder="please enter..." /> -->
         </div>
-
       </template>
     </RightSide>
   </div>
@@ -35,125 +27,138 @@
 
 <script>
 // import { putUser, postUser } from '@/services/api/system-settings'
-import Table from './components/table/index.vue'
-import Wrapper from '@/components/wrapper/index.vue'
-import CreatePermission from './components/add-perssions/index.vue'
-import RightSide from '@/components/rightSidePopUpBox/index.vue'
-import { useNavigationStore } from '@/store'
-import { ref, watch } from 'vue'
+import Table from "./components/table/index.vue";
+import Wrapper from "@/components/wrapper/index.vue";
+import { roleManagement } from "@/services/api/system-settings";
+import CreatePermission from "./components/add-perssions/index.vue";
+import RightSide from "@/components/rightSidePopUpBox/index.vue";
+import { useNavigationStore } from "@/store";
+import { ref, watch, onMounted } from "vue";
 export default {
   components: {
     Wrapper,
     Table,
     CreatePermission,
-    RightSide
+    RightSide,
   },
   setup(props, context) {
-    let showBreadCrumb = ref(false)
-    let drawerVisible = ref(false)
-    const breadList = ref([])
-    let titles = ref('')
-    const tableData = ref(null)
-    let form = ref({})
-    const navigationStore = useNavigationStore()
-    const createPermission = (data) => {
-      showBreadCrumb.value = true
+    const showBreadCrumb = ref(false);
+    const drawerVisible = ref(false);
+    const breadList = ref([]);
+    const permissionIdList = ref([]);
+    const titles = ref("");
+    const roleName = ref("");
+    const tableData = ref(null);
+    const form = ref({});
+    const roleList = ref([]);
+    const getRole = async () => {
+      let datas = [];
+      const dataInfo = await roleManagement.getPermissionList();
+      dataInfo.forEach(item => {
+        let dataInfo = { label: item.permissionName, value: item.permissionId };
+        datas.push(dataInfo);
+      });
+      roleList.value = datas;
+    };
+    const navigationStore = useNavigationStore();
+    const createPermission = data => {
+      showBreadCrumb.value = true;
       form.value = {
-        description: '',
+        description: "",
         permissions: [],
-        platformId: '',
-        roleName: '',
-        roleNameZh: '',
-        selectedPermissions: []
-      }
-      titles.value = '添加角色'
-      return titles.value
-      if (data == '添加角色') {
-        form.value = {
-          description: '',
-          permissions: [],
-          platformId: '',
-          roleName: '',
-          roleNameZh: '',
-          selectedPermissions: []
-        }
-        titles.value = '添加角色'
-      } else {
-        data.selectedPermissions = []
-        data.permissions.forEach((item) => {
-          data.selectedPermissions.push(item.permissionId)
-        })
-        form.value = data
-        for (let val in data) {
-          if (data[val]) {
-            form._value[val] = data[val]
-          } else {
-            form._value[val] = ''
-          }
-        }
-        titles.value = '修改'
-      }
-    }
+        platformId: "",
+        roleName: "",
+        roleNameZh: "",
+        selectedPermissions: [],
+      };
+      titles.value = "添加角色";
+      return titles.value;
+    };
     const showDetail = (data, type) => {
+      data.selectedPermissions = [];
+      data.permissions.forEach(item => {
+        data.selectedPermissions.push(item.permissionId);
+      });
       for (let val in data) {
         if (data[val]) {
-          form._value[val] = data[val]
+          form._value[val] = data[val];
         } else {
-          form._value[val] = ''
+          form._value[val] = "";
         }
       }
       if (!type) {
-        titles.value = '修改'
-        showBreadCrumb.value = true
-        navigationTo(function informationTask() {})
+        titles.value = "修改";
+        showBreadCrumb.value = true;
+        navigationTo(function commonModify() {});
       } else {
-        titles.value = '详情'
-        showBreadCrumb.value = true
-        navigationTo(function commonDetail() {})
+        titles.value = "详情";
+        showBreadCrumb.value = true;
+        navigationTo(function commonDetail() {});
       }
-    }
-    const hideBreadCrumb = (data) => {
-      if (data) tableData._value.getData()
-      showBreadCrumb.value = false
-      const navigationStore = useNavigationStore()
-      navigationStore.updateChild(null)
-    }
+    };
+    const hideBreadCrumb = data => {
+      if (data) tableData._value.getData();
+      showBreadCrumb.value = false;
+      drawerVisible.value = false;
+      const navigationStore = useNavigationStore();
+      navigationStore.updateChild(null);
+    };
     watch(
       () => navigationStore.child,
-      (newVal) => {
+      newVal => {
         if (newVal == null) {
-          showBreadCrumb.value = false
+          drawerVisible.value = false;
+          showBreadCrumb.value = false;
         }
       },
       {
-        immediate: true
+        immediate: true,
       }
-    )
-    const filters = (data) => {
-      drawerVisible.value = true
-    }
-    const closeRightSide = (data) => {
-      drawerVisible.value = true
-    }
-    const handleCancelDrawer = (data) => {
-      drawerVisible.value = false
-    }
+    );
+    const filters = () => {
+      drawerVisible.value = true;
+    };
+    const closeRightSide = () => {
+      drawerVisible.value = true;
+    };
+    const handleCancelDrawer = () => {
+      drawerVisible.value = false;
+    };
+    const confirmDrawer = () => {
+      tableData._value.getData({
+        roleName: roleName._value,
+        permissionIdList: permissionIdList._value.toString(),
+      });
+    };
+    const resetDrawer = () => {
+      roleName.value = "";
+      permissionIdList.value = [];
+    };
+    onMounted(() => {
+      getRole();
+    });
     return {
       createPermission,
       hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,
+      confirmDrawer,
+      resetDrawer,
       showDetail,
+      getRole,
+      roleList,
+      roleName,
+      permissionIdList,
       showBreadCrumb,
       tableData,
       breadList,
       titles,
       form,
-      drawerVisible
-    }
-  }
-}
+      drawerVisible,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>

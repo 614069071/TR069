@@ -98,8 +98,13 @@ export default {
     this.getData()
   },
   methods: {
-    async getData() {
-      let params = { page: this.current, size: this.pageSize }
+    async getData(form) {
+      let params = {
+        page: this.current,
+        size: this.pageSize,
+        createBy: form ? form.createBy : '',
+        enable: form ? form.enable : ''
+      }
       const dataInfo = await invitationCodeManagement.getInvitation(params)
       dataInfo.data.forEach((element, index) => {
         element.index = index + 1

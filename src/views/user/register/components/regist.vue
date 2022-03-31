@@ -4,19 +4,19 @@
       <p>注册</p>
       <a-form :model="registForm" layout="vertical" ref="registFormRef">
         <a-form-item field="username" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]" :validate-trigger="['change', 'blur']">
-          <a-input placeholder="请输入用户名" allow-clear v-model="registForm.username" @change="isUserExist" />
+          <a-input placeholder="请输入" allow-clear v-model="registForm.username" @change="isUserExist" />
         </a-form-item>
         <a-form-item field="userPasssword" label="密码" :rules="checkPassword" :validate-trigger="['change', 'blur']">
-          <a-input-password placeholder="请输入密码" allow-clear v-model="registForm.userPasssword" />
+          <a-input-password placeholder="请输入" allow-clear v-model="registForm.userPasssword" />
         </a-form-item>
         <a-form-item field="confirmUserPasssword" label="确认密码" :rules="confirmPasssword" :validate-trigger="['change', 'blur']">
-          <a-input-password placeholder="请输入密码" allow-clear v-model="registForm.confirmUserPasssword" />
+          <a-input-password placeholder="请输入" allow-clear v-model="registForm.confirmUserPasssword" />
         </a-form-item>
         <a-form-item field="invitationCode" label="邀请码" :rules="[{ required: true, message: '请输入邀请码' }]" :validate-trigger="['change', 'blur']">
           <a-input placeholder="请输入邀请码" allow-clear v-model="registForm.invitationCode" />
         </a-form-item>
         <a-form-item field="verifyCode" label="验证码" :rules="[{ required: true, message: '请输入验证码' }]" :validate-trigger="['change', 'blur']">
-          <a-input placeholder="请输入验证码" allow-clear v-model="registForm.verifyCode" />
+          <a-input placeholder="请输入" allow-clear v-model="registForm.verifyCode" />
           <div class="verify-code-box" @click="dealCode">
             <img :src="codeImgUrl" alt="" />
           </div>
@@ -196,7 +196,7 @@ export default {
             .arco-form-item-content-wrapper {
               .arco-form-item-content {
                 .arco-input-wrapper {
-                  width: 280px;
+                  width: 260px;
                   margin-right: 12px;
                 }
                 .verify-code-box {

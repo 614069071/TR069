@@ -26,6 +26,7 @@
                            required>
                 <a-date-picker v-model="form.userExpiredTime"
                                show-time
+                               :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
                                style="width:360px"
                                format="YYYY-MM-DD HH:mm:ss" />
               </a-form-item>
@@ -40,6 +41,8 @@
             <a-col :span="12">
               <a-form-item label="邀请码有效次数"
                            field="validTimes"
+                           :rules="validTimesRules"
+                           :validate-trigger="['change', 'blur']"
                            required>
                 <a-input v-model="form.validTimes"
                          type="number"
@@ -52,6 +55,7 @@
                            required>
                 <a-date-picker v-model="form.expiredTime"
                                show-time
+                               :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
                                style="width:360px"
                                format="YYYY-MM-DD HH:mm:ss" />
               </a-form-item>
@@ -145,6 +149,8 @@
 
 <script>
 import OperationWrapper from '@/components/operation-wrapper/index.vue'
+import { Message } from '@arco-design/web-vue'
+import dayjs from 'dayjs';
 import {
   invitationCodeManagement,
   setUser
@@ -187,13 +193,23 @@ export default {
       context.emit('cancelAdd')
     }
     const handleBeforeOk = () => {
+      let message = ''
       let dataInfo = form._value
       roleList._value.forEach((item) => {
         if (item.roleId == dataInfo.roleId) {
           dataInfo.roleNameZh = item.roleNameZh
         }
       })
-      if (form._value.userExpiredTime < form._value.expiredTime) {
+      if (form._value.userExpiredTime > form._value.expiredTime) {
+        message = '日期不正确'
+      }
+      if (message) {
+        Message.error({
+          id: 'httpInfo',
+          content: message,
+          duration: 2000,
+          position: 'top'
+        })
         return
       }
       invitationCodeManagement.newInvitation(form._value).then((data) => {
@@ -210,7 +226,18 @@ export default {
       handleCancel,
       handleBeforeOk,
       form,
-      menuType
+      menuType,
+      dayjs,
+      validTimesRules: [
+        {
+          required: true,
+          validator: async (value, callback) => {
+            if (value < 1) {
+              callback('次数需大于0')
+            }
+          }
+        }
+      ]
     }
   }
 }

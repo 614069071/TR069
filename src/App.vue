@@ -5,28 +5,28 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import enUS from '@arco-design/web-vue/es/locale/lang/en-us';
-import zhCN from '@arco-design/web-vue/es/locale/lang/zh-cn';
-import useLocale from '@/hooks/locale'
+import { computed } from "vue";
+import enUS from "@arco-design/web-vue/es/locale/lang/en-us";
+import zhCN from "@arco-design/web-vue/es/locale/lang/zh-cn";
+import useLocale from "@/hooks/locale";
 export default {
   setup() {
-    const { currentLocale } = useLocale()
+    const { currentLocale } = useLocale();
     const locale = computed(() => {
       switch (currentLocale.value) {
-        case 'zh-CN':
-          return zhCN
-        case 'en-US':
-          return enUS
+        case "zh-CN":
+          return zhCN;
+        case "en-US":
+          return enUS;
         default:
-          return zhCN
+          return zhCN;
       }
-    })
+    });
     return {
       locale,
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
 <style>

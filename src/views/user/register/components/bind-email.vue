@@ -16,7 +16,7 @@
           </a-input>
         </a-form-item>
         <a-form-item field="verifyCode" label="验证码" :rules="[{ required: true, message: '请输入验证码' }]" :validate-trigger="['change', 'blur']">
-          <a-input placeholder="请输入验证码" allow-clear v-model="emailForm.verifyCode" />
+          <a-input placeholder="请输入" allow-clear v-model="emailForm.verifyCode" />
           <a-button type="primary" size="large" :disabled="disableResend" :class="{ inactive: isInactive }" @click="sendCode">{{ countDown }}{{ sendCodeDesc }}</a-button>
         </a-form-item>
         <a-form-item>
@@ -128,7 +128,6 @@ export default {
   justify-content: center;
 
   :deep(.email-form) {
-    width: 280px;
     min-width: 280px;
     margin-top: 206px;
 
@@ -151,10 +150,11 @@ export default {
             .arco-form-item-content-wrapper {
               .arco-form-item-content {
                 .arco-input-wrapper {
-                  width: 178px;
+                  width: 258px;
                   margin-right: 12px;
                 }
                 .arco-btn {
+                  width: 90px;
                   background: #165dff;
                   font-size: 12px;
                   font-family: PingFangSC-Regular, PingFang SC;

@@ -66,7 +66,7 @@ class SetUser {
   }
   async getUser(params) {
     const { data } = await this.service({
-      url: '/user',
+      url: '/user/getUserPage',
       method: 'get',
       params: params,
       headers: {
@@ -109,6 +109,14 @@ class SetUser {
     }, 'platform')
     return data
   }
+  async putchangePassword(params) {
+    const { data } = await this.service({
+      url: '/user/password',
+      method: 'put',
+      data: params,
+    }, 'platform')
+    return data
+  }
   async deleteUser(params) {
     const { data } = await this.service({
       url: `/user/${params}`,
@@ -124,6 +132,13 @@ class SetUser {
     }, 'platform')
     return data
   }
+  // async judgmentEmail(params) {
+  //   const { data } = await this.service({
+  //     url: `/user/duplicateChecking?username=${params}`,
+  //     method: 'get'
+  //   }, 'platform')
+  //   return data
+  // }
 }
 //角色管理页面接口
 class RoleManagement {
@@ -133,7 +148,7 @@ class RoleManagement {
   }
   async getRole(params) {
     const { data } = await this.service({
-      url: '/role',
+      url: '/role/getRolePage',
       method: 'get',
       params: params,
       headers: {
@@ -187,7 +202,7 @@ class InvitationCodeManagement {
   }
   async getInvitation(params) {
     const { data } = await this.service({
-      url: '/invitation',
+      url: '/invitation/getInvitationPage',
       method: 'get',
       params: params
     }, 'platform')

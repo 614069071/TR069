@@ -10,9 +10,19 @@
               <a-col :span="8">
                 <a-form-item label="用户名"
                              field="username"
-                             :rules="userRules"
+                             :rules="titles=='添加用户'?userRules:[]"
                              :validate-trigger="['change', 'blur']">
                   <a-input v-model="form.username"
+                           :disabled="titles!='添加用户'"
+                           placeholder="please enter..." />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8"
+                     v-if="titles=='添加用户'">
+                <a-form-item label="密码"
+                             field="password"
+                             required>
+                  <a-input v-model="form.password"
                            placeholder="please enter..." />
                 </a-form-item>
               </a-col>
@@ -24,13 +34,15 @@
                              required>
                   <a-input v-model="form.sessionTimeout"
                            placeholder="please enter..." />
+                  <div class="units">S</div>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="过期时间"
                              field="expiredTime"
                              required>
-                  <a-date-picker v-model="form.expiredTime" />
+                  <a-date-picker v-model="form.expiredTime"
+                                 :disabled="userId==form.username" />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
@@ -38,6 +50,7 @@
                              field="roleId"
                              required>
                   <a-select v-model="form.roleId"
+                            :disabled="userId==form.username"
                             placeholder="Please select ...">
                     <a-option v-for="role in roleList"
                               :key="role.roleId"
@@ -47,7 +60,11 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="电子邮箱">
+                <a-form-item label="电子邮箱"
+                             field="email"
+                             :rules="emailRules"
+                             :validate-trigger="['change', 'blur']"
+                             required>
                   <a-input v-model="form.email"
                            placeholder="please enter..." />
                 </a-form-item>
@@ -80,35 +97,35 @@
         </div>
       </div>
       <div>
-        <div v-show="titles=='详情'"
+        <div v-if="titles=='详情'"
              class="outerBox">
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>用户名</div>
+            <div class="labels">用户名</div>
             <div class="detail">{{form.username}}</div>
           </div>
-          <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>密码</div>
+          <!-- <div class="centerBox">
+            <div class="labels">密码</div>
             <div class="detail">{{form.password}}</div>
-          </div>
+          </div> -->
           <div class="centerBox">
             <div class="labels">过期时间</div>
             <div class="detail">{{form.registerTime}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>角色</div>
-            <div class="detail">{{form.roleId}}</div>
+            <div class="labels">角色</div>
+            <div class="detail">{{form.role?form.role.roleNameZh:''}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>会话超时时间</div>
+            <div class="labels">会话超时时间</div>
             <div class="detail">{{form.sessionTimeout}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>电话号码</div>
-            <div class="detail">{{form.timeZone}}</div>
+            <div class="labels">电话号码</div>
+            <div class="detail">{{form.phone}}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>电子邮箱</div>
-            <div class="detail1">{{form.email}}</div>
+            <div class="labels">电子邮箱</div>
+            <div class="detail">{{form.email}}</div>
           </div>
 
           <div class="centerBox">
@@ -143,16 +160,19 @@ export default {
       default() {
         return {}
       }
+    },
+    roleListData: {
+      type: Array,
+      default() {
+        return {}
+      }
     }
   },
   setup(props, context) {
-    // let form = reactive(props.formData)
-    const roleList = ref([])
+    const userId = ref(localStorage.getItem('userId'))
+    const roleList =computed(() => reactive(props.roleListData))
     const form = computed(() => reactive(props.formData))
-    const RoleList = async () => {
-      const dataInfo = await setUser.getRoleList()
-      roleList.value = dataInfo
-    }
+    console.log();
     const cancel = () => {
       context.emit('cancelAdd')
     }
@@ -174,30 +194,30 @@ export default {
         })
       }
     }
-    onMounted(() => {
-      RoleList()
-    })
     return {
       cancel,
       handleCancel,
       handleBeforeOk,
       form,
       roleList,
-      userRules: [
+      userId,
+      userTimeout: [
         {
           required: true,
           validator: (value, callback) => {
             if (value == undefined) {
               callback('请输入会话超时时间')
             } else {
-              if (value > 86400 || value > 30) {
+              console.log(value)
+              console.log(value < 86400 && value > 30)
+              if (value > 86400 && value < 30) {
                 callback('会话超时时间不正确')
               }
             }
           }
         }
       ],
-      userTimeout: [
+      userRules: [
         {
           required: true,
           validator: async (value, callback) => {
@@ -208,6 +228,19 @@ export default {
               if (data.obj) {
                 callback('用户名已存在')
               }
+            }
+          }
+        }
+      ],
+      emailRules: [
+        {
+          required: true,
+          validator: async (value, callback) => {
+            var reg = new RegExp(
+              '^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$'
+            )
+            if (!reg.test(value)) {
+              callback('请输入正确邮箱')
             }
           }
         }
@@ -272,5 +305,12 @@ export default {
       border: 1px solid #e5e6eb;
     }
   }
+}
+.units {
+  width: 30px;
+  text-align: center;
+}
+:deep(.arco-picker-size-medium) {
+  width: 100%;
 }
 </style>

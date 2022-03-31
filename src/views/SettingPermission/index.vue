@@ -18,7 +18,7 @@ import CreatePermission from "./components/add-perssions/index.vue";
 import Revise from "./components/revise/index.vue";
 import Resource from "./components/resource/index.vue";
 import { getPermissionListApi } from "@/services/api/system-settings";
-import { useAppStore, useNavigationStore } from "@/store";
+import { useNavigationStore } from "@/store";
 import NavButton from "@/components/Nav/nav-button.vue";
 
 export default {
@@ -31,18 +31,13 @@ export default {
     NavButton,
   },
   setup() {
-    const appStore = useAppStore();
     const operationType = ref("");
     const navigationStore = useNavigationStore();
-    let showBreadCrumb = ref(false);
-    const breadList = ref([]);
     const isModify = ref(false);
     const tableNums = ref(0);
 
     const modify = () => {
-      breadList.value = ["系统设置", "用户权限管理", "权限集管理", "修改"];
       isModify.value = true;
-      showBreadCrumb.value = true;
     };
 
     const deleteSuccess = () => {
@@ -107,8 +102,6 @@ export default {
       addSuccess,
       operationType,
       child,
-      showBreadCrumb,
-      breadList,
       tableData,
       isModify,
       tableNums,

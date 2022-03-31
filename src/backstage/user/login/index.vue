@@ -143,7 +143,7 @@ export default {
             .arco-form-item-content-wrapper {
               .arco-form-item-content {
                 .arco-input-wrapper {
-                  width: 280px;
+                  width: 260px;
                   margin-right: 12px;
                 }
                 .verify-code-box {

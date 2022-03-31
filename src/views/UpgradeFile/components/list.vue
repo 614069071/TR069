@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="layout-page-view-controls">
-      <a-button type="primary" size="small" @click="addUploadFile">上传文件</a-button>
-      <a-button type="primary" size="small" @click="delChecks">删除</a-button>
-      <a-button type="primary" size="small" @click="showFilter">筛选</a-button>
+      <a-button type="primary" @click="addUploadFile">上传文件</a-button>
+      <a-button type="primary" @click="delChecks">删除</a-button>
+      <a-button type="primary" @click="showFilter">筛选</a-button>
     </div>
 
     <a-table

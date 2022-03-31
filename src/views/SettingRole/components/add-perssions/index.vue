@@ -27,6 +27,7 @@
                             :key="item.value"
                             :value="item.value"
                             :label="item.label"></a-option>
+
                 </a-select>
               </a-form-item>
             </a-col>
@@ -79,6 +80,7 @@ export default {
   setup(props, context) {
     const roleList = ref([])
     const form = computed(() => reactive(props.formData))
+    console.log(form)
     const getRole = async () => {
       let datas = []
       const dataInfo = await roleManagement.getPermissionList()
@@ -96,12 +98,12 @@ export default {
     }
     const handleBeforeOk = (done) => {
       let params = form._value
+      params.permissions = []
       params.selectedPermissions.forEach((item) => {
         let dataInfo = { permissionId: item }
         params.permissions.push(dataInfo)
       })
       if (props.titles === '修改') {
-         console.log(props.titles);
         roleManagement.putRole(params).then((data) => {
           context.emit('cancelAdd', true)
           getRole

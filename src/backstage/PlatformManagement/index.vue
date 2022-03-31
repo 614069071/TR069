@@ -1,152 +1,139 @@
 <template>
-  <Wrapper :title="'平台管理'"
-           :breadList="breadList"
-           :showBreadCrumb="showBreadCrumb">
-    <template v-slot:operation>
-      <a-button type="primary"
-                size="small"
-                @click="addPermission('新增')">新增</a-button>
-      <a-button type="primary"
-                size="small"
-                @click="filters">筛选</a-button>
-    </template>
-    <template v-slot:contentMain>
-      <CreatePermission v-show="showBreadCrumb"
-                        :titles="titles"
-                        :formData="form"
-                        @cancelAdd="hideBreadCrumb"></CreatePermission>
-      <Table v-show="!showBreadCrumb"
-             @showBread="addPermission"
-             ref="tableData"></Table>
-      <RightSide v-show="drawerVisible"
-                 :showpow="drawerVisible"
-                 @closePops='handleCancelDrawer()'>
-        <template v-slot:rightSidePopUpWindow>
-          <div>
-            <p>动作类型</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>动作名称</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>MAC</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>SN</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-          <div>
-            <p>状态</p>
-            <a-input v-model="form.value1"
-                     placeholder="please enter..." />
-          </div>
-        </template>
-      </RightSide>
-    </template>
-  </Wrapper>
+  <div class="layout-page-view-wrapper">
+    <div class="layout-page-view-controls" v-show="!child">
+      <NavButton type="primary" size="large" :onClick="addPlatform">新增</NavButton>
+      <a-button type="primary" @click="filters">筛选</a-button>
+    </div>
+    <CreatePermission v-show="child" :titles="titles" :formData="form"></CreatePermission>
+    <Table v-show="!child" @showBread="addPermission" ref="tableData"></Table>
+    <RightSide v-show="drawerVisible" :showpow="drawerVisible" @closePops="handleCancelDrawer()" @confirm="confirmDrawer()" @reset="resetDrawer()">
+      <template v-slot:rightSidePopUpWindow>
+        <div>
+          <p>平台名称</p>
+          <a-input v-model="platformName" placeholder="please enter..." />
+        </div>
+        <div>
+          <p>启用状态</p>
+          <a-select v-model="enable" allow-clear placeholder="please enter...">
+            <a-option label="启用" value="1"></a-option>
+            <a-option label="禁用" value="0"></a-option>
+          </a-select>
+        </div>
+      </template>
+    </RightSide>
+  </div>
 </template>
 
 <script>
 // import { putUser, postUser } from '@/services/api/system-settings'
-import Table from './components/table/index.vue'
-import Wrapper from '@/components/wrapper/index.vue'
-import CreatePermission from './components/add-perssions/index.vue'
-import RightSide from '@/components/rightSidePopUpBox/index.vue'
-import { ref } from 'vue'
+import { computed } from "vue";
+import Table from "./components/table/index.vue";
+import Wrapper from "@/components/wrapper/index.vue";
+import CreatePermission from "./components/add-perssions/index.vue";
+import RightSide from "@/components/rightSidePopUpBox/index.vue";
+import { ref } from "vue";
+import { useNavigationStore } from "@/store";
+import NavButton from "@/components/Nav/nav-button.vue";
 export default {
   components: {
     Wrapper,
     Table,
     CreatePermission,
-    RightSide
+    RightSide,
+    NavButton,
   },
   setup(props, context) {
-    let showBreadCrumb = ref(false)
-    let drawerVisible = ref(false)
-    let showRightBox = ref(false)
-    let refreshData = ref(false)
-    const breadList = ref([])
-    const tableData = ref(null)
-    let titles = ref('')
-    let form = ref({})
+    const navigationStore = useNavigationStore();
+    const drawerVisible = ref(false);
+    const showRightBox = ref(false);
+    const refreshData = ref(false);
+    const tableData = ref(null);
+    const titles = ref("");
+    const platformName = ref("");
+    const enable = ref("");
+    const form = ref({});
     const addPermission = (data, type) => {
-      showBreadCrumb.value = true
-      if (data == '新增' && !type) {
-        form.value = {
-          description: '',
-          deviceOnline: '',
-          deviceTotal: '',
-          enable: '',
-          expiredTime: '',
-          identificationCode: '',
-          logo: '',
-          maxUser: '',
-          menuType: '',
-          platformCode: '',
-          platformName: '',
-          registerTime: '',
-          rootPassword: '',
-          rootUsername: '',
-          timeZone: '',
-          userOnline: '',
-          userTotal: ''
-        }
-        titles.value = '新增'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '新增']
-      } else if (data != '新增' && !type) {
-        form.value = data
+      if (data != "新增" && !type) {
+        form.value = data;
         for (let val in data) {
           if (data[val]) {
-            form._value[val] = data[val]
+            form._value[val] = data[val];
           } else {
-            form._value[val] = ''
+            form._value[val] = "";
           }
         }
-        titles.value = '修改'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '修改']
+        titles.value = "修改";
+        navigationStore.updateChild("修改");
       } else {
-        form.value = data
-        titles.value = '详情'
-        breadList.value = ['系统设置', '用户权限管理', '权限集管理', '详情']
+        form.value = data;
+        titles.value = "详情";
+        navigationStore.updateChild("详情");
       }
-    }
-    const hideBreadCrumb = (data) => {
-      if (data) tableData._value.getData()
-      showBreadCrumb.value = false
-    }
-    const filters = (data) => {
-      drawerVisible.value = true
-    }
-    const closeRightSide = (data) => {
-      drawerVisible.value = true
-    }
-    const handleCancelDrawer = (data) => {
-      drawerVisible.value = false
-    }
+    };
+
+    const filters = data => {
+      drawerVisible.value = true;
+    };
+    const closeRightSide = data => {
+      drawerVisible.value = true;
+    };
+    const handleCancelDrawer = data => {
+      drawerVisible.value = false;
+    };
+    const confirmDrawer = () => {
+      tableData._value.getData({
+        platformName: platformName._value,
+        enable: enable._value,
+      });
+    };
+    const resetDrawer = () => {
+      platformName.value = "";
+      enable.value = [];
+    };
+    let child = computed(() => navigationStore.child);
+    const addPlatform = () => {
+      titles.value = "新增";
+      form.value = {
+        description: "",
+        deviceOnline: "",
+        deviceTotal: "",
+        enable: 1,
+        expiredTime: "",
+        identificationCode: "",
+        logo: "",
+        maxUser: "",
+        menuType: "",
+        platformCode: "",
+        platformName: "",
+        registerTime: "",
+        rootPassword: "",
+        rootUsername: "",
+        timeZone: "",
+        userOnline: "",
+        userTotal: "",
+      };
+      return "platform.add";
+    };
     return {
       addPermission,
-      hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,
-      showBreadCrumb,
+      resetDrawer,
+      confirmDrawer,
+      addPlatform,
+      child,
+      platformName,
+      enable,
       refreshData,
-      breadList,
       titles,
       form,
       tableData,
       drawerVisible,
-      showRightBox
-    }
-  }
-}
+      showRightBox,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>

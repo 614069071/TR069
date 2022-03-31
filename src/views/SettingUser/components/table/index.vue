@@ -55,16 +55,26 @@
       <Pagination :paginationData="paginationData"
                   @changePage="handlePage"
                   @changeSize="handleSize"></Pagination>
-      <a-modal v-model="visible"
+      <a-modal v-model:visible="visible"
                @cancel="handleCancel"
                @before-ok="handleBeforeOk">
         <template #title>
           修改密码
         </template>
-        <a-input v-model="username"
-                 type="password"
-                 placeholder="please enter..." />
+        <div class="changePasswordCss">
+          <span class="label">密码</span>
+          <a-input v-model="Password"
+                   type="password"
+                   placeholder="please enter..." />
+        </div>
+        <div class="changePasswordCss">
+          <span class="label">确认密码</span>
+          <a-input v-model="confirmPassword"
+                   type="password"
+                   placeholder="please enter..." />
+        </div>
       </a-modal>
+
     </div>
   </div>
 </template>
@@ -73,6 +83,7 @@ import { setUser } from '@/services/api/system-settings'
 import Pagination from '@/components/pagination/index.vue'
 import { Modal } from '@arco-design/web-vue'
 import RightSide from '@/components/rightSidePopUpBox/index.vue'
+import { Message } from '@arco-design/web-vue'
 export default {
   props: {
     drawerVisible: {
@@ -93,25 +104,37 @@ export default {
       roleList: [],
       paginationData: null,
       data: null,
-      visible: false
+      visible: false,
+      visiblePassword: false,
+      Password: '',
+      confirmPassword: '',
+      recordForm: {}
     }
   },
   mounted() {
-    this.getRole()
     this.getData()
   },
   methods: {
     async getRole() {
       const dataInfo = await setUser.getRoleList()
-      this.roleList = dataInfo
+      return dataInfo
     },
-    async getData() {
-      let params = { page: this.current, size: this.pageSize }
+    async getData(forms) {
+      const roleList = await this.getRole()
+      let params = {
+        page: this.current,
+        size: this.pageSize,
+        username: forms ? forms.username : '',
+        roleId: forms ? forms.roleId : '',
+        online: forms ? forms.online : ''
+      }
+      console.log(forms)
       const dataInfo = await setUser.getUser(params)
       dataInfo.data.forEach((element, index) => {
         element.index = index + 1
+        console.log()
         element.enableType = element.enable == 0 ? '0' : '1'
-        this.roleList.forEach((data) => {
+        roleList.forEach((data) => {
           if (element.roleId == data.roleId) {
             element.roleNameZh = data.roleNameZh
           }
@@ -147,14 +170,27 @@ export default {
       this.title = '详情'
       this.$emit('showBread', record, true)
     },
-    changePassword() {
+    changePassword(record) {
+      this.recordForm = record
       this.visible = true
     },
     handleCancel() {
       this.visible = false
     },
     handleBeforeOk() {
-      this.visible = false
+      if (this.Password !== this.confirmPassword) {
+        Message.error({
+          id: 'httpInfo',
+          content: "两次密码不一致",
+          duration: 2000,
+          position: 'top'
+        })
+        return
+      }
+      this.recordForm.password = this.Password
+      setUser.putUser(this.recordForm).then((data) => {
+        this.visible = false
+      })
     },
     handleDelete(record) {
       let params = record.userId
@@ -210,5 +246,18 @@ export default {
 }
 .col {
   color: red;
+}
+.changePasswordCss {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  .label {
+    width: 20%;
+    line-height: 30px;
+    text-align: center;
+  }
+  .arco-input-wrapper {
+    width: 65%;
+  }
 }
 </style>

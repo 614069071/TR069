@@ -1,9 +1,9 @@
 <template>
   <div class="layout-page-view-controls">
-    <a-button type="primary" size="small" @click="addOrder">新增工单</a-button>
-    <a-button type="primary" size="small" @click="bulkImport">批量导入</a-button>
-    <a-button type="primary" size="small" @click="delChecks">删除</a-button>
-    <a-button type="primary" size="small" @click="showFilter">筛选</a-button>
+    <a-button type="primary" @click="addOrder">新增工单</a-button>
+    <a-button type="primary" @click="bulkImport">批量导入</a-button>
+    <a-button type="primary" @click="delChecks">删除</a-button>
+    <a-button type="primary" @click="showFilter">筛选</a-button>
   </div>
 
   <a-table

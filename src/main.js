@@ -18,5 +18,4 @@ app.component(ConfigHeader);
 app.component(ControlButtons);
 app.component('RightSide', rightSidePopUpBox);
 
-
 app.mount('#app')

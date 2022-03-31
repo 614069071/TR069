@@ -61,7 +61,10 @@ if (targetUsers === 'GENERAL_USER') {
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: defaultRoutes
+  routes: defaultRoutes,
+  scrollBehavior(to, from, savedPosition) {
+    history.pushState(null, null, document.URL)
+  }
 })
 
 // 记录路由,刷新页面时后会走这一步

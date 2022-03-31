@@ -71,8 +71,13 @@ export default {
       const dataInfo = await initAllMenu()
       this.roleList = dataInfo
     },
-    async getData() {
-      let params = { username: '', page: this.current, size: this.pageSize }
+    async getData(form) {
+      let params = {
+        roleName: form ? form.roleName : '',
+        page: this.current,
+        size: this.pageSize,
+        permissionIdList: form ? form.permissionIdList :""
+      }
       const dataInfo = await roleManagement.getRole(params)
       dataInfo.data.forEach((element, index) => {
         element.index = index + 1

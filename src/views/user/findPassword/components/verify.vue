@@ -6,11 +6,14 @@
           <a-input placeholder="请输入该账号绑定的邮箱" allow-clear v-model="authenticationForm.authenticationAcount" />
         </a-form-item>
         <a-form-item field="verifyCode" label="验证码" :rules="[{ required: true, message: '请输入验证码' }]" :validate-trigger="['change', 'blur']">
-          <a-input placeholder="请输入验证码" allow-clear v-model="authenticationForm.verifyCode" />
+          <a-input placeholder="请输入" allow-clear v-model="authenticationForm.verifyCode" />
           <a-button type="primary" size="large" :disabled="disableResend" :class="{ inactive: isInactive }" @click="sendCode">{{ countDown }}{{ sendCodeDesc }}</a-button>
         </a-form-item>
         <a-form-item>
           <a-button type="primary" long :class="{ active: isActive }" :disabled="!isActive" @click="confirm">确定</a-button>
+        </a-form-item>
+        <a-form-item>
+          <router-link to="/user/login">返回登录</router-link>
         </a-form-item>
       </a-form>
     </div>
@@ -117,15 +120,33 @@ export default {
 
     .arco-form {
       .arco-form-item {
+        &:nth-last-of-type(1) {
+          .arco-form-item-label-col {
+            display: none;
+          }
+          .arco-form-item-content {
+            justify-content: center !important;
+            min-height: 22px;
+            a {
+              text-decoration: none;
+              font-size: 14px;
+              font-family: PingFangSC-Regular, PingFang SC;
+              font-weight: 400;
+              color: #165dff;
+              line-height: 22px;
+            }
+          }
+        }
         &:nth-child(2) {
           .arco-form-item-wrapper-col {
             .arco-form-item-content-wrapper {
               .arco-form-item-content {
                 .arco-input-wrapper {
-                  width: 178px;
+                  width: 258px;
                   margin-right: 12px;
                 }
                 .arco-btn {
+                  width: 90px;
                   background: #165dff;
                   font-size: 12px;
                   font-family: PingFangSC-Regular, PingFang SC;

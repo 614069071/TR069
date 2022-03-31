@@ -1,86 +1,53 @@
 <template>
   <OperationWrapper :title="titles">
     <template v-slot:formContent>
-      <div v-show="titles!='详情'">
+      <div v-show="titles != '详情'">
         <div>
-          <a-form layout="vertical"
-                  :model="form"
-                  @submit-success="handleBeforeOk">
-            <a-row :gutter="40"
-                   align-items="align">
+          <a-form layout="vertical" :model="form" @submit-success="handleBeforeOk">
+            <a-row :gutter="40" align-items="align">
               <a-col :span="8">
-                <a-form-item label="平台名称"
-                             field="platformName"
-                             required>
-                  <a-input v-model="form.platformName"
-                           placeholder="please enter..." />
+                <a-form-item label="平台名称" field="platformName" required>
+                  <a-input v-model="form.platformName" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="root账号"
-                             field="rootUsername"
-                             required>
-                  <a-input v-model="form.rootUsername"
-                           placeholder="please enter..." />
+                <a-form-item label="root账号" field="rootUsername" required>
+                  <a-input v-model="form.rootUsername" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="最大用户数"
-                             field="userTotal"
-                             required>
-                  <a-input v-model="form.userTotal"
-                           placeholder="please enter..." />
+                <a-form-item label="最大用户数" field="userTotal" :rules="validTimesRules" :validate-trigger="['change', 'blur']" required>
+                  <a-input v-model="form.userTotal" type="number" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="平台编号"
-                             field="identificationCode"
-                             required>
-                  <a-input v-model="form.identificationCode"
-                           placeholder="please enter..." />
+                <a-form-item label="客户编码" required field="platformCode">
+                  <a-input v-model="form.platformCode" placeholder="please enter..." />
+                </a-form-item>
+              </a-col>
+              <a-col :span="8" v-show="titles != '修改'">
+                <a-form-item label="root密码" type="password" field="rootPassword" required>
+                  <a-input v-model="form.rootPassword" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="root密码"
-                             field="rootPassword"
-                             required>
-                  <a-input v-model="form.rootPassword"
-                           placeholder="please enter..." />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item label="时区"
-                             field="timeZone"
-                             required>
-                  <a-select v-model="form.timeZone"
-                            placeholder="Please select ...">
-                    <a-option v-for="role in timeZoneOption"
-                              :key="role.value"
-                              :label="role.value"
-                              :value="role.value"></a-option>
+                <a-form-item label="时区" field="timeZone" required>
+                  <a-select v-model="form.timeZone" placeholder="Please select ...">
+                    <a-option v-for="role in timeZoneOption" :key="role.value" :label="role.value" :value="role.value"></a-option>
                   </a-select>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="有效日期"
-                             field="expiredTime"
-                             required>
-                  <a-date-picker v-model="form.expiredTime"
-                                 show-time
-                                 format="YYYY-MM-DD HH:mm:ss" />
+                <a-form-item label="有效日期" field="expiredTime" required>
+                  <a-date-picker v-model="form.expiredTime" show-time format="YYYY-MM-DD HH:mm:ss" />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="启用"
-                             field="enable">
-                  <a-select v-model="form.enable"
-                            placeholder="Please select ...">
-                    <a-option v-for="item in needCheckList"
-                              :key="item.value"
-                              :label="item.label"
-                              :value="item.value"></a-option>
+                <a-form-item label="启用" field="enable" required>
+                  <a-select v-model="form.enable" default-value="0" placeholder="Please select ...">
+                    <a-option label="是" :value="1"></a-option>
+                    <a-option label="否" :value="0"></a-option>
                   </a-select>
-
                 </a-form-item>
               </a-col>
               <!-- <a-col :span="8">
@@ -128,10 +95,8 @@
                 </a-form-item>
               </a-col> -->
               <a-col :span="16">
-                <a-form-item label="描述"
-                             field="description">
-                  <a-input v-model="form.description"
-                           placeholder="please enter..." />
+                <a-form-item label="描述" field="description">
+                  <a-input v-model="form.description" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
               <!-- <a-col :span="8">
@@ -151,8 +116,7 @@
                 <a-form-item>
                   <a-space>
                     <a-button @click="handleCancel">取消</a-button>
-                    <a-button html-type="submit"
-                              type="primary">确定</a-button>
+                    <a-button html-type="submit" type="primary">确定</a-button>
                   </a-space>
                 </a-form-item>
               </a-col>
@@ -161,211 +125,214 @@
         </div>
       </div>
       <div>
-        <div v-show="titles=='详情'"
-             class="outerBox">
+        <div v-show="titles == '详情'" class="outerBox">
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>平台名称</div>
-            <div class="detail">{{form.platformName}}</div>
+            <div class="labels">平台名称</div>
+            <div class="detail">{{ form.platformName }}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>root账号</div>
-            <div class="detail">{{form.rootUsername}}</div>
+            <div class="labels">root账号</div>
+            <div class="detail">{{ form.rootUsername }}</div>
           </div>
           <div class="centerBox">
             <div class="labels">最大用户数</div>
-            <div class="detail">{{form.userTotal}}</div>
+            <div class="detail">{{ form.userTotal }}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>平台编号</div>
-            <div class="detail">{{form.identificationCode}}</div>
+            <div class="labels">客户编码</div>
+            <div class="detail">{{ form.identificationCode }}</div>
           </div>
-          <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>root密码</div>
+          <!-- <div class="centerBox">
+            <div class="labels">root密码</div>
             <div class="detail">{{form.rootPassword}}</div>
+          </div> -->
+          <div class="centerBox">
+            <div class="labels">时区</div>
+            <div class="detail">{{ form.timeZone }}</div>
           </div>
           <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>时区</div>
-            <div class="detail">{{form.timeZone}}</div>
-          </div>
-          <div class="centerBox">
-            <div class="labels"><span class="bz">*</span>有效日期</div>
-            <div class="detail">{{form.expiredTime}}</div>
+            <div class="labels">有效日期</div>
+            <div class="detail">{{ form.expiredTime }}</div>
           </div>
           <div class="centerBox">
             <div class="labels">创建日期</div>
-            <div class="detail">{{form.registerTime}}</div>
+            <div class="detail">{{ form.registerTime }}</div>
           </div>
           <div class="centerBox">
             <div class="labels">是否启用</div>
-            <div class="detail">{{form.enable}}</div>
+            <div class="detail">{{ form.enable }}</div>
           </div>
-          <div class="centerBox">
+          <!-- <div class="centerBox">
             <div class="labels">上传LOGO</div>
             <div class="detail">{{form.logo}}</div>
-          </div>
+          </div> -->
           <div class="centerBox">
             <div class="labels">描述</div>
-            <div class="detail">{{form.description}}</div>
+            <div class="detail">{{ form.description }}</div>
           </div>
-          <div class="centerBox">
+          <!-- <div class="centerBox">
             <div class="labels"></div>
             <div class="detail"></div>
-          </div>
-
+          </div> -->
         </div>
-        <a-button html-type="submit"
-                  v-show="titles=='详情'"
-                  @click="handleCancel">取消</a-button>
+        <a-button html-type="submit" v-show="titles == '详情'" @click="handleCancel">取消</a-button>
       </div>
     </template>
   </OperationWrapper>
 </template>
 
 <script>
-import OperationWrapper from '@/components/operation-wrapper/index.vue'
-import { platformManagement } from '@/services/api/system-settings'
-import { ref, onMounted, reactive, computed } from 'vue'
+import OperationWrapper from "@/components/operation-wrapper/index.vue";
+import { platformManagement } from "@/services/api/system-settings";
+import { ref, onMounted, reactive, computed, watch, toRefs } from "vue";
+import { hideBreadcrumb } from "@/utils/common";
 export default {
   components: {
-    OperationWrapper
+    OperationWrapper,
   },
   props: {
     titles: {
       type: String,
-      default: ''
+      default: "",
     },
     formData: {
       type: Object,
       default() {
-        return {}
-      }
-    }
+        return {};
+      },
+    },
   },
   setup(props, context) {
     // let form = reactive(props.formData)
-    const menuType = ref([])
+    const menuType = ref([]);
     const timeZoneOption = ref([
       {
-        value: 'GMT-12'
+        value: "GMT-12",
       },
       {
-        value: 'GMT-11'
+        value: "GMT-11",
       },
       {
-        value: 'GMT-10'
+        value: "GMT-10",
       },
       {
-        value: 'GMT-9'
+        value: "GMT-9",
       },
       {
-        value: 'GMT-8'
+        value: "GMT-8",
       },
       {
-        value: 'GMT-7'
+        value: "GMT-7",
       },
       {
-        value: 'GMT-6'
+        value: "GMT-6",
       },
       {
-        value: 'GMT-5'
+        value: "GMT-5",
       },
       {
-        value: 'GMT-4'
+        value: "GMT-4",
       },
       {
-        value: 'GMT-3'
+        value: "GMT-3",
       },
       {
-        value: 'GMT-2'
+        value: "GMT-2",
       },
       {
-        value: 'GMT-1'
+        value: "GMT-1",
       },
       {
-        value: 'GMT'
+        value: "GMT",
       },
       {
-        value: 'GMT+1'
+        value: "GMT+1",
       },
       {
-        value: 'GMT+2'
+        value: "GMT+2",
       },
       {
-        value: 'GMT+3'
+        value: "GMT+3",
       },
       {
-        value: 'GMT+4'
+        value: "GMT+4",
       },
       {
-        value: 'GMT+5'
+        value: "GMT+5",
       },
       {
-        value: 'GMT+6'
+        value: "GMT+6",
       },
       {
-        value: 'GMT+7'
+        value: "GMT+7",
       },
       {
-        value: 'GMT+8'
+        value: "GMT+8",
       },
       {
-        value: 'GMT+9'
+        value: "GMT+9",
       },
       {
-        value: 'GMT+10'
+        value: "GMT+10",
       },
       {
-        value: 'GMT+11'
+        value: "GMT+11",
       },
       {
-        value: 'GMT+12'
-      }
-    ])
-    const file = ref({})
+        value: "GMT+12",
+      },
+    ]);
+    const file = ref({});
     const needCheckList = ref([
-      { label: '是', value: '1' },
-      { label: '否', value: '0' }
-    ])
-    const form = computed(() => reactive(props.formData))
+      { label: "是", value: "1" },
+      { label: "否", value: "0" },
+    ]);
+    const form = computed(() => reactive(props.formData));
+    const { formData } = toRefs(props);
+    watch(
+      () => formData.value,
+      newVal => {
+        console.log("打印form数据");
+        console.log(newVal);
+      }
+    );
+
     const menuTypeList = async () => {
       // const dataInfo = await platformManagement.getPlatformMenuType()
       menuType.value = [
-        { label: 'NMS平台管理', value: '0' },
-        { label: 'TR069终端管理配置菜单', value: '1' }
-      ]
-    }
-    const cancel = () => {
-      context.emit('cancelAdd')
-    }
+        { label: "NMS平台管理", value: "0" },
+        { label: "TR069终端管理配置菜单", value: "1" },
+      ];
+    };
+
     const handleCancel = () => {
-      context.emit('cancelAdd')
-    }
+      hideBreadcrumb();
+    };
     const handleBeforeOk = () => {
-      let title = ref(props.titles).value
-      if (title == '修改') {
-        platformManagement.putPlatform(form._value).then((data) => {
-          context.emit('cancelAdd', true)
-        })
+      let title = ref(props.titles).value;
+      if (title == "修改") {
+        platformManagement.putPlatform(form._value).then(data => {
+          hideBreadcrumb();
+        });
       } else {
-        platformManagement.newPlatform(form._value).then((data) => {
-          context.emit('cancelAdd', true)
-        })
+        platformManagement.newPlatform(form._value).then(data => {
+          hideBreadcrumb();
+        });
       }
-    }
+    };
     const onChange = (_, currentFile) => {
       file.value = {
-        ...currentFile
+        ...currentFile,
         // url: URL.createObjectURL(currentFile.file),
-      }
-    }
-    const onProgress = (currentFile) => {
-      file.value = currentFile
-    }
+      };
+    };
+    const onProgress = currentFile => {
+      file.value = currentFile;
+    };
     onMounted(() => {
-      menuTypeList()
-    })
+      menuTypeList();
+    });
     return {
-      cancel,
       handleCancel,
       handleBeforeOk,
       onProgress,
@@ -374,10 +341,20 @@ export default {
       menuType,
       file,
       needCheckList,
-      timeZoneOption
-    }
-  }
-}
+      timeZoneOption,
+      validTimesRules: [
+        {
+          required: true,
+          validator: async (value, callback) => {
+            if (value < 1) {
+              callback("最大用户数需大于0");
+            }
+          },
+        },
+      ],
+    };
+  },
+};
 </script>
 <style lang="less" scoped>
 .addData {
