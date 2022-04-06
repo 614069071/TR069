@@ -161,7 +161,7 @@ export default {
       context.emit('cancelAdd')
     }
     const handleBeforeOk = () => {
-      serviceTemplate.postProfile(form._value).then((data) => {
+      serviceTemplate.postProfile(form.value).then((data) => {
         context.emit('cancelAdd', true)
       })
     }

@@ -3,8 +3,12 @@
     <div class="regist-form">
       <p>注册</p>
       <a-form :model="registForm" layout="vertical" ref="registFormRef">
-        <a-form-item field="username" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]" :validate-trigger="['change', 'blur']">
-          <a-input placeholder="请输入" allow-clear v-model="registForm.username" @change="isUserExist" />
+        <a-form-item field="username" label="用户名" 
+        :rules="checkUserName" 
+        required
+        :validate-trigger="['change', 'blur']">
+          <a-input placeholder="请输入" 
+          allow-clear v-model="registForm.username" @change="isUserExist" />
         </a-form-item>
         <a-form-item field="userPasssword" label="密码" :rules="checkPassword" :validate-trigger="['change', 'blur']">
           <a-input-password placeholder="请输入" allow-clear v-model="registForm.userPasssword" />
@@ -48,14 +52,32 @@ export default {
       },
       codeImgUrl: "",
       uuid: "",
+      checkUserName: [
+        {
+          validator: async (value, callback) => {
+            var reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/
+            if (value.length < 8 || reg.test(value)) {
+              callback('用户名格式错误，请输入8~50位字符，且不可输入中文')
+            } else {
+              const data = await setUser.judgmentUserName(value)
+              if (data.obj) {
+                callback('用户名已存在')
+              }
+            }
+          }
+        }
+      ],
       checkPassword: [
         {
           required: true,
           validator: (value, cb) => {
             return new Promise(resolve => {
+              var reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/
               if (!value) {
                 cb("请输入密码");
-              } else {
+              } else if (value.length < 8 || reg.test(value)) {
+                cb('密码格式错误，请输入8~50位字符，且不可输入中文')
+              }else {
                 if (this.registForm.confirmUserPasssword) {
                   if (value !== this.registForm.confirmUserPasssword) {
                     this.$refs.registFormRef.setFields({

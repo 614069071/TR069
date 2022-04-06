@@ -33,8 +33,11 @@ export default {
           required: true,
           validator: (value, cb) => {
             return new Promise(resolve => {
+              var reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/
               if (!value) {
                 cb("请输入密码");
+              } else if (value.length < 8 || reg.test(value)) {
+                cb('密码格式错误，请输入8~50位字符，且不可输入中文')
               } else {
                 if (this.passwordForm.confirmUserPasssword) {
                   if (value !== this.passwordForm.confirmUserPasssword) {

@@ -22,8 +22,10 @@
           <a-table-column title="操作">
             <template #cell="{ record }">
               <span @click="handleClick(record)"
+                    v-show="record.createBy!='superadmin'"
                     class="dalst bod">修改</span>
               <span class="dalst col"
+                    v-show="record.parentId!='superadmin'"
                     @click="handleDelete(record)">删除</span>
             </template>
           </a-table-column>
@@ -76,7 +78,7 @@ export default {
         roleName: form ? form.roleName : '',
         page: this.current,
         size: this.pageSize,
-        permissionIdList: form ? form.permissionIdList :""
+        permissionIdList: form ? form.permissionIdList : ''
       }
       const dataInfo = await roleManagement.getRole(params)
       dataInfo.data.forEach((element, index) => {

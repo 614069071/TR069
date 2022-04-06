@@ -18,7 +18,7 @@
 import { reactive } from "vue";
 import OperationWrapper from "@/components/operation-wrapper/index.vue";
 import { addPermission } from "@/services/api/system-settings";
-import { hideBreadcrumb } from "@/utils/common";
+import { hideBreadcrumb, jumpTo } from "@/utils/common";
 export default {
   components: {
     OperationWrapper,
@@ -29,6 +29,7 @@ export default {
     });
 
     const cancel = () => {
+      jumpTo("/layout/setting/permission");
       hideBreadcrumb();
     };
 
@@ -36,6 +37,7 @@ export default {
       addPermission(form.name).then(res => {
         if (res.data.status == 200) {
           context.emit("addSuccess");
+          jumpTo("/layout/setting/permission");
           hideBreadcrumb();
         }
       });

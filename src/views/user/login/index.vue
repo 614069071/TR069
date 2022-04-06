@@ -3,16 +3,10 @@
     <div class="login-form">
       <p>{{ $t("login.title") }}</p>
       <a-form :model="loginForm" layout="vertical">
-        <a-form-item field="username" :label="$t('login.usename')" :rules="[{ required: true, message: `${$t('login.usename.placeholder')}` }]" :validate-trigger="['change', 'blur']" hide-asterisk>
+        <a-form-item field="username" :label="$t('login.usename')" :rules="checkUserName" :validate-trigger="['change', 'blur']" hide-asterisk>
           <a-input :placeholder="$t('login.usename.placeholder')" allow-clear v-model="loginForm.username" />
         </a-form-item>
-        <a-form-item
-          field="userPasssword"
-          :label="$t('login.password')"
-          :rules="[{ required: true, message: `${$t('login.password.placeholder')}` }]"
-          :validate-trigger="['change', 'blur']"
-          hide-asterisk
-        >
+        <a-form-item field="userPasssword" :label="$t('login.password')" :rules="checkPassword" :validate-trigger="['change', 'blur']" hide-asterisk>
           <a-input-password :placeholder="$t('login.password.placeholder')" allow-clear v-model="loginForm.userPasssword" />
         </a-form-item>
         <a-form-item
@@ -53,14 +47,47 @@ export default {
         userPasssword: "",
         verifyCode: "",
       },
+      checkUserName: [
+        {
+          validator: async (value, callback) => {
+            var reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
+            if (value.length < 8 || reg.test(value)) {
+              this.isPassValidate = false;
+              callback("用户名格式错误，请输入8~50位字符，且不可输入中文");
+            } else {
+              this.isPassValidate = true;
+            }
+          },
+        },
+      ],
+      checkPassword: [
+        {
+          required: true,
+          validator: (value, cb) => {
+            return new Promise(resolve => {
+              var reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
+              if (!value) {
+                cb("请输入密码");
+              } else if (value.length < 8 || reg.test(value)) {
+                this.isPassValidate = false;
+                cb("密码格式错误，请输入8~50位字符，且不可输入中文");
+              } else {
+                this.isPassValidate = true;
+              }
+              resolve();
+            });
+          },
+        },
+      ],
       codeImgUrl: "",
       uuid: "",
       isRemenber: false,
+      isPassValidate: true,
     };
   },
   computed: {
     isActive() {
-      return !this.loginForm.username || !this.loginForm.userPasssword || !this.loginForm.verifyCode ? false : true;
+      return !this.loginForm.username || !this.loginForm.userPasssword || !this.loginForm.verifyCode || !this.isPassValidate ? false : true;
     },
   },
   created() {
@@ -99,6 +126,8 @@ export default {
           if (res) {
             let resData = res.data;
             if (resData.obj.firstLogin === 1) {
+              let path = this.$route.query.redirect; // 获取现在的路由，如果没有就跳转到首页
+              this.$router.push(path == "/" || path == undefined ? "/layout/home" : path);
               // TODO: 判断是否第一次登录，第一次登录则直接跳转到修改密码，修改密码页面未设计好，待做
             } else {
               let path = this.$route.query.redirect; // 获取现在的路由，如果没有就跳转到首页

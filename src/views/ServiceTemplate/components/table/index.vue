@@ -85,8 +85,8 @@ export default {
     const title = ref('')
     const getData = async () => {
       let params = {
-        rowSize: current._value,
-        pageSize: pageSize._value,
+        rowSize: current.value,
+        pageSize: pageSize.value,
         profileName: '',
         status: ''
       }
@@ -101,26 +101,26 @@ export default {
       return new Date().getTime() > new Date(expiredTime).getTime()
     }
     const handlePage = (size) => {
-      current._value = size
+      current.value = size
       getData()
     }
     const handleSize = (size) => {
-      pageSize._value = size
+      pageSize.value = size
       getData()
     }
     const handleDetail = (record) => {
-      title._value = '明细'
+      title.value = '明细'
       context.emit('showBread', record, true)
     }
     const handleClick = (record) => {
-      title._value = '编辑'
+      title.value = '编辑'
       context.emit('showBread', record)
     }
     const handleCancel = () => {
-      visible._value = false
+      visible.value = false
     }
     const handleBeforeOk = () => {
-      visible._value = false
+      visible.value = false
     }
     const handleDelete = (record) => {
       let params = record.id

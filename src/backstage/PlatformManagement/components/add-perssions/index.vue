@@ -1,32 +1,32 @@
 <template>
-  <OperationWrapper :title="titles">
+  <OperationWrapper :title="title">
     <template v-slot:formContent>
-      <div v-show="titles != '详情'">
+      <div v-show="title != '详情'">
         <div>
           <a-form layout="vertical" :model="form" @submit-success="handleBeforeOk">
             <a-row :gutter="40" align-items="align">
               <a-col :span="8">
-                <a-form-item label="平台名称" field="platformName" required>
+                <a-form-item label="平台名称" field="platformName" maxLength="50" :validate-trigger="['change', 'blur']" required>
                   <a-input v-model="form.platformName" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
-                <a-form-item label="root账号" field="rootUsername" required>
+              <a-col :span="8" v-if="title == '新增'">
+                <a-form-item label="root账号" field="rootUsername" :rules="chineseVerificationRules" minLength="8" maxLength="50" :validate-trigger="['change', 'blur']" required>
                   <a-input v-model="form.rootUsername" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="最大用户数" field="userTotal" :rules="validTimesRules" :validate-trigger="['change', 'blur']" required>
-                  <a-input v-model="form.userTotal" type="number" placeholder="please enter..." />
+                <a-form-item label="最大用户数" field="maxUser" :rules="validTimesRules" :validate-trigger="['change', 'blur']" required>
+                  <a-input v-model="form.maxUser" type="number" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="客户编码" required field="platformCode">
+                <a-form-item label="客户编码" required :rules="chineseVerificationRules" maxLength="50" :validate-trigger="['change', 'blur']" field="platformCode">
                   <a-input v-model="form.platformCode" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
-              <a-col :span="8" v-show="titles != '修改'">
-                <a-form-item label="root密码" type="password" field="rootPassword" required>
+              <a-col :span="8" v-if="title != '修改'">
+                <a-form-item label="root密码" type="password" field="rootPassword" :rules="chineseVerificationRules" minLength="8" maxLength="50" :validate-trigger="['change', 'blur']" required>
                   <a-input v-model="form.rootPassword" placeholder="please enter..." />
                 </a-form-item>
               </a-col>
@@ -39,12 +39,13 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="有效日期" field="expiredTime" required>
-                  <a-date-picker v-model="form.expiredTime" show-time format="YYYY-MM-DD HH:mm:ss" />
+                  <a-date-picker v-model="form.expiredTime" show-time :disabled="aging" :disabledDate="current => dayjs(current).isBefore(dayjs())" format="YYYY-MM-DD HH:mm:ss" />
+                  <a-checkbox v-model="aging" @change="changeAging">永久</a-checkbox>
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="启用" field="enable" required>
-                  <a-select v-model="form.enable" default-value="0" placeholder="Please select ...">
+                  <a-select v-model="form.enable" placeholder="Please select ...">
                     <a-option label="是" :value="1"></a-option>
                     <a-option label="否" :value="0"></a-option>
                   </a-select>
@@ -125,18 +126,18 @@
         </div>
       </div>
       <div>
-        <div v-show="titles == '详情'" class="outerBox">
+        <div v-show="title == '详情'" class="outerBox">
           <div class="centerBox">
             <div class="labels">平台名称</div>
             <div class="detail">{{ form.platformName }}</div>
           </div>
-          <div class="centerBox">
+          <!-- <div class="centerBox">
             <div class="labels">root账号</div>
             <div class="detail">{{ form.rootUsername }}</div>
-          </div>
+          </div> -->
           <div class="centerBox">
             <div class="labels">最大用户数</div>
-            <div class="detail">{{ form.userTotal }}</div>
+            <div class="detail">{{ form.maxUser }}</div>
           </div>
           <div class="centerBox">
             <div class="labels">客户编码</div>
@@ -160,22 +161,22 @@
           </div>
           <div class="centerBox">
             <div class="labels">是否启用</div>
-            <div class="detail">{{ form.enable }}</div>
+            <div class="detail">{{ form.enable == 1 ? "是" : "否" }}</div>
           </div>
           <!-- <div class="centerBox">
             <div class="labels">上传LOGO</div>
             <div class="detail">{{form.logo}}</div>
           </div> -->
           <div class="centerBox">
-            <div class="labels">描述</div>
-            <div class="detail">{{ form.description }}</div>
+            <div class="labels" style="height: 100px;">描述</div>
+            <div class="detail" style="height: 100px;">{{ form.description }}</div>
           </div>
           <!-- <div class="centerBox">
             <div class="labels"></div>
             <div class="detail"></div>
           </div> -->
         </div>
-        <a-button html-type="submit" v-show="titles == '详情'" @click="handleCancel">取消</a-button>
+        <a-button html-type="submit" v-show="title == '详情'" @click="handleCancel">取消</a-button>
       </div>
     </template>
   </OperationWrapper>
@@ -184,26 +185,16 @@
 <script>
 import OperationWrapper from "@/components/operation-wrapper/index.vue";
 import { platformManagement } from "@/services/api/system-settings";
-import { ref, onMounted, reactive, computed, watch, toRefs } from "vue";
-import { hideBreadcrumb } from "@/utils/common";
+import { ref, onMounted, toRef, watch } from "vue";
+import dayjs from "dayjs";
+import { useAppStore } from "@/store";
+import { jumpTo } from "@/utils/common";
 export default {
   components: {
     OperationWrapper,
   },
-  props: {
-    titles: {
-      type: String,
-      default: "",
-    },
-    formData: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-  },
   setup(props, context) {
-    // let form = reactive(props.formData)
+    const appStore = useAppStore();
     const menuType = ref([]);
     const timeZoneOption = ref([
       {
@@ -283,17 +274,33 @@ export default {
       },
     ]);
     const file = ref({});
+    const aging = ref(false);
     const needCheckList = ref([
       { label: "是", value: "1" },
       { label: "否", value: "0" },
     ]);
-    const form = computed(() => reactive(props.formData));
-    const { formData } = toRefs(props);
+
+    const title = ref("");
+    const form = ref({});
     watch(
-      () => formData.value,
+      () => appStore.platformCreation,
       newVal => {
-        console.log("打印form数据");
-        console.log(newVal);
+        for (let key in newVal.form) {
+          if (key == "expiredTime") {
+            if (newVal.form[key] == "2099-01-01 00:00:00") {
+              aging.value = true;
+            } else {
+              aging.value = false;
+            }
+          }
+          form[key] = toRef(newVal.form, key);
+        }
+        title.value = newVal.titles;
+        form.value = newVal.form;
+      },
+      {
+        deep: true,
+        immediate: true,
       }
     );
 
@@ -306,17 +313,16 @@ export default {
     };
 
     const handleCancel = () => {
-      hideBreadcrumb();
+      jumpTo("/backstage/platformManagement");
     };
     const handleBeforeOk = () => {
-      let title = ref(props.titles).value;
-      if (title == "修改") {
-        platformManagement.putPlatform(form._value).then(data => {
-          hideBreadcrumb();
+      if (title.value == "修改") {
+        platformManagement.putPlatform(form.value).then(data => {
+          jumpTo("/backstage/platformManagement");
         });
       } else {
-        platformManagement.newPlatform(form._value).then(data => {
-          hideBreadcrumb();
+        platformManagement.newPlatform(form.value).then(data => {
+          jumpTo("/backstage/platformManagement");
         });
       }
     };
@@ -329,25 +335,44 @@ export default {
     const onProgress = currentFile => {
       file.value = currentFile;
     };
+    const changeAging = data => {
+      if (data) {
+        form.value.expiredTime = "2099-01-01 00:00:00";
+      }
+      aging.value = data;
+    };
     onMounted(() => {
       menuTypeList();
     });
     return {
       handleCancel,
+      changeAging,
       handleBeforeOk,
       onProgress,
       onChange,
+      title,
       form,
       menuType,
       file,
+      dayjs,
       needCheckList,
       timeZoneOption,
+      aging,
       validTimesRules: [
         {
-          required: true,
-          validator: async (value, callback) => {
+          validator: (value, callback) => {
             if (value < 1) {
               callback("最大用户数需大于0");
+            }
+          },
+        },
+      ],
+      chineseVerificationRules: [
+        {
+          validator: (value, callback) => {
+            var reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
+            if (reg.test(value)) {
+              callback("格式不正确");
             }
           },
         },

@@ -8,11 +8,12 @@ class PlatformManagement {
   }
   async getPlatform(params) {
     const { data } = await this.service({
-      url: '/platform',
+      url: '/platform/getPlatformPage',
       method: 'get',
+      params: params,
       headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
-      }
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
     }, 'platform')
     return data
   }
@@ -87,7 +88,7 @@ class SetUser {
   }
   async putUser(params) {
     const { data } = await this.service({
-      url: '/user/password',
+      url: '/user',
       method: 'put',
       data: params,
     }, 'platform')
@@ -190,6 +191,13 @@ class RoleManagement {
       headers: {
         'Content-Type': 'application/json'
       }
+    }, 'platform')
+    return data
+  }
+  async judgmentRoleName(params) {
+    const { data } = await this.service({
+      url: `/role/duplicateChecking?roleNameZh=${params}`,
+      method: 'get'
     }, 'platform')
     return data
   }

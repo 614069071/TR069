@@ -38,6 +38,7 @@ export default {
           onOk: async () => {
             logout().then(res => {
               if (res.data) {
+                sessionStorage.setItem("hasRoles", "true");
                 router.push("/user/login");
               }
             });

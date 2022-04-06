@@ -4,8 +4,7 @@
       <NavButton type="primary" size="large" :onClick="addPlatform">新增</NavButton>
       <a-button type="primary" @click="filters">筛选</a-button>
     </div>
-    <CreatePermission v-show="child" :titles="titles" :formData="form"></CreatePermission>
-    <Table v-show="!child" @showBread="addPermission" ref="tableData"></Table>
+    <Table v-show="!child" ref="tableData"></Table>
     <RightSide v-show="drawerVisible" :showpow="drawerVisible" @closePops="handleCancelDrawer()" @confirm="confirmDrawer()" @reset="resetDrawer()">
       <template v-slot:rightSidePopUpWindow>
         <div>
@@ -32,8 +31,9 @@ import Wrapper from "@/components/wrapper/index.vue";
 import CreatePermission from "./components/add-perssions/index.vue";
 import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import { ref } from "vue";
-import { useNavigationStore } from "@/store";
+import { useNavigationStore, useAppStore } from "@/store";
 import NavButton from "@/components/Nav/nav-button.vue";
+import { jumpTo } from "@/utils/common";
 export default {
   components: {
     Wrapper,
@@ -44,6 +44,7 @@ export default {
   },
   setup(props, context) {
     const navigationStore = useNavigationStore();
+    const appStore = useAppStore();
     const drawerVisible = ref(false);
     const showRightBox = ref(false);
     const refreshData = ref(false);
@@ -52,24 +53,6 @@ export default {
     const platformName = ref("");
     const enable = ref("");
     const form = ref({});
-    const addPermission = (data, type) => {
-      if (data != "新增" && !type) {
-        form.value = data;
-        for (let val in data) {
-          if (data[val]) {
-            form._value[val] = data[val];
-          } else {
-            form._value[val] = "";
-          }
-        }
-        titles.value = "修改";
-        navigationStore.updateChild("修改");
-      } else {
-        form.value = data;
-        titles.value = "详情";
-        navigationStore.updateChild("详情");
-      }
-    };
 
     const filters = data => {
       drawerVisible.value = true;
@@ -81,9 +64,9 @@ export default {
       drawerVisible.value = false;
     };
     const confirmDrawer = () => {
-      tableData._value.getData({
-        platformName: platformName._value,
-        enable: enable._value,
+      tableData.value.getData({
+        platformName: platformName.value,
+        enable: enable.value,
       });
     };
     const resetDrawer = () => {
@@ -112,16 +95,24 @@ export default {
         userOnline: "",
         userTotal: "",
       };
-      return "platform.add";
+      const dataObj = {
+        form: form.value,
+        titles: "新增",
+      };
+      appStore.updateSettings({ platformCreation: dataObj });
+      jumpTo("/backstage/platformManagement/add");
+    };
+    const hideBreadCrumb = data => {
+      tableData.value.getData();
     };
     return {
-      addPermission,
       filters,
       closeRightSide,
       handleCancelDrawer,
       resetDrawer,
       confirmDrawer,
       addPlatform,
+      hideBreadCrumb,
       child,
       platformName,
       enable,

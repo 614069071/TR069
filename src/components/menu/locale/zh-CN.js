@@ -1,5 +1,5 @@
 export default {
-  'home.home': '全局面板',
+  'home.home': '首页',
   'home.terminalManagenent': '终端管理',
   'home.deviceManagement': '设备管理',
   'home.modelList': '型号列表',
@@ -21,6 +21,7 @@ export default {
   'home.alarm': '告警',
   'home.settingSystem': '系统设置',
   'home.systemManagement': '系统管理',
+  'home.platformInfo': '平台信息',
   'home.platformManagement': '平台管理',
   'home.setting': '用户权限管理',
   'home.settingUser': '用户管理',

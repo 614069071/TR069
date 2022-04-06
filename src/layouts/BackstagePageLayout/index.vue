@@ -10,7 +10,8 @@
       <a-layout-content>
         <div class="layout-content">
           <div class="layout-nav-wrapper">
-            <Nav></Nav>
+            <!-- <Nav></Nav> -->
+            <NavNew></NavNew>
           </div>
           <router-view></router-view>
         </div>
@@ -23,14 +24,16 @@
 import { computed } from "vue";
 import BackstageHeader from "@/components/backstage-header/index.vue";
 import Menu from "@/components/menu/index.vue";
-import Nav from "@/components/Nav/index.vue";
+// import Nav from "@/components/Nav/index.vue";
+import NavNew from "@/components/NavNew/index.vue";
 import { useAppStore } from "@/store";
 
 export default {
   components: {
     BackstageHeader,
     Menu,
-    Nav,
+    // Nav,
+    NavNew,
   },
   setup() {
     const appStore = useAppStore();

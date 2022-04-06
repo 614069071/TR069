@@ -1,6 +1,4 @@
-import { getMenuApi } from "@/services/api/login"
 import { useRoutesStore } from "@/store";
-import BackstagePageLayout from '@/layouts/BackstagePageLayout/index.vue'
 
 const modules = import.meta.glob('../backstage/**/**.vue')
 export const formatRoutes = function (routers, nav = []) {
@@ -64,13 +62,6 @@ export const initBackstageMenu = (router) => {
     routesStore.updateRoutes(fmtRoutes)
     flatRoutes(fmtRoutes)
     routesStore.updateFlatRoutes(flatData)
-    const layoutRoute = {
-      path: '/backstage',
-      name: 'BackstagePageLayout',
-      component: BackstagePageLayout,
-      children: flatData
-    }
-    router.addRoute(layoutRoute)
     resolve(true)
   })
 }

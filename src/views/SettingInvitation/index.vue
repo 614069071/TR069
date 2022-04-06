@@ -4,7 +4,6 @@
       <NavButton type="primary" :onClick="createPermission" v-show="!showBreadCrumb">生成邀请码</NavButton>
       <a-button type="primary" @click="filters">筛选</a-button>
     </div>
-    <CreatePermission v-show="showBreadCrumb" :titles="titles" :formData="form" @cancelAdd="hideBreadCrumb"></CreatePermission>
     <Table v-show="!showBreadCrumb" @showBread="showDetail" ref="tableData"></Table>
     <RightSide v-show="!showBreadCrumb && drawerVisible" :showpow="drawerVisible" @closePops="handleCancelDrawer()" @confirm="confirmDrawer()" @reset="resetDrawer()">
       <template v-slot:rightSidePopUpWindow>
@@ -15,8 +14,8 @@
         <div>
           <p>状态</p>
           <a-select v-model="enable" allow-clear placeholder="please enter...">
-            <a-option label="启用" value="0"></a-option>
-            <a-option label="禁用" value="1"></a-option>
+            <a-option label="启用" value="1"></a-option>
+            <a-option label="禁用" value="0"></a-option>
           </a-select>
         </div>
       </template>
@@ -25,23 +24,23 @@
 </template>
 
 <script>
-// import { putUser, postUser } from '@/services/api/system-settings'
 import Table from "./components/table/index.vue";
 import Wrapper from "@/components/wrapper/index.vue";
-import CreatePermission from "./components/add-perssions/index.vue";
 import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import NavButton from "@/components/Nav/nav-button.vue";
-import { ref, computed, watch } from "vue";
+import { ref, watch } from "vue";
 import { useNavigationStore } from "@/store";
+import { jumpTo } from "@/utils/common";
+import { useAppStore } from "@/store";
 export default {
   components: {
     Wrapper,
     Table,
-    CreatePermission,
     RightSide,
     NavButton,
   },
   setup(props, context) {
+    const appStore = useAppStore();
     const showBreadCrumb = ref(false);
     const drawerVisible = ref(false);
     const tableData = ref(null);
@@ -50,45 +49,43 @@ export default {
     const titles = ref("");
     const createBy = ref("");
     const enable = ref("");
-    const form = ref({});
     const navigationStore = useNavigationStore();
     const showDetail = data => {
+      const form = {};
       for (let val in data) {
         if (data[val]) {
-          form._value[val] = data[val];
+          form[val] = data[val];
         } else {
-          form._value[val] = "";
+          form[val] = "";
         }
       }
-      titles.value = "详情";
-      showBreadCrumb.value = true;
-      navigationTo(function commonDetail() {});
+      const dataObj = {
+        form: form,
+        titles: "详情",
+      };
+      appStore.updateSettings({ invitationCreation: dataObj });
+      jumpTo("/layout/setting/invitation/Detail");
     };
     const createPermission = (data, type) => {
-      showBreadCrumb.value = true;
-      form.value = {
-        createBy: "",
-        description: "",
-        enable: "",
-        expiredTime: "",
-        invitationCode: "",
-        needCheck: "",
-        platformId: "",
-        registerTime: "",
-        roleId: "",
-        userDescription: "",
-        userExpiredTime: "",
-        validTimes: "",
+      const dataObj = {
+        form: {
+          createBy: "",
+          description: "",
+          enable: "",
+          expiredTime: "",
+          invitationCode: "",
+          needCheck: "",
+          platformId: "",
+          registerTime: "",
+          roleId: "",
+          userDescription: "",
+          userExpiredTime: "",
+          validTimes: "",
+        },
+        titles: "生成邀请码",
       };
-      titles.value = "生成邀请码";
-      return titles.value;
-    };
-    const hideBreadCrumb = data => {
-      if (data) tableData._value.getData();
-      showBreadCrumb.value = false;
-      drawerVisible.value = false;
-      const navigationStore = useNavigationStore();
-      navigationStore.updateChild(null);
+      appStore.updateSettings({ invitationCreation: dataObj });
+      jumpTo("/layout/setting/invitation/add");
     };
     const filters = data => {
       drawerVisible.value = true;
@@ -100,9 +97,9 @@ export default {
       drawerVisible.value = false;
     };
     const confirmDrawer = () => {
-      tableData._value.getData({
-        createBy: createBy._value,
-        enable: enable._value,
+      tableData.value.getData({
+        createBy: createBy.value,
+        enable: enable.value,
       });
     };
     const resetDrawer = () => {
@@ -122,7 +119,6 @@ export default {
       }
     );
     return {
-      hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,
@@ -136,7 +132,6 @@ export default {
       tableData,
       breadList,
       titles,
-      form,
       drawerVisible,
       showRightBox,
     };

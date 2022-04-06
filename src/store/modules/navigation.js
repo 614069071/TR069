@@ -5,7 +5,8 @@ export const useNavigationStore = defineStore('navigation', {
     return {
       parent: [],
       child: null,
-      event: null
+      event: null,
+      breadList: []
     }
   },
   actions: {
@@ -18,6 +19,9 @@ export const useNavigationStore = defineStore('navigation', {
     },
     updateEvent(v) {
       this.event = v;
+    },
+    updateBreadList(v) {
+      this.breadList = v
     }
   },
   persist: { enabled: true }

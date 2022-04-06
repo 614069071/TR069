@@ -7,11 +7,11 @@
           <a-table-column title="平台名称" data-index="platformName"></a-table-column>
           <a-table-column title="平台识别码" data-index="identificationCode"></a-table-column>
           <a-table-column title="客户编码" data-index="platformCode"></a-table-column>
-          <a-table-column title="设备数量（在线数/总数）">
+          <!-- <a-table-column title="设备数量（在线数/总数）">
             <template #cell="{ record }">
-              <span>{{ record.userOnline }}/{{ record.userTotal }}</span>
+              <span>{{ record.deviceOnline }}/{{ record.deviceTotal }}</span>
             </template>
-          </a-table-column>
+          </a-table-column> -->
           <a-table-column title="用户数量（在线数/总数）">
             <template #cell="{ record }">
               <span>{{ record.userOnline }}/{{ record.userTotal }}</span>
@@ -46,6 +46,8 @@ import { platformManagement } from "@/services/api/system-settings";
 import Pagination from "@/components/pagination/index.vue";
 import { Modal } from "@arco-design/web-vue";
 import RightSide from "@/components/rightSidePopUpBox/index.vue";
+import { jumpTo } from "@/utils/common";
+import { useAppStore } from "@/store";
 export default {
   props: {
     drawerVisible: {
@@ -61,9 +63,6 @@ export default {
   data() {
     return {
       form: {},
-      current: 1,
-      pageSize: 15,
-      roleList: [],
       paginationData: null,
       data: null,
       visible: false,
@@ -79,20 +78,17 @@ export default {
   methods: {
     async getData(form) {
       let params = {
-        page: this.current,
-        size: this.pageSize,
         platformName: form ? form.platformName : "",
         enable: form ? form.enable : "",
       };
-
       const dataInfo = await platformManagement.getPlatform(params);
       dataInfo.data.forEach((element, index) => {
         element.index = index + 1;
-        this.roleList.forEach(data => {
-          if (element.roleId == data.roleId) {
-            element.roleNameZh = data.roleNameZh;
-          }
-        });
+        // this.roleList.forEach(data => {
+        //   if (element.roleId == data.roleId) {
+        //     element.roleNameZh = data.roleNameZh;
+        //   }
+        // });
       });
       this.data = dataInfo.data;
       this.paginationData = dataInfo.total;
@@ -114,13 +110,25 @@ export default {
       });
     },
     handleClick(record) {
-      this.$emit("showBread", record);
+      const appStore = useAppStore();
       this.title = "修改";
       this.form = JSON.parse(JSON.stringify(record));
+      const dataObj = {
+        form: this.form,
+        titles: this.title,
+      };
+      appStore.updateSettings({ platformCreation: dataObj });
+      jumpTo("/backstage/platformManagement/modify");
     },
     handleDetail(record) {
       this.title = "详情";
-      this.$emit("showBread", record, true);
+      const dataObj = {
+        form: record,
+        titles: this.title,
+      };
+      const appStore = useAppStore();
+      appStore.updateSettings({ platformCreation: dataObj });
+      jumpTo("/backstage/platformManagement/detail");
     },
     changePassword() {
       this.visible = true;

@@ -2,13 +2,18 @@ import { defineStore } from 'pinia'
 
 export const useAppStore = defineStore('app', {
   state: () => {
-   return {
-    menuCollapse: false,
-    username: '',
-    permissionsRow: {},
-    permissionsModifyRow: {},
-    showRightBox: false
-   }
+    return {
+      menuCollapse: false,
+      selectedMenuKey: '',
+      username: '',
+      permissionsRow: {},
+      permissionsModifyRow: {},
+      showRightBox: false,
+      invitationCreation: {},
+      userModifyRow: {},
+      roleModifyCreation: {},
+      platformCreation: {}
+    }
   },
   getters: {},
   actions: {
@@ -21,5 +26,8 @@ export const useAppStore = defineStore('app', {
     updateShowRightBox(value) {
       this.showRightBox = value
     }
+  },
+  persist: {
+    enabled: true
   }
 })

@@ -76,13 +76,13 @@ export const initMenu = (router) => {
       routesStore.updateRoutes(fmtRoutes)
       flatRoutes(fmtRoutes)
       routesStore.updateFlatRoutes(flatData)
-      const layoutRoute = {
-        path: '/layout',
-        name: 'PageLayout',
-        component: PageLayout,
-        children: flatData
-      }
-      router.addRoute(layoutRoute)
+      // const layoutRoute = {
+      //   path: '/layout',
+      //   name: 'PageLayout',
+      //   component: PageLayout,
+      //   children: flatData
+      // }
+      // router.addRoute(layoutRoute)
       resolve(true)
     })
   })

@@ -6,6 +6,10 @@ import { initMenu } from '@/utils/menu.js'
 import { initBackstageMenu } from '@/utils/backstageMenu.js'
 import packConfig from '../../pack.config'
 import { useNavigationStore } from '@/store';
+import staticRoutes from './modules/routes'
+import backstageRoutes from './modules/backstageRoutes'
+import PageLayout from '@/layouts/PageLayout/index.vue'
+import BackstagePageLayout from '@/layouts/BackstagePageLayout/index.vue'
 
 let targetUsers = packConfig.targetUsers // GENERAL_USER , SUPER_ADMIN , UNLIMITED
 
@@ -17,6 +21,12 @@ const backgroundDefaultRoutes = [
   {
     path: '/backstageLogin',
     component: BackstageLayout,
+  },
+  {
+    path: '/backstage',
+    name: 'BackstagePageLayout',
+    component: BackstagePageLayout,
+    children: backstageRoutes
   }
 ]
 
@@ -30,6 +40,12 @@ const userDefaultRoutes = [
     redirect: '/user/login',
     component: UserLayout,
     children: UserLayoutRoutes
+  },
+  {
+    path: '/layout',
+    name: 'PageLayout',
+    component: PageLayout,
+    children: staticRoutes
   }
 ]
 
@@ -45,8 +61,20 @@ const unlimitedDefaultRoutes = [
     children: UserLayoutRoutes
   },
   {
+    path: '/layout',
+    name: 'PageLayout',
+    component: PageLayout,
+    children: staticRoutes
+  },
+  {
     path: '/backstageLogin',
     component: BackstageLayout,
+  },
+  {
+    path: '/backstage',
+    name: 'BackstagePageLayout',
+    component: BackstagePageLayout,
+    children: backstageRoutes
   }
 ]
 
@@ -68,19 +96,19 @@ const router = createRouter({
 })
 
 // 记录路由,刷新页面时后会走这一步
-let hasRoles = true
+sessionStorage.setItem('hasRoles', true)
 router.beforeEach((to, from, next) => {
   if (to.query.redirect) {
-    hasRoles = true
+    sessionStorage.setItem('hasRoles', true)
   }
   if (to.path === '/' || to.path === '/user/login' || to.path === '/user/register' || to.path === '/user/find-password' || to.path === '/backstageLogin') {
     next()
-  } else if (to.path === '/backstage/platformManagement') {// /layout/platformManagement
+  } else if (to.path.indexOf('backstage') > -1) {
     if (window.sessionStorage.getItem("JWT_TOKEN")) {
-      if (hasRoles) {
+      if (sessionStorage.getItem('hasRoles') == 'true') {
         initBackstageMenu(router).then(res => {
           if (res) {
-            hasRoles = false
+            sessionStorage.setItem('hasRoles', 'false')
             next({ ...to, replace: true })
           }
         })
@@ -93,10 +121,10 @@ router.beforeEach((to, from, next) => {
   } else {
     if (window.sessionStorage.getItem("JWT_TOKEN")) {
       // 路由添加进去了没有及时更新 需要重新进去一次拦截
-      if (hasRoles) {
+      if (sessionStorage.getItem('hasRoles') == 'true') {
         initMenu(router).then(res => {
           if (res) {
-            hasRoles = false
+            sessionStorage.setItem('hasRoles', 'false')
             next({ ...to, replace: true }) // 这里相当于push到一个页面 不再进入路由拦截
           }
         })
@@ -114,7 +142,9 @@ let navStore = null;
 router.afterEach((to, from, next) => {
   !navStore && (navStore = useNavigationStore());
   const parent = to.matched[to.matched.length - 1].meta.nav;
+  const breadList = to.matched[to.matched.length - 1].meta.breadList
   navStore.updateParent(parent);
+  navStore.updateBreadList(breadList)
 })
 
 export default router

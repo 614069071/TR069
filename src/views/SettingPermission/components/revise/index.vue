@@ -19,7 +19,7 @@ import { ref, reactive, computed, watch } from "vue";
 import OperationWrapper from "@/components/operation-wrapper/index.vue";
 import { revisePermission } from "@/services/api/system-settings";
 import { useAppStore } from "@/store";
-import { hideBreadcrumb } from "@/utils/common";
+import { hideBreadcrumb, jumpTo } from "@/utils/common";
 export default {
   components: {
     OperationWrapper,
@@ -31,6 +31,7 @@ export default {
     });
 
     const cancel = () => {
+      jumpTo("/layout/setting/permission");
       hideBreadcrumb();
     };
 
@@ -39,6 +40,7 @@ export default {
     watch(
       () => appStore.permissionsModifyRow,
       newVal => {
+        console.log(newVal.permissionName);
         form.name = newVal.permissionName;
       },
       {
@@ -52,6 +54,7 @@ export default {
       revisePermission(pid, form.name).then(res => {
         if (res.data.status == 200) {
           context.emit("reviseSuccess");
+          jumpTo("/layout/setting/permission");
           hideBreadcrumb();
         }
       });

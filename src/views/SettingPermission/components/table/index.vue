@@ -8,9 +8,9 @@
           <a-table-column title="创建人" data-index="createBy"></a-table-column>
           <a-table-column title="操作" class="operation">
             <template #cell="{ record }">
-              <div class="revise" @click="showModify(record)">修改</div>
-              <div class="resource" @click="showResource(record)">可访问资源</div>
-              <div class="delete" @click="showDelete(record)">删除</div>
+              <div class="revise" @click="showModify(record)" v-show="record.createBy != 'superadmin'">修改</div>
+              <div class="resource" @click="showResource(record)" v-show="record.createBy != 'superadmin'">可访问资源</div>
+              <div class="delete" @click="showDelete(record)" v-show="record.createBy != 'superadmin'">删除</div>
             </template>
           </a-table-column>
         </template>
@@ -25,6 +25,7 @@ import { useAppStore, useNavigationStore } from "@/store";
 import { Modal } from "@arco-design/web-vue";
 import { deletePermission } from "@/services/api/system-settings";
 import SelfTable from "@/components/self-table/index.vue";
+import { jumpTo } from "@/utils/common";
 export default {
   components: {
     SelfTable,
@@ -52,6 +53,8 @@ export default {
         ...record,
       };
       appStore.updateSettings({ permissionsModifyRow: row });
+      jumpTo("/layout/setting/permission/modify");
+      return;
       context.emit("modify");
       navigationStore.updateChild("修改");
     };

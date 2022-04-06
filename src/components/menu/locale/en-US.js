@@ -1,5 +1,5 @@
 export default {
-  'home.home': 'global panel',
+  'home.home': 'Home',
   'home.terminalManagenent': 'Terminal management',
   'home.deviceManagement': 'Device Management',
   'home.modelList': 'Model List',
@@ -21,6 +21,7 @@ export default {
   'home.alarm': 'Alarm',
   'home.settingSystem': 'System settings',
   'home.systemManagement': 'System Management',
+  'home.platformInfo': 'Platform Info',
   'home.platformManagement': 'Platform Management',
   'home.setting': 'User rights management',
   'home.settingUser': 'User management',

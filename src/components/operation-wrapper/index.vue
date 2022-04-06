@@ -1,7 +1,7 @@
 <template>
   <div class="operation-wrapper">
     <div class="title">
-      <span>{{title}}</span>
+      <span>{{ title }}</span>
     </div>
     <div class="form-content">
       <slot name="formContent"></slot>
@@ -10,27 +10,29 @@
 </template>
 
 <script>
-import { toRefs } from 'vue'
+import { toRefs } from "vue";
 export default {
   props: {
     title: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   setup(props) {
-    let contentProps = toRefs(props)
-    let title = contentProps.title
+    let contentProps = toRefs(props);
+    let title = contentProps.title;
     return {
-      title
-    }
-  }
-}
+      title,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>
 .operation-wrapper {
-  height: 100%;
+  // height: 100%;
+  height: calc(100% - 76px);
+  padding: 0px 20px;
   .title {
     padding: 20px 0px;
     font-size: 16px;

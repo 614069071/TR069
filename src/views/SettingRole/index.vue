@@ -4,7 +4,6 @@
       <NavButton type="primary" :onClick="createPermission">添加角色</NavButton>
       <a-button type="primary" @click="filters">筛选</a-button>
     </div>
-    <CreatePermission v-show="showBreadCrumb" :titles="titles" :formData="form" @cancelAdd="hideBreadCrumb"></CreatePermission>
     <Table v-show="!showBreadCrumb" @showBread="showDetail" ref="tableData"></Table>
     <RightSide v-show="!showBreadCrumb && drawerVisible" :showpow="drawerVisible" @closePops="handleCancelDrawer()" @confirm="confirmDrawer()" @reset="resetDrawer()">
       <template v-slot:rightSidePopUpWindow>
@@ -30,18 +29,19 @@
 import Table from "./components/table/index.vue";
 import Wrapper from "@/components/wrapper/index.vue";
 import { roleManagement } from "@/services/api/system-settings";
-import CreatePermission from "./components/add-perssions/index.vue";
 import RightSide from "@/components/rightSidePopUpBox/index.vue";
 import { useNavigationStore } from "@/store";
 import { ref, watch, onMounted } from "vue";
+import { useAppStore } from "@/store";
+import { jumpTo } from "@/utils/common";
 export default {
   components: {
     Wrapper,
     Table,
-    CreatePermission,
     RightSide,
   },
   setup(props, context) {
+    const appStore = useAppStore();
     const showBreadCrumb = ref(false);
     const drawerVisible = ref(false);
     const breadList = ref([]);
@@ -62,46 +62,40 @@ export default {
     };
     const navigationStore = useNavigationStore();
     const createPermission = data => {
-      showBreadCrumb.value = true;
-      form.value = {
-        description: "",
-        permissions: [],
-        platformId: "",
-        roleName: "",
-        roleNameZh: "",
-        selectedPermissions: [],
+      const dataObj = {
+        form: {
+          description: "",
+          permissions: [],
+          platformId: "",
+          roleName: "",
+          roleNameZh: "",
+          selectedPermissions: [],
+        },
+        titles: "添加角色",
       };
-      titles.value = "添加角色";
-      return titles.value;
+      appStore.updateSettings({ roleModifyCreation: dataObj });
+      jumpTo("/layout/setting/role/add");
     };
     const showDetail = (data, type) => {
       data.selectedPermissions = [];
       data.permissions.forEach(item => {
         data.selectedPermissions.push(item.permissionId);
       });
+      let dataForm = {};
+      console.log(data);
       for (let val in data) {
         if (data[val]) {
-          form._value[val] = data[val];
+          dataForm[val] = data[val];
         } else {
-          form._value[val] = "";
+          dataForm[val] = "";
         }
       }
-      if (!type) {
-        titles.value = "修改";
-        showBreadCrumb.value = true;
-        navigationTo(function commonModify() {});
-      } else {
-        titles.value = "详情";
-        showBreadCrumb.value = true;
-        navigationTo(function commonDetail() {});
-      }
-    };
-    const hideBreadCrumb = data => {
-      if (data) tableData._value.getData();
-      showBreadCrumb.value = false;
-      drawerVisible.value = false;
-      const navigationStore = useNavigationStore();
-      navigationStore.updateChild(null);
+      const dataObj = {
+        form: dataForm,
+        titles: type ? "详情" : "修改",
+      };
+      appStore.updateSettings({ roleModifyCreation: dataObj });
+      jumpTo("/layout/setting/role/revise");
     };
     watch(
       () => navigationStore.child,
@@ -125,9 +119,9 @@ export default {
       drawerVisible.value = false;
     };
     const confirmDrawer = () => {
-      tableData._value.getData({
-        roleName: roleName._value,
-        permissionIdList: permissionIdList._value.toString(),
+      tableData.value.getData({
+        roleName: roleName.value,
+        permissionIdList: permissionIdList.value.toString(),
       });
     };
     const resetDrawer = () => {
@@ -139,7 +133,6 @@ export default {
     });
     return {
       createPermission,
-      hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,

@@ -60,9 +60,9 @@ export default {
       } else if (data != "新增模板" && !type) {
         for (let val in data) {
           if (data[val]) {
-            form._value[val] = data[val];
+            form.value[val] = data[val];
           } else {
-            form._value[val] = "";
+            form.value[val] = "";
           }
         }
         titles.value = "编辑";
@@ -74,7 +74,7 @@ export default {
       }
     };
     const hideBreadCrumb = data => {
-      if (data) tableData._value.getData();
+      if (data) tableData.value.getData();
       showBreadCrumb.value = false;
     };
     const filters = data => {

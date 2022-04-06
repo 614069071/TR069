@@ -4,7 +4,6 @@
       <NavButton type="primary" :onClick="createPermission">添加用户</NavButton>
       <a-button type="primary" @click="filters">筛选</a-button>
     </div>
-    <CreatePermission v-show="showBreadCrumb" :titles="titles" :formData="form" :roleListData="roleList" @cancelAdd="hideBreadCrumb"></CreatePermission>
     <Table v-show="!showBreadCrumb" @showBread="showDetail" ref="tableData"></Table>
     <RightSide v-show="!showBreadCrumb && drawerVisible" :showpow="drawerVisible" @closePops="handleCancelDrawer()" @confirm="confirmDrawer()" @reset="resetDrawer()">
       <template v-slot:rightSidePopUpWindow>
@@ -37,17 +36,17 @@
 import Table from "./components/table/index.vue";
 import Wrapper from "@/components/wrapper/index.vue";
 import { setUser } from "@/services/api/system-settings";
-import CreatePermission from "./components/add-perssions/index.vue";
-// import RightSide from '@/components/rightSidePopUpBox/index.vue'
 import { ref, watch, onMounted } from "vue";
 import { useNavigationStore } from "@/store";
+import { jumpTo } from "@/utils/common";
+import { useAppStore } from "@/store";
 export default {
   components: {
     Wrapper,
     Table,
-    CreatePermission,
   },
   setup(props, context) {
+    const appStore = useAppStore();
     const showBreadCrumb = ref(false);
     const drawerVisible = ref(false);
     const showRightBox = ref(false);
@@ -62,62 +61,62 @@ export default {
     const getRoleList = async () => {
       const dataInfo = await setUser.getRoleList();
       roleList.value = dataInfo;
-      console.log(roleList);
     };
+
     const navigationStore = useNavigationStore();
     const createPermission = (data, type) => {
-      showBreadCrumb.value = true;
-      form.value = {
-        roleId: "",
-        username: "",
-        password: "",
-        parentId: "",
-        platformId: "",
-        enable: 1,
-        avatar: "",
-        email: "",
-        phone: "",
-        registerTime: "",
-        expiredTime: "2099-01-01 00:00:00",
-        firstLogin: 1,
-        sessionTimeout: 600,
-        description: "",
-        enabled: false,
+      const dataObj = {
+        form: {
+          roleId: "",
+          username: "",
+          password: "",
+          parentId: "",
+          platformId: "",
+          enable: 1,
+          avatar: "",
+          email: "",
+          phone: "",
+          registerTime: "",
+          expiredTime: "2099-01-01 00:00:00",
+          firstLogin: 1,
+          sessionTimeout: 600,
+          description: "",
+          enabled: false,
+        },
+        titles: "添加用户",
+        roleListData: roleList,
       };
-
-      titles.value = "添加用户";
-      return titles.value;
+      appStore.updateSettings({ userModifyRow: dataObj });
+      jumpTo("/layout/setting/user/add");
+      // titles.value = '添加用户'
+      // return titles.value
     };
     const showDetail = (data, type) => {
-      if (!type) {
-        for (let val in data) {
-          if (data[val]) {
-            form._value[val] = data[val];
-          } else {
-            form._value[val] = "";
-          }
+      let form = {};
+      let title = "";
+      let url = "";
+      for (let val in data) {
+        if (data[val]) {
+          form[val] = data[val];
+        } else {
+          form[val] = "";
         }
-        titles.value = "修改";
-        showBreadCrumb.value = true;
-        navigationTo(function commonModify() {});
-      } else {
-        for (let val in data) {
-          if (data[val]) {
-            form._value[val] = data[val];
-          } else {
-            form._value[val] = "";
-          }
-        }
-        titles.value = "详情";
-        showBreadCrumb.value = true;
-        navigationTo(function commonDetail() {});
       }
-    };
-    const hideBreadCrumb = data => {
-      if (data) tableData._value.getData();
-      showBreadCrumb.value = false;
-      const navigationStore = useNavigationStore();
-      navigationStore.updateChild(null);
+      if (type) {
+        title = "详情";
+        url = "/layout/setting/user/detail";
+      } else {
+        title = "修改";
+        url = "/layout/setting/user/revise";
+      }
+      type ? (title = "详情") : (title = "修改");
+      const dataObj = {
+        form: form,
+        titles: title,
+        roleListData: roleList,
+      };
+      appStore.updateSettings({ userModifyRow: dataObj });
+      jumpTo(url);
     };
     const filters = data => {
       drawerVisible.value = true;
@@ -129,10 +128,10 @@ export default {
       drawerVisible.value = false;
     };
     const confirmDrawer = () => {
-      tableData._value.getData({
-        username: username._value,
-        roleId: roleId._value,
-        online: online._value,
+      tableData.value.getData({
+        username: username.value,
+        roleId: roleId.value,
+        online: online.value,
       });
     };
     const resetDrawer = () => {
@@ -157,7 +156,6 @@ export default {
     });
     return {
       createPermission,
-      hideBreadCrumb,
       filters,
       closeRightSide,
       handleCancelDrawer,
