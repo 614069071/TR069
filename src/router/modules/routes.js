@@ -45,16 +45,47 @@ export default [
     path: "/layout/deviceManagement/beforeConfig",
     name: "home.beforeConfig",
     iconCls: null,
-    children: [],
     component: () => import("@/views/BeforeConfig/index.vue"),
-    meta: {
-      nav: [
-        "home.terminalManagenent",
-        "home.deviceManagement",
-        "home.beforeConfig"
-      ],
-      breadList: []
-    }
+    children: [
+      {
+        path: "/layout/deviceManagement/beforeConfig",
+        component: () => import("@/views/BeforeConfig/components/list.vue"),
+        meta: {
+          nav: [
+            "home.terminalManagenent",
+            "home.deviceManagement",
+            "home.deviceList"
+          ],
+          breadList: []
+        }
+      },
+      {
+        path: "/layout/deviceManagement/beforeConfig/add",
+        component: () => import("@/views/BeforeConfig/components/add.vue"),
+        meta: {
+          nav: [
+            "home.terminalManagenent",
+            "home.deviceManagement",
+            "home.beforeConfig",
+            "home.beforeConfigAdd",
+          ],
+          breadList: []
+        }
+      },
+      {
+        path: "/layout/deviceManagement/beforeConfig/detail",
+        component: () => import("@/views/BeforeConfig/components/detail.vue"),
+        meta: {
+          nav: [
+            "home.terminalManagenent",
+            "home.deviceManagement",
+            "home.deviceList",
+            "home.beforeConfigDetail",
+          ],
+          breadList: []
+        }
+      }
+    ]
   },
   {
     path: "/layout/templateManagenent/actionPool",

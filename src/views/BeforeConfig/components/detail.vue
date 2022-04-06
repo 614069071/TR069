@@ -1,41 +1,46 @@
 <template>
-  <ConfigHeader>详情</ConfigHeader>
+  <div class="layout-page-view-wrapper">
+    <ConfigHeader>详情</ConfigHeader>
 
-  <div class="pre-config-detail-table-wrapper">
-    <div class="table-title">设备唯一标识</div>
-    <div class="table-content">{{ data.deviceType }}</div>
-    <div class="table-title">2.4G SSID名称</div>
-    <div class="table-content">{{ data.ssidname24G }}</div>
-    <div class="table-title">5G SSID名称</div>
-    <div class="table-content">{{ data.ssidname58G }}</div>
-    <div class="table-title">PPPOE账号</div>
-    <div class="table-content">{{ data.pppoeUsername }}</div>
-    <div class="table-title">PPPOE密码</div>
-    <div class="table-content col-1">{{ data.pppoePassword }}</div>
-    <div class="table-title">SIP用户信息</div>
-    <div class="table-content col-2">{{ data.sipuser }}</div>
-    <div class="table-title sp">备注</div>
-    <div class="table-content col-2 sp">{{ data.remark }}</div>
-    <div class="table-title sp">配置模板</div>
-    <div class="table-content col-2 sp">{{ mapProfilsName }}</div>
+    <div class="pre-config-detail-table-wrapper">
+      <div class="table-title">设备唯一标识</div>
+      <div class="table-content">{{ data.deviceType }}</div>
+      <div class="table-title">2.4G SSID名称</div>
+      <div class="table-content">{{ data.ssidname24G }}</div>
+      <div class="table-title">5G SSID名称</div>
+      <div class="table-content">{{ data.ssidname58G }}</div>
+      <div class="table-title">PPPOE账号</div>
+      <div class="table-content">{{ data.pppoeUsername }}</div>
+      <div class="table-title">PPPOE密码</div>
+      <div class="table-content col-1">{{ data.pppoePassword }}</div>
+      <div class="table-title">SIP用户信息</div>
+      <div class="table-content col-2">{{ data.sipuser }}</div>
+      <div class="table-title sp">备注</div>
+      <div class="table-content col-2 sp">{{ data.remark }}</div>
+      <div class="table-title sp">配置模板</div>
+      <div class="table-content col-2 sp">{{ mapProfilsName }}</div>
+    </div>
   </div>
 </template>
 
-<script setup>
-import { toRefs, computed } from "vue";
+<script>
+import { computed, defineComponent, ref } from "vue";
 
-const _props = defineProps({
-  data: {
-    type: Object,
-    default: () => ({}),
+export default defineComponent({
+  name: "before-config-detail",
+  setup() {
+    const _data = sessionStorage.getItem("_pre_config_item_");
+    const data = ref(JSON.parse(_data) || {});
+    const mapProfilsName = computed(() => {
+      const names = (data.value.profiles || []).map(({ profileName }) => profileName);
+      return names.join(", ");
+    });
+
+    return {
+      data,
+      mapProfilsName,
+    };
   },
-});
-
-const { data } = toRefs(_props);
-
-const mapProfilsName = computed(() => {
-  const names = (data.value.profiles || []).map(({ profileName }) => profileName);
-  return names.join(", ");
 });
 </script>
 
