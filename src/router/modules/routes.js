@@ -144,14 +144,6 @@ export default [
         name: "home.upgradeTask",
         iconCls: null,
         component: () => import("@/views/upgrade/upgradeTask/index.vue"),
-        meta: {
-          nav: [
-            "home.terminalManagenent",
-            "home.upgradeManagement",
-            "home.upgradeTask"
-          ],
-          breadList: []
-        },
         children: [
           {
             path: "/layout/upgradeManagement/upgradeTask",
@@ -161,6 +153,45 @@ export default [
                 "home.terminalManagenent",
                 "home.upgradeManagement",
                 "home.upgradeTask",
+              ],
+              breadList: []
+            },
+          },
+          {
+            path: "/layout/upgradeManagement/upgradeTask/add",
+            component: () => import("@/views/upgrade/upgradeTask/component/add.vue"),
+            meta: {
+              nav: [
+                "home.terminalManagenent",
+                "home.upgradeManagement",
+                "home.upgradeTask",
+                "home.upgradeTaskAdd",
+              ],
+              breadList: []
+            },
+          },
+          {
+            path: "/layout/upgradeManagement/upgradeTask/modify",
+            component: () => import("@/views/upgrade/upgradeTask/component/modify.vue"),
+            meta: {
+              nav: [
+                "home.terminalManagenent",
+                "home.upgradeManagement",
+                "home.upgradeTask",
+                "home.upgradeTaskModify",
+              ],
+              breadList: []
+            },
+          },
+          {
+            path: "/layout/upgradeManagement/upgradeTask/rule",
+            component: () => import("@/views/upgrade/upgradeTask/component/rule.vue"),
+            meta: {
+              nav: [
+                "home.terminalManagenent",
+                "home.upgradeManagement",
+                "home.upgradeTask",
+                "home.upgradeTaskRule",
               ],
               breadList: []
             },

@@ -100,10 +100,10 @@ export default defineConfig({
       '/api': {
         // target: 'http://192.168.90.12:9000', // 刘钊本地服务
         // target: 'http://192.168.90.85:9000', // 
-        // target: 'http://192.168.6.163:9000/', // 明恺本地服务
+        target: 'http://192.168.6.163:9000/', // 明恺本地服务
         // target: 'http://192.168.6.55:9000/', // 方浩哲本地服务
         // target: 'http://192.168.6.13:9000/', // 测试环境
-        target: 'http://159.75.218.86:9001/', // 云服务
+        // target: 'http://159.75.218.86:9001/', // 云服务
         // target: 'http://192.168.6.13:9000/', // 测试服务器
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "")
