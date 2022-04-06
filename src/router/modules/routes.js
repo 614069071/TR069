@@ -86,32 +86,118 @@ export default [
     }
   },
   {
-    path: "/layout/upgradeManagement/upgradeRule",
-    name: "home.upgradeRule",
+    path: "/layout/upgradeManagement",
+    name: "home.upgradeFile",
+    component: () => import("@/views/upgrade/index.vue"),
     iconCls: null,
-    children: [],
-    meta: {
-      nav: [
-        "home.terminalManagenent",
-        "home.upgradeManagement",
-        "home.upgradeRule"
-      ],
-      breadList: []
-    }
-  },
-  {
-    path: "/layout/upgradeManagement/upgradeRecord",
-    name: "home.upgradeRecord",
-    iconCls: null,
-    children: [],
-    meta: {
-      nav: [
-        "home.terminalManagenent",
-        "home.upgradeManagement",
-        "home.upgradeRecord"
-      ],
-      breadList: []
-    }
+    children: [
+      {
+        path: "/layout/upgradeManagement/upgradeFile",
+        name: "home.upgradeFile",
+        iconCls: null,
+        component: () => import("@/views/upgrade/upgradeFile/index.vue"),
+        children: [
+          {
+            path: "/layout/upgradeManagement/upgradeFile",
+            component: () => import("@/views/upgrade/upgradeFile/component/list.vue"),
+            meta: {
+              nav: [
+                "home.terminalManagenent",
+                "home.upgradeManagement",
+                "home.upgradeFile"
+              ],
+              breadList: []
+            },
+          },
+          {
+            path: "/layout/upgradeManagement/upgradeFile/add",
+            component: () => import("@/views/upgrade/upgradeFile/component/add.vue"),
+            meta: {
+              nav: [
+                "home.terminalManagenent",
+                "home.upgradeManagement",
+                "home.upgradeFile",
+                "home.upgradeFileAdd"
+              ],
+              breadList: [
+
+              ]
+            },
+          },
+          {
+            path: "/layout/upgradeManagement/upgradeFile/modify",
+            component: () => import("@/views/upgrade/upgradeFile/component/modify.vue"),
+            meta: {
+              nav: [
+                "home.terminalManagenent",
+                "home.upgradeManagement",
+                "home.upgradeFile",
+                "home.upgradeFileModify"
+              ],
+              breadList: []
+            },
+          },
+        ]
+      },
+      {
+        path: "/layout/upgradeManagement/upgradeTask",
+        name: "home.upgradeTask",
+        iconCls: null,
+        component: () => import("@/views/upgrade/upgradeTask/index.vue"),
+        meta: {
+          nav: [
+            "home.terminalManagenent",
+            "home.upgradeManagement",
+            "home.upgradeTask"
+          ],
+          breadList: []
+        },
+        children: [
+          {
+            path: "/layout/upgradeManagement/upgradeTask",
+            component: () => import("@/views/upgrade/upgradeTask/component/list.vue"),
+            meta: {
+              nav: [
+                "home.terminalManagenent",
+                "home.upgradeManagement",
+                "home.upgradeTask",
+              ],
+              breadList: []
+            },
+          },
+        ],
+
+      },
+      // {
+      //   path: "/layout/upgradeManagement/upgradeRule",
+      //   name: "home.upgradeRule",
+      //   iconCls: null,
+      //   children: [],
+      //   meta: {
+      //     nav: [
+      //       "home.terminalManagenent",
+      //       "home.upgradeManagement",
+      //       "home.upgradeRule"
+      //     ],
+      //     breadList: []
+      //   },
+      //   children: [],
+      // },
+      // {
+      //   path: "/layout/upgradeManagement/upgradeRecord",
+      //   name: "home.upgradeRecord",
+      //   iconCls: null,
+      //   meta: {
+      //     nav: [
+      //       "home.terminalManagenent",
+      //       "home.upgradeManagement",
+      //       "home.upgradeRecord"
+      //     ],
+      //     breadList: []
+      //   },
+      //   children: [],
+      // },
+    ],
   },
   {
     path: "/layout/tr069Management/configManagement",
